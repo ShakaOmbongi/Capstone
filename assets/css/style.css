@@ -1,0 +1,30 @@
+h1 {
+
+     color:red;
+
+  }
+  
+  /* Making peerAid logo Smaller to fit page */
+  .logo {
+    width: 200px; /* Adjust as needed */
+    display: block;
+    margin: 0 auto;
+    padding: 20px 0;
+  }
+  
+    /* Making Hero more tailerd to the page "welcome */
+  .hero {
+    background: #f8f9fa;
+    padding: 60px 0;
+  }
+      /* Making text size better visually */
+
+  .hero h1 {
+    font-size: 3rem;
+    color: #343a40;
+  }
+  .hero p {
+    font-size: 1.5rem;
+    color: #6c757d;
+  }
+  
