@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const User = require('entities/User'); // The User model
+const User = require('../../entities/User'); // The User model
 
 /**
  * Repository for performing CRUD operations on the User entity.
