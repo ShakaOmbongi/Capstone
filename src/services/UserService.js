@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const User = require('entities/User'); // User Model
+const User = require('../entities/User'); 
 
 class UserService {
   /**

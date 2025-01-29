@@ -1,4 +1,4 @@
-const RoleRepository = require('repositories/RoleRepository');
+const RoleRepository = require('../repositories/RoleRepository');
 
 class RoleService {
   async createRole(roleData) {

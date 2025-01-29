@@ -1,9 +1,6 @@
 const { Op } = require('sequelize');
-const User = require('../../entities/User'); // The User model
+const User = require('../entities/User'); 
 
-/**
- * Repository for performing CRUD operations on the User entity.
- */
 class UserRepository {
   /**
    * Finds a user by their username.

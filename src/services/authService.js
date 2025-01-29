@@ -1,7 +1,14 @@
+require('dotenv').config(); // Load environment variables
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../entities/User'); // User model
-const SECRET_KEY = process.env.JWT_SECRET || 'your-secret-key'; // Use env variable for production
+
+const SECRET_KEY = process.env.JWT_SECRET; // Ensure it's loaded from .env
+
+if (!SECRET_KEY) {
+  throw new Error("JWT_SECRET is not defined in .env!"); // Prevent running without a secret key
+}
 
 class AuthService {
   /**
@@ -39,7 +46,7 @@ class AuthService {
         role: user.role,
       },
       SECRET_KEY,
-      { expiresIn: '1h' } // Token expiration time
+      { expiresIn: process.env.JWT_EXPIRES_IN || '1h' } // Uses .env or default to 1h
     );
 
     return token;
@@ -59,6 +66,6 @@ class AuthService {
       throw new Error('Invalid or expired token');
     }
   }
-}x
+}
 
 module.exports = new AuthService();
