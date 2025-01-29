@@ -1,5 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../db'); // Database connection
+const sequelize = require('../db'); // Import your Sequelize connection
 
 class User extends Model {}
 
