@@ -1,37 +1,65 @@
 const authService = require('../services/authService');
+const bcrypt = require('bcrypt');//for protected session
+const { User, Role } = require('../entities'); //import
 
-// Handles student login
-exports.loginStudent = async (req, res) => {
-  const { email, password } = req.body;
+const loginController = {
+  async loginStudent(req, res) {
+    const { email, password } = req.body;
 
-  try {
-    const token = await authService.login(email, password, 'STUDENT');
-    res.status(200).json({ message: 'Student logged in successfully', token });
-  } catch (error) {
-    res.status(401).json({ error: error.message });
+    try {
+      const user = await User.findOne({
+        where: { email },
+        include: [{ model: Role, as: 'role' }]
+      });
+
+      console.log("DEBUG: Student login query result:", JSON.stringify(user, null, 2));
+
+      if (!user || !user.role || user.role.name !== 'STUDENT') {
+        return res.status(404).send('<h1>Student not found</h1>');
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(401).send('<h1>Invalid credentials</h1>');
+      }
+
+      const token = authService.generateToken(user);
+      res.cookie('token', token, { httpOnly: true });
+      return res.redirect('/student/studentdashboard');
+    } catch (error) {
+      console.error('Student login error:', error);
+      return res.status(500).send(`<h1>Server error: ${error.message}</h1>`);
+    }
+  },
+
+  async loginTutor(req, res) {
+    const { email, password } = req.body;
+
+    try {
+      const user = await User.findOne({
+        where: { email },
+        include: [{ model: Role, as: 'role' }]
+      });
+
+      console.log("DEBUG: Tutor login query result:", JSON.stringify(user, null, 2));
+
+      if (!user || !user.role || user.role.name !== 'TUTOR') {
+        return res.status(404).send('<h1>Tutor not found</h1>');
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(401).send('<h1>Invalid credentials</h1>');
+      }
+
+      const token = authService.generateToken(user);
+      res.cookie('token', token, { httpOnly: true });
+      return res.redirect('/tutor/tutordashboard');
+    } catch (error) {
+      console.error('Tutor login error:', error);
+      return res.status(500).send(`<h1>Server error: ${error.message}</h1>`);
+    }
   }
 };
 
-// Handles tutor login
-exports.loginTutor = async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const token = await authService.login(email, password, 'TUTOR');
-    res.status(200).json({ message: 'Tutor logged in successfully', token });
-  } catch (error) {
-    res.status(401).json({ error: error.message });
-  }
-};
-
-// Handles admin login
-exports.loginAdmin = async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const token = await authService.login(email, password, 'ADMIN');
-    res.status(200).json({ message: 'Admin logged in successfully', token });
-  } catch (error) {
-    res.status(401).json({ error: error.message });
-  }
-};
+module.exports = loginController;

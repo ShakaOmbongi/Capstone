@@ -1,4 +1,4 @@
-const AccountStatusRepository = require('repositories/AccountStatusRepository');
+const AccountStatusRepository = require('../repositories/AccountStatusRepository');
 
 class AccountStatusService {
   async createAccountStatus(statusData) {

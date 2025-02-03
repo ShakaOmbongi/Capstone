@@ -1,7 +1,11 @@
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../db'); // Database connection
+const sequelize = require('../../db');//import
 
-class User extends Model {}
+class User extends Model {
+  static associate(models) {
+    User.belongsTo(models.Role, { foreignKey: 'roleId', as: 'role' });
+  }
+}
 
 User.init(
   {
@@ -15,31 +19,25 @@ User.init(
       allowNull: false,
       unique: true,
     },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
     },
-    role: {
-      type: DataTypes.ENUM('STUDENT', 'TUTOR', 'ADMIN'),
+    password: {
+      type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'STUDENT',
     },
-    active: {
-      type: DataTypes.BOOLEAN,
+    roleId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: true,
     },
   },
   {
     sequelize,
     modelName: 'User',
     tableName: 'users',
-    timestamps: false,
+    timestamps: true,
   }
 );
 

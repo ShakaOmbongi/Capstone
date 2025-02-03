@@ -1,30 +1,33 @@
-require('dotenv').config(); // Load environment variables from .env
-
-const express = require('express'); // Import Express
-const client = require('./db');    // Import PostgreSQL connection
+require('dotenv').config();
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000; // Use PORT from .env or default to 3000
+const PORT = process.env.PORT || 3000;
 
-// Middleware to parse incoming JSON data
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// Home route
-app.get('/', (req, res) => {
-    res.send('Welcome to the Peeraid app!');
+// Import routes
+const landingRoutes = require('./src/routes/landingRoutes');
+const signupRoutes = require('./src/routes/signupRoutes');
+const loginRoutes = require('./src/routes/loginRoutes');
+const studentRoutes = require('./src/routes/studentRoutes');
+const tutorRoutes = require('./src/routes/tutorRoutes');
+
+// routes
+app.use('/', landingRoutes);         
+app.use('/signup', signupRoutes);      // sign up
+app.use('/login', loginRoutes);        // log in
+app.use('/student', studentRoutes);    // Protected student routes
+app.use('/tutor', tutorRoutes);        // Protected tutor routes
+
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not Found' });
 });
 
-// Route to get all users
-app.get('/users', async (req, res) => {
-    try {
-        const result = await client.query('SELECT * FROM users');
-        res.json(result.rows); // Send users as a JSON response
-    } catch (err) {
-        res.status(500).send('Error retrieving users');
-    }
-});
-
-// Start the server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });

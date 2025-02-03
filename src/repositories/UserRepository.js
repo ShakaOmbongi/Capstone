@@ -1,9 +1,6 @@
 const { Op } = require('sequelize');
-const User = require('entities/User'); // The User model
+const User = require('../entities/User');
 
-/**
- * Repository for performing CRUD operations on the User entity.
- */
 class UserRepository {
   /**
    * Finds a user by their username.
@@ -101,10 +98,10 @@ class UserRepository {
    * Deletes a user by their ID.
    *
    * @param {number} id - The ID of the user to delete.
-   * @returns {Promise<void>}
+   * @returns {Promise<number>} The number of rows deleted.
    */
   async deleteById(id) {
-    await User.destroy({ where: { id } });
+    return await User.destroy({ where: { id } });
   }
 }
 

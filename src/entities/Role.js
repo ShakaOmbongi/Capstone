@@ -1,7 +1,11 @@
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../db');
+const sequelize = require('../../db');//import
 
-class Role extends Model {}
+class Role extends Model {
+  static associate(models) {
+    Role.hasMany(models.User, { foreignKey: 'roleId', as: 'users' });
+  }
+}
 
 Role.init(
   {
@@ -17,19 +21,14 @@ Role.init(
     },
     description: {
       type: DataTypes.STRING,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      allowNull: true,
     },
   },
   {
     sequelize,
     modelName: 'Role',
+    tableName: 'roles',
+    timestamps: true,
   }
 );
 
