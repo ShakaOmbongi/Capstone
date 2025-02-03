@@ -1,12 +1,8 @@
-h1 {
-
-     color:red;
-
-  }
+/* ************************* LANDING PAGE *********************** */
   
   /* Making peerAid logo Smaller to fit page */
   .logo {
-    width: 200px; /* Adjust as needed */
+    width: 400px;
     display: block;
     margin: 0 auto;
     padding: 20px 0;
@@ -17,8 +13,8 @@ h1 {
     background: #f8f9fa;
     padding: 60px 0;
   }
-      /* Making text size better visually */
-
+  
+  /* Making text size better visually */
   .hero h1 {
     font-size: 3rem;
     color: #343a40;
@@ -27,4 +23,144 @@ h1 {
     font-size: 1.5rem;
     color: #6c757d;
   }
+
+  .welcome-btn {
+    background-color: rgb(243, 79, 79);
+    padding: 20px 40px; 
+    font-size: 20px;
+}
+
+.welcome-btn :hover {
+  background-color: rgb(240, 87, 87);
+}
+
+.feature-card {
+  background-color: white;
+  color: black;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* This ensures equal height */
+  height: 100%;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.feature-card p {
+  padding-top: 15px; /* Adds space between the title and the paragraph */
+}
+
   
+/* ************************* DASHBOARD PAGES *********************** */
+
+  .sidebar {
+    height: 100vh;
+}
+
+ /* Change Sidebar Background Color */
+ .sidebar {
+  background-color: white; /* Dark blue-gray */
+}
+
+/* Change Sidebar Text Color */
+.sidebar .nav-link {
+  color: black; /* Light gray */
+}
+
+/* Change Sidebar Text Color on Hover */
+.sidebar .nav-link:hover {
+  background-color: rgb(233, 94, 94);
+}
+
+/* Change the active link color */
+.sidebar .nav-link.active {
+  background-color: rgb(233, 94, 94);
+  color: black; /* White text */
+}
+
+/* Change Sidebar Header Text Color */
+.sidebar h2 {
+  color: #ecf0f1; /* Light gray for sidebar header */
+}
+
+.nav-link {
+    font-size: 18px;
+    padding: 10px;
+}
+
+.card {
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+#calendar-container {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+}
+
+#calendar {
+  max-width: 100%;
+  margin: auto;
+}
+
+.card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* ************************* LOGIN PAGES *********************** */
+
+.login-body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa;
+}
+.login-container {
+    max-width: 1000px;
+    height: 80vh;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.left-side {
+    background: #f84040;
+    color: white;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    width: 40%; /* Adjusted width */
+    position: relative;
+}
+.left-side h2 {
+    position: relative;
+    z-index: 1;
+}
+.right-side {
+    padding: 40px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60%; /* Adjusted width */
+}
+
+
+

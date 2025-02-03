@@ -1,46 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to peerAid</title>
+    <title>Welcome to PeerAid</title>
 
-      <!-- MDB CSS bootstrap -->
-     <link
-  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css"
-  rel="stylesheet" />
+    <!-- MDB CSS Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css" rel="stylesheet" />
 
-   <!-- style css ../../../ because its 3 folders away -->
+    <!-- Style CSS -->
     <link rel="stylesheet" href="../../../assets/css/style.css">
 </head>
+
 <header>
-       <!-- logo ../../../ because its 3 folders away -->
-      <img src="../../../assets/images/peerAid-logo.png" alt="PeerAid Logo" class="logo" />
-  </header>
-  
-<body>   
+    
+</header>
 
-             <!-- Get sign up link "get started" -->
-      <section class="hero text-center">
-        <div class="container">
-          <h1>Welcome to PeerAid</h1>
-          <p>Connect, Learn, and Grow with Peer Support</p>
-          <a href="studentsignup.html" class="btn btn-primary btn-lg">Get Started</a>
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero text-center" style="background-color: white;">
+        <div class="container" style="background-color: white;">
+          <!-- Logo -->
+            <img src="../../../assets/images/peerAid-logo.png" alt="PeerAid Logo" class="logo" />
+            <h1 class="display-3">Welcome to PeerAid</h1>
+            <p class="lead">A platform where peers connect, learn, and grow together, based on their unique learning styles.</p>
+            <a href="studentsignup.html" class="btn btn-primary btn-lg welcome-btn">Find Your Peer Tutor</a>
         </div>
-      </section>
-      
-       <!-- Footer -->
-  <footer class="bg-light py-4 text-center">
-    <div class="container">
-      <p class="mb-0">© 2025 PeerAids. All rights reserved.</p>
-    </div>
-  </footer>
+    </section>
 
-  <!-- MDB JS -->
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"
-    defer
-  ></script>
+    <!-- Benefits Section -->
+<section class="features py-5" style="background-color: #f8dddd;">
+  <div class="container">
+      <div class="row text-center">
+          <div class="col-md-4 mb-4">
+              <div class="feature-card p-4 shadow rounded">
+                  <h4>Match Based on Learning Styles</h4>
+                  <p>We connect you with a peer who understands your unique learning method, ensuring helpful sessions.</p>
+              </div>
+          </div>
+          <div class="col-md-4 mb-4">
+              <div class="feature-card p-4 shadow rounded">
+                  <h4>Study Groups</h4>
+                  <p>Not just one-on-one tutoring! You can also find and join study groups for collaborative learning.</p>
+              </div>
+          </div>
+          <div class="col-md-4 mb-4">
+              <div class="feature-card p-4 shadow rounded">
+                  <h4>Flexible Scheduling</h4>
+                  <p>Schedule tutoring sessions and study group meetings based on your own timetable.</p>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>
+
+
+  <!-- How It Works Section -->
+<section id="how-it-works" class="py-5">
+  <div class="container text-center">
+    <h2 class="display-4 mb-4">How It Works</h2>
+      <div class="row align-items-center">
+          <!-- Left Side: Text Divs stacked vertically -->
+          <div class="col-md-6">
+              <div class="step-card p-4 shadow rounded mb-4">
+                  <h4>Step 1: Sign Up</h4>
+                  <p>Join PeerAid and complete your profile to help us understand your learning style and goals.</p>
+              </div>
+              <div class="step-card p-4 shadow rounded mb-4">
+                  <h4>Step 2: Get Matched</h4>
+                  <p>We'll match you with a tutor or study group that fits your learning style and needs.</p>
+              </div>
+              <div class="step-card p-4 shadow rounded mb-4">
+                  <h4>Step 3: Start Learning</h4>
+                  <p>Start your sessions and connect with your tutor or study group for meaningful learning experiences.</p>
+              </div>
+          </div>
+          <div class="col-md-6">
+              <img src="../../../assets/images/undraw-learn.PNG" alt="How it works image" class="img-fluid rounded" />
+          </div>
+      </div>
+  </div>
+</section>
+   
+
+<!-- Testimonials Section -->
+<section class="testimonials py-5 text-center bg-light">
+  <div class="container">
+      <h2 class="mb-4 text-center">Why Students Love Us</h2>
+      <div class="row">
+          <div class="col-md-4 d-flex">
+              <blockquote class="blockquote d-flex align-items-center text-start p-3 rounded bg-white h-100 w-100">
+                  <img src="../../../assets/images/unsplash-1.jpg" alt="Sarah W." class="me-3" width="100" height="150">
+                  <div class="d-flex flex-column justify-content-between">
+                      <p>"PeerAid helped me find a tutor who understood my learning style. I feel more confident in my studies!"</p>
+                      <footer class="blockquote-footer">Sarah W.</footer>
+                  </div>
+              </blockquote>
+          </div>
+          <div class="col-md-4 d-flex">
+              <blockquote class="blockquote d-flex align-items-center text-start p-3 rounded bg-white h-100 w-100">
+                  <img src="../../../assets/images/unsplash-2.jpg" alt="Emma L." class="me-3" width="100" height="150">
+                  <div class="d-flex flex-column justify-content-between">
+                      <p>"I was able to help my peer while also improving my own skills. It's a win-win!"</p>
+                      <footer class="blockquote-footer">Emma L.</footer>
+                  </div>
+              </blockquote>
+          </div>
+          <div class="col-md-4 d-flex">
+              <blockquote class="blockquote d-flex align-items-center text-start p-3 rounded bg-white h-100 w-100">
+                  <img src="../../../assets/images/unsplash-3.jpg" alt="David T." class="me-3" width="100" height="150">
+                  <div class="d-flex flex-column justify-content-between">
+                      <p>"The platform made it easy to schedule sessions. I was able to get help when I needed it most."</p>
+                      <footer class="blockquote-footer">David T.</footer>
+                  </div>
+              </blockquote>
+          </div>
+      </div>
+  </div>
+    <!-- Footer -->
+    <footer class="bg-light py-4 text-center">
+        <div class="container">
+            <p class="mb-0">© 2025 PeerAid. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- MDB JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js" defer></script>
 
 </body>
+
 </html>

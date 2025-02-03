@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="../../../assets/css/style.css">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+   
+</head>
+<body class="login-body">
+    <div class="login-container row m-0 p-0 w-100">
+        <!-- Left Side -->
+        <div class="col-md-6 left-side">
+                <h2>Welcome to peerAid!</h2>
+                <p>Helping students succeed—together.</p>
+                <p>Join a supportive community where you can learn, collaborate, and grow with fellow students.</p>
+                <p>New here?<a href="studentsignup.html" class="text-primary fw-bold">Create an account</a></p>
+            </div>
+
+        <!-- Right Side -->
+        <div class="col-md-6 right-side">
+            <div>
+                <h3 class="mb-4">Login</h3>
+                <form>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                    </div>
+                    <button type="button" class="btn btn w-100" style="background-color: rgb(243, 86, 86);" onclick="window.location.href='/src/views/studentUI/studentdashboard.html'">
+                        Login
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
