@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - PeerAid</title>
+    <link rel="stylesheet" href="/assets/css/admin.css">
+    <script defer src="/assets/js/admin.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>PeerAid Admin</h2>
+        <ul>
+            <li><a href="admin-dashboard.html">Dashboard</a></li>
+            <li><a href="admin-users.html">User Management</a></li>
+            <li><a href="admin-feedback.html">Feedback</a></li>
+            <li><a href="../landingUI/welcome.html">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h1>User Management</h1>
+        <input type="text" id="search" placeholder="Search users...">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Carissa Boddie</td>
+                    <td>cmboddie@uncg.edu</td>
+                    <td>Student</td>
+                    <td><button>Edit</button> <button class="delete-user">Delete</button></td>
+                </tr>
+                <tr>
+                    <td>Alli Weavil</td>
+                    <td>adweavil@uncg.edu</td>
+                    <td>Tutor</td>
+                    <td><button>Edit</button> <button class="delete-user">Delete</button></td>
+                </tr>
+                <tr>
+                    <td>Alex Wilson</td>
+                    <td>alexwilson@uncg.edu</td>
+                    <td>Student</td>
+                    <td><button>Edit</button> <button class="delete-user">Delete</button></td>
+                </tr>
+                <tr>
+                    <td>Meghan Maynard</td>
+                    <td>meghanmaynard@ncat.edu</td>
+                    <td>Tutor</td>
+                    <td><button>Edit</button> <button class="delete-user">Delete</button></td>
+                </tr>
+                <tr>
+                    <td>Jay Weldon</td>
+                    <td>jayweldon@gtcc.edu</td>
+                    <td>Tutor</td>
+                    <td><button>Edit</button> <button class="delete-user">Delete</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
