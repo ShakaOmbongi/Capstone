@@ -1,17 +1,16 @@
-const { Client } = require('pg'); // Import PostgreSQL client
+const { Sequelize } = require('sequelize');
+require('dotenv').config();
 
-// PostgreSQL configuration
-const client = new Client({
-    host: 'localhost',      // PostgreSQL server host
-    port: 5432,             // PostgreSQL default port
-    user: 'postgres',       // PostgreSQL username
-    password: 'qwe123', // Replace with your actual password
-    database: 'PeerAId'     // Database name
-});
+const sequelize = new Sequelize(
+  process.env.DB_NAME, 
+  process.env.DB_USER, 
+  process.env.DB_PASSWORD, 
+  {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    dialect: 'postgres',
+    logging: console.log, 
+  }
+);
 
-// Connect to the database
-client.connect()
-    .then(() => console.log('Connected to PostgreSQL'))
-    .catch(err => console.error('Connection error:', err.stack));
-
-module.exports = client; // Export the client for use in other files
+module.exports = sequelize;

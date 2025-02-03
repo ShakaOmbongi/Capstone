@@ -1,30 +1,33 @@
-require('dotenv').config(); // Load environment variables
+require('dotenv').config();
 const express = require('express');
-const path = require('path');
 const cookieParser = require('cookie-parser');
-
-// Import Routes
-const landingRoutes = require('./src/routes/landingRoutes');
-const studentRoutes = require('./src/routes/studentRoutes');
-const tutorRoutes = require('./src/routes/tutorRoutes');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'src', 'views')));
+// Import routes
+const landingRoutes = require('./src/routes/landingRoutes');
+const signupRoutes = require('./src/routes/signupRoutes');
+const loginRoutes = require('./src/routes/loginRoutes');
+const studentRoutes = require('./src/routes/studentRoutes');
+const tutorRoutes = require('./src/routes/tutorRoutes');
 
-// Use Routes
-app.use('/', landingRoutes);        // Landing page routes
-app.use('/student', studentRoutes); // Student-specific routes
-app.use('/tutor', tutorRoutes);     // Tutor-specific routes
+// routes
+app.use('/', landingRoutes);         
+app.use('/signup', signupRoutes);      // sign up
+app.use('/login', loginRoutes);        // log in
+app.use('/student', studentRoutes);    // Protected student routes
+app.use('/tutor', tutorRoutes);        // Protected tutor routes
 
-// Start Server
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not Found' });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

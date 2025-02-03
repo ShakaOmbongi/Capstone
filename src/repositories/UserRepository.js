@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const User = require('../entities/User'); 
+const User = require('../entities/User');
 
 class UserRepository {
   /**
@@ -98,10 +98,10 @@ class UserRepository {
    * Deletes a user by their ID.
    *
    * @param {number} id - The ID of the user to delete.
-   * @returns {Promise<void>}
+   * @returns {Promise<number>} The number of rows deleted.
    */
   async deleteById(id) {
-    await User.destroy({ where: { id } });
+    return await User.destroy({ where: { id } });
   }
 }
 

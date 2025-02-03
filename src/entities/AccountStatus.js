@@ -1,5 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../../db'); // Import  Sequelize connection
+const sequelize = require('../../db');//import
 
 class AccountStatus extends Model {}
 
@@ -17,19 +17,14 @@ AccountStatus.init(
     },
     description: {
       type: DataTypes.STRING,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      allowNull: true,
     },
   },
   {
     sequelize,
     modelName: 'AccountStatus',
+    tableName: 'account_statuses', 
+    timestamps: true,
   }
 );
 

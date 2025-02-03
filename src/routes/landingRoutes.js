@@ -3,19 +3,25 @@ const path = require('path');
 
 const router = express.Router();
 
-// Welcome page
+//   welcome page
 router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../views/landingUI/welcome.html'));
 });
 
-// Student login page
+// Student pages
+router.get('/studentsignup', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/landingUI/studentsignup.html'));
+});
 router.get('/studentlogin', (req, res) => {
   res.sendFile(path.join(__dirname, '../views/landingUI/studentlogin.html'));
 });
 
-// Student signup page
-router.get('/studentsignup', (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/landingUI/studentsignup.html'));
+// Tutor pages
+router.get('/tutorsignup', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/landingUI/tutorsignup.html'));
+});
+router.get('/tutorlogin', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/landingUI/tutorlogin.html'));
 });
 
 module.exports = router;
