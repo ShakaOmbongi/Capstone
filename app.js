@@ -16,14 +16,17 @@ const signupRoutes = require('./src/routes/signupRoutes');
 const loginRoutes = require('./src/routes/loginRoutes');
 const studentRoutes = require('./src/routes/studentRoutes');
 const tutorRoutes = require('./src/routes/tutorRoutes');
+const logoutRoutes = require('./src/routes/logoutRoutes'); 
 
-// routes
-app.use('/', landingRoutes);         
-app.use('/signup', signupRoutes);      // sign up
-app.use('/login', loginRoutes);        // log in
-app.use('/student', studentRoutes);    // Protected student routes
-app.use('/tutor', tutorRoutes);        // Protected tutor routes
+//  routes
+app.use('/', landingRoutes);
+app.use('/signup', signupRoutes);
+app.use('/login', loginRoutes);
+app.use('/student', studentRoutes);
+app.use('/tutor', tutorRoutes);
+app.use('/', logoutRoutes); 
 
+//  404 errors
 app.use((req, res) => {
   res.status(404).json({ error: 'Not Found' });
 });

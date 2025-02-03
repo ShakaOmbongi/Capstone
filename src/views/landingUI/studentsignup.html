@@ -1,77 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<<<<<<< HEAD
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Page</title>
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="../../../assets/css/style.css">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-   
 </head>
+
 <body class="login-body">
     <div class="login-container row m-0 p-0 w-100">
-        <!-- Left Side (now the form) -->
+        <!-- Left Side (the registration form) -->
         <div class="col-md-6 right-side">
             <div>
                 <h3 class="mb-4">Register</h3>
-                <form>
+                <!-- Form submits to the student sign-up route -->
+                <form action="/signup/students" method="POST">
+                    <!-- Username field -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username"
+                            placeholder="Enter your username" required>
+                    </div>
+                    <!-- Email field -->
                     <div class="mb-3">
                         <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email"
+                            required>
                     </div>
+                    <!-- Password field -->
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                        <input type="password" class="form-control" id="password" name="password"
+                            placeholder="Enter your password" required>
                     </div>
+                    <!-- Confirm Password field -->
                     <div class="mb-3">
                         <label for="confirm-password" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="confirm-password" placeholder="Confirm your password">
+                        <input type="password" class="form-control" id="confirm-password" name="confirmPassword"
+                            placeholder="Confirm your password" required>
                     </div>
-                    <button type="submit" class="btn btn w-100" style="background-color: rgb(243, 86, 86);">Register</button>
+                    <!-- Register button -->
+                    <button type="submit" class="btn btn w-100"
+                        style="background-color: rgb(243, 86, 86);">Register</button>
                 </form>
             </div>
         </div>
 
-        <!-- Right Side (now the welcome message) -->
+        <!-- Right Side (welcome message) -->
         <div class="col-md-6 left-side">
             <h2>Join peerAid Today!</h2>
-                <p>Unlock your full potential with a community-driven learning experience.</p>
-                <p>Sign up to access study groups, tutoring sessions, and peer support—all in one place.</p>
-                <p><strong>Already have an account?</strong> <a href="studentlogin.html" class="text-primary fw-bold">Log in</a> </p>
+            <p>Unlock your full potential with a community-driven learning experience.</p>
+            <p>Sign up to access study groups, tutoring sessions, and peer support—all in one place.</p>
+            <p><strong>Already have an account?</strong> <a href="/studentlogin" class="text-primary fw-bold">Log in</a>
+            </p>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-=======
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Signup</title>
-</head>
-<body>
-  <h1>Student Signup</h1>
-  
-  <form action="/signup/students" method="POST">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required><br><br>
-
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required><br><br>
-
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br><br>
-
-    <label for="confirmPassword">Confirm Password:</label>
-    <input type="password" id="confirmPassword" name="confirmPassword" required><br><br>
-
-    <button type="submit">Sign Up</button>
-  </form>
-
-  <!--  link to Student Login page -->
-  <a href="/studentlogin">Already have an account? Log in</a>
->>>>>>> testingmerge
 </body>
+
 </html>
