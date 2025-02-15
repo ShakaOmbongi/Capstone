@@ -1,5 +1,5 @@
 'use strict';
-//query for tables
+
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -24,6 +24,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      // Option 1: Include roleId here directly
       roleId: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -46,6 +47,7 @@ module.exports = {
       },
     });
   },
+
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('users');
