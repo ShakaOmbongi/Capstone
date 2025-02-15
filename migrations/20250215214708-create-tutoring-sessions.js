@@ -1,38 +1,46 @@
 'use strict';
 
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable('tutoring_sessions', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      username: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      roleId: {
+      tutorId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'roles',
+          model: 'users',  // Ensure the 'users' table exists before running this migration
           key: 'id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
+      },
+      studentId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      },
+      subject: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      sessionDate: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      status: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: 'pending',
       },
       createdAt: {
         allowNull: false,
@@ -47,8 +55,7 @@ module.exports = {
     });
   },
 
-
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('tutoring_sessions');
   }
 };

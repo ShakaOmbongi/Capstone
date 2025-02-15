@@ -7,7 +7,7 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware for parsing JSON, URL encoded data, and cookies
+// Middleware for parsing JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -22,13 +22,13 @@ const logoutRoutes  = require('./src/routes/logoutRoutes');
 const sessionRoutes = require('./src/routes/tutoringSessionRoutes'); 
 
 // Mount routes
-app.use('/', landingRoutes);       // Static pages (welcome, sign-up, login pages)
-app.use('/signup', signupRoutes);    // POST endpoints for sign-up
-app.use('/login', loginRoutes);      // POST endpoints for login
-app.use('/student', studentRoutes);  // Protected student dashboard routes
-app.use('/tutor', tutorRoutes);      // Protected tutor dashboard routes
-app.use('/', logoutRoutes);          // Logout route (e.g., /logout)
-app.use('/sessions', sessionRoutes); // Tutoring sessions API endpoints
+app.use('/', landingRoutes);       
+app.use('/signup', signupRoutes);   
+app.use('/login', loginRoutes);     
+app.use('/student', studentRoutes);  
+app.use('/tutor', tutorRoutes);      
+app.use('/', logoutRoutes);         
+app.use('/sessions', sessionRoutes); 
 
 // Catch-all for 404 errors
 app.use((req, res) => {

@@ -9,18 +9,18 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      // Foreign key for the tutor 
+    
       tutorId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users', // Ensure that the users table exists and is created before this migration
+          model: 'users', 
           key: 'id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      // Foreign key for the student 
+     
       studentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -41,13 +41,11 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
       },
-      // Status of the session with a default value of 'pending'
       status: {
         type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 'pending',
       },
-      //  manage timestamps
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
