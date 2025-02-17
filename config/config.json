@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "postgres",
-    "password": "pw",
+    "password": "qwe123",
     "database": "PeerAId",
     "host": "127.0.0.1",
     "port": 5432,
@@ -9,7 +9,7 @@
   },
   "test": {
     "username": "postgres",
-    "password": "pw",
+    "password": "qwe123",
     "database": "PeerAId_test",
     "host": "127.0.0.1",
     "port": 5432,
@@ -17,9 +17,9 @@
   },
   "production": {
     "username": "postgres",
-    "password": "",
+    "password": "0VLOduKfMJizvOMi",
     "database": "postgres",
-    "host": "host",
+    "host": "db.mdnnxwpxypxgwhfkzgok.supabase.co",
     "port": 5432,
     "dialect": "postgres",
     "dialectOptions": {
@@ -29,4 +29,7 @@
       }
     }
   }
-}
+ }
+ 
+ 
+ 
