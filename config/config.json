@@ -17,9 +17,9 @@
   },
   "production": {
     "username": "postgres",
-    "password": "",// password for supbase
+    "password": "0VLOduKfMJizvOMi",
     "database": "postgres",
-    "host": "",// host cred
+    "host": "db.mdnnxwpxypxgwhfkzgok.supabase.co",
     "port": 5432,
     "dialect": "postgres",
     "dialectOptions": {

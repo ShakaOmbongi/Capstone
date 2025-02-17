@@ -1,30 +1,32 @@
 'use strict';
 
 module.exports = {
-  // Run migration: create roles table
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('roles', {
+    await queryInterface.createTable('learning_style_questions', {
       id: { // Primary key
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      name: { // Unique role name
-        type: Sequelize.STRING,
+      question: { // Question text
+        type: Sequelize.TEXT,
         allowNull: false,
-        unique: true,
       },
-      description: { // Optional description
+      options: { // Optional answer options (JSON)
+        type: Sequelize.JSON,
+        allowNull: true,
+      },
+      category: { // Optional category
         type: Sequelize.STRING,
         allowNull: true,
       },
-      createdAt: { // Record creation time
+      createdAt: { // Record creation timestamp
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
-      updatedAt: { // Record update time
+      updatedAt: { // Record update timestamp
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -32,8 +34,7 @@ module.exports = {
     });
   },
 
-  // Revert migration: drop roles table
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('roles');
+    await queryInterface.dropTable('learning_style_questions');
   }
 };

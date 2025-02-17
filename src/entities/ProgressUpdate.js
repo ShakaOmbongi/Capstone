@@ -1,4 +1,3 @@
-// src/entities/ProgressUpdate.js
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../../db');
 
@@ -6,8 +5,6 @@ class ProgressUpdate extends Model {
   static associate(models) {
     // Each progress update belongs to a user
     ProgressUpdate.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
-    // Optionally, you could link to a tutoring session if needed:
-    // ProgressUpdate.belongsTo(models.TutoringSession, { foreignKey: 'sessionId', as: 'session' });
   }
 }
 
@@ -22,22 +19,28 @@ ProgressUpdate.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    progressData: {
-      type: DataTypes.TEXT, // Or DataTypes.JSON if your DB supports it
+    // The date this update is for 
+    updateDate: {
+      type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    // You can store the date of the progress update here if needed
-    updateDate: {
-      type: DataTypes.DATE,
+    // The login streak count
+    loginStreak: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: DataTypes.NOW,
+      defaultValue: 0,
+    },
+    // Additional details or notes 
+    details: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
   },
   {
     sequelize,
     modelName: 'ProgressUpdate',
     tableName: 'progress_updates',
-    timestamps: true,
+    timestamps: true, 
   }
 );
 

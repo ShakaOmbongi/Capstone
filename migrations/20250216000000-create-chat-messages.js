@@ -1,30 +1,41 @@
 'use strict';
 
 module.exports = {
-  // Run migration: create roles table
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('roles', {
+    await queryInterface.createTable('chat_messages', {
       id: { // Primary key
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      name: { // Unique role name
-        type: Sequelize.STRING,
+      // Foreign key 
+      senderId: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        unique: true,
+        references: {
+          model: 'users', 
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
-      description: { // Optional description
-        type: Sequelize.STRING,
+      conversationId: {
+        type: Sequelize.INTEGER,
         allowNull: true,
       },
-      createdAt: { // Record creation time
+      // The message content
+      message: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      //   timestamps
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
-      updatedAt: { // Record update time
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -32,8 +43,7 @@ module.exports = {
     });
   },
 
-  // Revert migration: drop roles table
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('roles');
+    await queryInterface.dropTable('chat_messages');
   }
 };

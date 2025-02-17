@@ -2,14 +2,14 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('tutoring_sessions', {
+    await queryInterface.createTable('learning_style_responses', {
       id: { // Primary key
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      tutorId: { // Tutor foreign key
+      userId: { // Foreign key to users
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -19,35 +19,26 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      studentId: { // Student foreign key
+      questionId: { // Foreign key to learning_style_questions
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'learning_style_questions',
           key: 'id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      subject: { // Session subject
+      answer: { // User's answer
         type: Sequelize.STRING,
         allowNull: false,
       },
-      sessionDate: { // Session date/time
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      status: { // Session status
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: 'pending',
-      },
-      createdAt: { // Timestamp
+      createdAt: { // Creation timestamp
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
-      updatedAt: { // Timestamp
+      updatedAt: { // Update timestamp
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -56,6 +47,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('tutoring_sessions');
+    await queryInterface.dropTable('learning_style_responses');
   }
 };

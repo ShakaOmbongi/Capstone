@@ -1,6 +1,5 @@
-// src/entities/FeedbackReview.js
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../../db');
+const sequelize = require('../../db'); //import
 
 class FeedbackReview extends Model {
   static associate(models) {
@@ -8,8 +7,6 @@ class FeedbackReview extends Model {
     FeedbackReview.belongsTo(models.User, { foreignKey: 'reviewerId', as: 'reviewer' });
     // The reviewee can be a tutor, student, or study group; here we assume it's a user
     FeedbackReview.belongsTo(models.User, { foreignKey: 'revieweeId', as: 'reviewee' });
-    // Optionally, you can also link feedback to a session:
-    // FeedbackReview.belongsTo(models.TutoringSession, { foreignKey: 'sessionId', as: 'session' });
   }
 }
 
@@ -29,7 +26,7 @@ FeedbackReview.init(
       allowNull: false,
     },
     rating: {
-      type: DataTypes.INTEGER, // e.g., 1 to 5
+      type: DataTypes.INTEGER, 
       allowNull: false,
     },
     comment: {

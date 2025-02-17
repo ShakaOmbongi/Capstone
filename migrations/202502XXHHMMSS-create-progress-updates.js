@@ -2,14 +2,14 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('tutoring_sessions', {
+    await queryInterface.createTable('progress_updates', {
       id: { // Primary key
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      tutorId: { // Tutor foreign key
+      userId: { // References users table
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -19,35 +19,25 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      studentId: { // Student foreign key
+      updateDate: { // Date of update
+        type: Sequelize.DATEONLY,
+        allowNull: false,
+      },
+      loginStreak: { // Login streak count
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'users',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
+        defaultValue: 0,
       },
-      subject: { // Session subject
-        type: Sequelize.STRING,
-        allowNull: false,
+      details: { // Optional details
+        type: Sequelize.TEXT,
+        allowNull: true,
       },
-      sessionDate: { // Session date/time
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      status: { // Session status
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: 'pending',
-      },
-      createdAt: { // Timestamp
+      createdAt: { // Creation timestamp
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
-      updatedAt: { // Timestamp
+      updatedAt: { // Update timestamp
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -56,6 +46,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('tutoring_sessions');
+    await queryInterface.dropTable('progress_updates');
   }
 };

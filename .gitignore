@@ -26,3 +26,9 @@ Thumbs.db
 # Build artifacts
 /dist/
 /out/
+# Code coverage output
+coverage/
+.nyc_output/
+
+# ESLint cache
+.eslintcache

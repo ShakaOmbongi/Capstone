@@ -1,12 +1,12 @@
-// src/entities/ChatMessage.js
+
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../../db');
+const sequelize = require('../../db'); //import
 
 class ChatMessage extends Model {
   static associate(models) {
-    // Each chat message belongs to a sender (User)
+    // Each chat message belongs to a sender 
     ChatMessage.belongsTo(models.User, { foreignKey: 'senderId', as: 'sender' });
-    // Each chat message belongs to a receiver (User)
+    // Each chat message belongs to a receiver 
     ChatMessage.belongsTo(models.User, { foreignKey: 'receiverId', as: 'receiver' });
   }
 }
@@ -35,7 +35,7 @@ ChatMessage.init(
     sequelize,
     modelName: 'ChatMessage',
     tableName: 'chat_messages',
-    timestamps: true, // Adds createdAt and updatedAt automatically
+    timestamps: true, 
   }
 );
 

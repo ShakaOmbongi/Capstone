@@ -1,30 +1,30 @@
 'use strict';
 
-
 module.exports = {
+  // Create the users table
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('users', {
-      id: {
+      id: { // Primary key
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      username: {
+      username: { // Unique username
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
       },
-      email: {
+      email: { // Unique email
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
       },
-      password: {
+      password: { // Hashed password
         type: Sequelize.STRING,
         allowNull: false,
       },
-      roleId: {
+      roleId: { // Foreign key to roles table
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -34,12 +34,12 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      createdAt: {
+      createdAt: { // Creation timestamp
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
-      updatedAt: {
+      updatedAt: { // Update timestamp
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -47,7 +47,7 @@ module.exports = {
     });
   },
 
-
+  // Drop the users table
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('users');
   }
