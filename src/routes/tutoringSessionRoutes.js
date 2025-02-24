@@ -1,8 +1,6 @@
-'use strict';
-
 const express = require('express');
-const tutoringSessionController = require('../controllers/tutoringSessionController');
 const { authenticateJWT } = require('../middleware/authMiddleware');
+const tutoringSessionController = require('../controllers/tutoringSessionController'); // Ensure this path is correct
 
 const router = express.Router();
 

@@ -1,61 +1,82 @@
-'use strict';
+const TutoringSession = require('../entities/TutoringSession');
 
-module.exports = {
-  // Create a new tutoring session
-  createSession: async (req, res) => {
+const tutoringSessionController = {
+  async createSession(req, res) {
     try {
-      // Return a success message (replace with actual creation logic later)
-      res.status(201).json({ message: 'Tutoring session created successfully' });
+      console.log("DEBUG: User data from token:", req.user); // Check if user data exists
+
+      const { subject, sessionDate, tutorId } = req.body;
+      const studentId = req.user?.id;
+
+      if (!studentId) {
+        return res.status(403).json({ error: 'Unauthorized: No student ID found' });
+      }
+
+      // Create session with optional tutorId
+      const session = await TutoringSession.create({
+        tutorId: tutorId || null, // Allow tutorId to be optional
+        studentId,
+        subject,
+        sessionDate
+      });
+
+      return res.status(201).json({ message: 'Tutoring session created successfully', session });
     } catch (error) {
-      // Return an error message if something goes wrong
-      res.status(500).json({ error: error.message });
+      console.error('Create session error:', error);
+      return res.status(500).json({ error: error.message });
     }
   },
 
-  // Get all tutoring sessions
-  getSessions: async (req, res) => {
+  async getSessions(req, res) {
     try {
-      // Return a success message (replace with logic to fetch sessions later)
-      res.status(200).json({ message: 'Fetched tutoring sessions' });
+      const sessions = await TutoringSession.findAll();
+      return res.status(200).json({ message: 'Fetched tutoring sessions', sessions });
     } catch (error) {
-      // Return an error message if something goes wrong
-      res.status(500).json({ error: error.message });
+      console.error('Fetch sessions error:', error);
+      return res.status(500).json({ error: error.message });
     }
   },
 
-  // Get a specific tutoring session by its ID
-  getSessionById: async (req, res) => {
+  async getSessionById(req, res) {
     try {
-      const sessionId = req.params.id;
-      // Return a success message with the session ID (replace with logic to fetch the session)
-      res.status(200).json({ message: `Fetched session with ID ${sessionId}` });
+      const session = await TutoringSession.findByPk(req.params.id);
+      if (!session) return res.status(404).json({ error: 'Session not found' });
+
+      return res.status(200).json({ message: 'Fetched session', session });
     } catch (error) {
-      // Return an error message if something goes wrong
-      res.status(500).json({ error: error.message });
+      console.error('Fetch session error:', error);
+      return res.status(500).json({ error: error.message });
     }
   },
 
-  // Update a tutoring session by its ID
-  updateSession: async (req, res) => {
+  async updateSession(req, res) {
     try {
-      const sessionId = req.params.id;
-      // Return a success message with the session ID (replace with update logic later)
-      res.status(200).json({ message: `Session with ID ${sessionId} updated successfully` });
+      const { subject, sessionDate } = req.body;
+      const session = await TutoringSession.findByPk(req.params.id);
+
+      if (!session) return res.status(404).json({ error: 'Session not found' });
+
+      await session.update({ subject, sessionDate });
+
+      return res.status(200).json({ message: 'Session updated successfully', session });
     } catch (error) {
-      // Return an error message if something goes wrong
-      res.status(500).json({ error: error.message });
+      console.error('Update session error:', error);
+      return res.status(500).json({ error: error.message });
     }
   },
 
-  // Delete a tutoring session by its ID
-  deleteSession: async (req, res) => {
+  async deleteSession(req, res) {
     try {
-      const sessionId = req.params.id;
-      // Return a success message with the session ID (replace with deletion logic later)
-      res.status(200).json({ message: `Session with ID ${sessionId} deleted successfully` });
+      const session = await TutoringSession.findByPk(req.params.id);
+      if (!session) return res.status(404).json({ error: 'Session not found' });
+
+      await session.destroy();
+      return res.status(200).json({ message: 'Session deleted successfully' });
     } catch (error) {
-      // Return an error message if something goes wrong
-      res.status(500).json({ error: error.message });
+      console.error('Delete session error:', error);
+      return res.status(500).json({ error: error.message });
     }
   }
 };
+
+module.exports = tutoringSessionController;

@@ -1,33 +1,37 @@
-// src/routes/studentRoutes.js
 const express = require('express');
 const path = require('path');
 const { authenticateJWT } = require('../middleware/authMiddleware');
+const studentController = require('../controllers/studentController');
 
 const router = express.Router();
 
-// Student dashboard page
+router.get("/profile", authenticateJWT, studentController.getProfile);
+router.put("/updateProfile", authenticateJWT, studentController.updateProfile);
+router.put("/changePassword", authenticateJWT, studentController.changePassword);
+
+// Serve Student Dashboard
 router.get('/studentdashboard', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/studentdashboard.html'));
 });
 
-// Serve Student Profile page
+// Serve Student Profile
 router.get('/profile', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentProfile.html'));
 });
 
-// Serve Student Bookings page
-router.get('/bookings', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/studentUI/StudentBookings.html'));
+// Serve Student Find Sessions Page
+router.get('/findSessions', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/studentUI/StudentFindSession.html'));
 });
 
-// Serve Student Chatrooms page
+// Serve Student Create Tutoring Session Page
+router.get('/tutoringSessions', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/studentUI/StudentTutoringSessions.html'));
+});
+
+// Serve Student Chatrooms Page
 router.get('/chat', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentChatrooms.html'));
-});
-
-// Serve Tutoring Sessions page
-router.get('/tutoring-sessions', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/studentUI/TutoringSessions.html'));
 });
 
 module.exports = router;
