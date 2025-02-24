@@ -56,34 +56,31 @@
   
 /* ************************* DASHBOARD PAGES *********************** */
 
-  .sidebar {
-    height: 100vh;
+.sidebar {
+  height: 100vh;
+  width: 280px;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
 }
 
- /* Change Sidebar Background Color */
- .sidebar {
-  background-color: white; /* Dark blue-gray */
-}
-
-/* Change Sidebar Text Color */
 .sidebar .nav-link {
-  color: black; /* Light gray */
+  display: block;
+  padding: 15px;
+  color: black;
+  text-decoration: none;
+  font-size: 18px;
+  border-radius: 5px;
 }
 
-/* Change Sidebar Text Color on Hover */
-.sidebar .nav-link:hover {
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
   background-color: rgb(233, 94, 94);
-}
-
-/* Change the active link color */
-.sidebar .nav-link.active {
-  background-color: rgb(233, 94, 94);
-  color: black; /* White text */
-}
-
-/* Change Sidebar Header Text Color */
-.sidebar h2 {
-  color: #ecf0f1; /* Light gray for sidebar header */
+  color: white;
 }
 
 .nav-link {
