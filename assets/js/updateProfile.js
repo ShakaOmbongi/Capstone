@@ -2,12 +2,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     const token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
 
     if (!token) {
-        alert("You must be logged in to update your profile.");
+        alert("You must be logged in to view your profile.");
+        window.location.href = "/login";
         return;
     }
 
     async function loadProfile() {
-        const response = await fetch("http://localhost:3000/student/profile", {
+        const response = await fetch("/student/profile/data", {
             headers: { "Authorization": `Bearer ${token}` }
         });
 
@@ -26,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const username = document.getElementById("username").value;
         const email = document.getElementById("email").value;
 
-        const response = await fetch("http://localhost:3000/student/updateProfile", {
+        const response = await fetch("/student/updateProfile", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

@@ -11,7 +11,7 @@ document.getElementById("changePasswordForm").addEventListener("submit", async f
     const currentPassword = document.getElementById("currentPassword").value;
     const newPassword = document.getElementById("newPassword").value;
 
-    const response = await fetch("http://localhost:3000/student/changePassword", {
+    const response = await fetch("/student/changePassword", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -23,6 +23,7 @@ document.getElementById("changePasswordForm").addEventListener("submit", async f
     const result = await response.json();
     if (response.ok) {
         alert("Password changed successfully!");
+        document.getElementById("changePasswordForm").reset();
     } else {
         alert(result.error || "Failed to change password.");
     }

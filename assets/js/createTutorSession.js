@@ -12,9 +12,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
 
         if (!token) {
+            console.log("DEBUG: No token found");
             messageDiv.innerHTML = `<div class="alert alert-danger">You must be logged in to create a session.</div>`;
             return;
         }
+
+        console.log("DEBUG: Sending request with data:", { subject, sessionDate });
 
         try {
             const response = await fetch('http://localhost:3000/sessions', {
@@ -23,17 +26,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    subject: subject,
-                    sessionDate: sessionDate
-                })
+                body: JSON.stringify({ subject, sessionDate, tutorId: 1 }) 
             });
 
             const result = await response.json();
+            console.log("DEBUG: Response from backend:", result);
 
             if (response.ok) {
                 messageDiv.innerHTML = `<div class="alert alert-success">Session created successfully!</div>`;
-                form.reset(); // Clear the form after success
+                form.reset();
             } else {
                 messageDiv.innerHTML = `<div class="alert alert-danger">${result.error || 'Failed to create session'}</div>`;
             }
