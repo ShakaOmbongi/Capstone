@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const http = require('http'); // Required for Socket.io
 const { Server } = require('socket.io'); // Import Socket.io
+const http = require('http'); // Required for Socket.io
+const { Server } = require('socket.io'); // Import Socket.io
 const cookieParser = require('cookie-parser');
 const path = require('path');
 
@@ -16,10 +18,19 @@ const io = new Server(server, {
 });
 
 // Middleware for parsing JSON & handling cookies
+// Middleware for parsing JSON & handling cookies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Serve static files (CSS, JS, Images)
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use('/css', express.static(path.join(__dirname, 'assets/css')));
+app.use('/images', express.static(path.join(__dirname, 'assets/images')));
+app.use('/js', express.static(path.join(__dirname, 'assets/js')));
+app.use('/views', express.static(path.join(__dirname, 'src/views')));
+
+// Import routes from `src/routes/`
 // Serve static files (CSS, JS, Images)
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/css', express.static(path.join(__dirname, 'assets/css')));
@@ -38,6 +49,13 @@ const sessionRoutes = require('./src/routes/tutoringSessionRoutes');
 const chatMessageRoutes = require('./src/routes/chatMessageRoutes');
 
 // Mount routes
+app.use('/', landingRoutes);
+app.use('/signup', signupRoutes);
+app.use('/login', loginRoutes);
+app.use('/student', studentRoutes);
+app.use('/tutor', tutorRoutes);
+app.use('/', logoutRoutes);
+app.use('/sessions', sessionRoutes);
 app.use('/', landingRoutes);
 app.use('/signup', signupRoutes);
 app.use('/login', loginRoutes);
