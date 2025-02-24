@@ -35,6 +35,14 @@ app.use('/sessions', sessionRoutes);
 app.use('/chat-messages', chatMessageRoutes);
 
 
+
+// In app.js
+const studentTestRoutes = require('./src/routes/studentTestRoutes');
+// Mount test routes under /student
+app.use('/student', studentTestRoutes);
+
+
+
 // Catch-all for 404 errors
 app.use((req, res) => {
   res.status(404).json({ error: 'Not Found' });

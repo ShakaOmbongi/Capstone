@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../../assets/css/style.css">
+</head>
+<body class="bg-light">
+  <div class="container mt-4">
+    <div class="row">
+      <!-- Sidebar -->
+      <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
+        <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/student/profile">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/student/bookings">Bookings</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/student/chat">Chatrooms</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/student/tutoring-sessions">Tutoring Sessions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- Main Content -->
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <h1 class="mt-4">Student Profile</h1>
+        <!-- Profile Card Placeholder -->
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title" id="profile-username">teststudent</h5>
+            <p class="card-text" id="profile-email">Email: teststudent@example.com</p>
+            <p class="card-text" id="profile-role">Role: STUDENT</p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
