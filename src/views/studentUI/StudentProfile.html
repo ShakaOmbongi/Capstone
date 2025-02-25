@@ -24,10 +24,41 @@
       
       <!-- Main Content -->
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <h1 class="mt-4">Student Profile</h1>
-        <div id="profileMessage"></div>
+        <!-- Greeting -->
+        <div class="py-4" style="color: black;">
+          <h1 class="display-5" id="greeting">Hello, <span id="studentName">Student</span></h1>
+          <p class="text-muted">This is your profile.</p>
+        </div>
 
-        <!-- Profile Form -->
+        <!-- Profile Card -->
+        <div class="container mt-5 d-flex justify-content-center">
+          <div class="card shadow-lg p-4 text-center" style="max-width: 600px; width: 100%;">
+              <img src="../../../assets/images/unsplash-1.jpg" class="rounded-circle mx-auto mb-3" 
+                   alt="Profile Picture" style="width: 140px; height: 140px; object-fit: cover;">
+              <h2 class="mb-1" id="profileName">Sarah Wattson</h2>
+              <p class="text-muted" id="learningStyle">Kinesthetic Learner</p>
+              <hr>
+              <h4>About Me</h4>
+              <p class="text-secondary" id="aboutMe">
+                  Passionate tutor with 5+ years of experience helping students excel in mathematics and physics.
+                  Dedicated to making learning engaging and accessible.
+              </p>
+              <h4>Subjects</h4>
+              <ul class="list-unstyled text-secondary" id="subjectsList">
+                  <li>📘 Algebra</li>
+                  <li>📗 Calculus</li>
+                  <li>📙 Physics</li>
+                  <li>📊 Statistics</li>
+              </ul>
+              <h4>Contact</h4>
+              <p class="mb-0 text-primary"><strong>Email:</strong> <span id="email">sarahwattson@example.edu</span></p>
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- Profile Update Form -->
+        <h2>Update Profile</h2>
         <form id="updateProfileForm">
           <div class="mb-3">
             <label for="username" class="form-label">Username</label>
@@ -35,7 +66,7 @@
           </div>
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" required>
+            <input type="email" class="form-control" id="emailInput" required>
           </div>
           <button type="submit" class="btn btn-primary">Update Profile</button>
         </form>
@@ -58,9 +89,61 @@
       </main>
     </div>
   </div>
-
+  
   <script src="../../../assets/js/updateProfile.js"></script>
   <script src="../../../assets/js/changePassword.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Function to get cookies
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    // Fetch user data when the page loads
+    document.addEventListener('DOMContentLoaded', async () => {
+      const token = getCookie('token');
+
+      if (!token) {
+        alert('No token found. Please log in.');
+        window.location.href = '/login';
+        return;
+      }
+
+      try {
+        const response = await fetch('/student/profileData', {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile');
+        }
+
+        const data = await response.json();
+
+        document.getElementById('studentName').textContent = data.username;
+        document.getElementById('profileName').textContent = data.username;
+        document.getElementById('email').textContent = data.email;
+        document.getElementById('emailInput').value = data.email;
+        document.getElementById('learningStyle').textContent = data.learningStyle || 'Not Set';
+        document.getElementById('aboutMe').textContent = data.aboutMe || 'No bio available.';
+        
+        const subjectsList = document.getElementById('subjectsList');
+        subjectsList.innerHTML = '';
+        (data.subjects || []).forEach(subject => {
+          const li = document.createElement('li');
+          li.textContent = `📘 ${subject}`;
+          subjectsList.appendChild(li);
+        });
+
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      }
+    });
+  </script>
+
 </body>
 </html>

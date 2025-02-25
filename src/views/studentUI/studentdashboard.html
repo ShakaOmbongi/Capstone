@@ -85,29 +85,7 @@
   
   <!-- Script to initialize FullCalendar with bookings -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async function () {
-      var calendarEl = document.getElementById('calendar');
-      let events = [];
-      try {
-        const response = await fetch('/student/bookings', { credentials: 'include' });
-        const data = await response.json();
-        events = data.events || [];
-      } catch (error) {
-        console.error('Error fetching bookings:', error);
-      }
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-        events: events
-      });
-      calendar.render();
-    });
-  </script>
+  <script src="../../../assets/js/calender.js" ></script>
   
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
