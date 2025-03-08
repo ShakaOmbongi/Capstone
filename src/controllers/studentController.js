@@ -1,81 +1,48 @@
+'use strict';
+
 const { User } = require('../entities');
-const bcrypt = require('bcrypt');
 
 const studentController = {
     async getProfile(req, res) {
         try {
-            const student = await User.findByPk(req.user.id, {
-                attributes: ["id", "username", "email"]
-            });
-
-            if (!student) {
-                return res.status(404).json({ error: "Student not found" });
-            }
-
-            return res.status(200).json({ profile: student });
+            const student = await User.findByPk(req.user.id, { attributes: ['id', 'username', 'email'] });
+            if (!student) return res.status(404).json({ status: 'error', message: 'Student not found' });
+            res.status(200).json({ status: 'success', message: 'Profile fetched', data: student });
         } catch (error) {
-            console.error("Get Profile Error:", error);
-            return res.status(500).json({ error: "Server error. Please try again." });
+            res.status(500).json({ status: 'error', message: error.message });
         }
     },
 
     async updateProfile(req, res) {
         try {
             const { username, email } = req.body;
-
-            if (!username || !email) {
-                return res.status(400).json({ error: "Username and email are required" });
-            }
-
+            if (!username || !email) return res.status(400).json({ status: 'error', message: 'Username and email required' });
             const student = await User.findByPk(req.user.id);
-            if (!student) {
-                return res.status(404).json({ error: "Student not found" });
-            }
-
-            // Check if email is already taken by another user
+            if (!student) return res.status(404).json({ status: 'error', message: 'Student not found' });
             const emailExists = await User.findOne({ where: { email } });
-            if (emailExists && emailExists.id !== student.id) {
-                return res.status(409).json({ error: "Email is already in use" });
-            }
-
+            if (emailExists && emailExists.id !== student.id) return res.status(409).json({ status: 'error', message: 'Email already in use' });
             student.username = username;
             student.email = email;
             await student.save();
-
-            return res.status(200).json({ message: "Profile updated successfully" });
+            res.status(200).json({ status: 'success', message: 'Profile updated successfully', data: student });
         } catch (error) {
-            console.error("Update Profile Error:", error);
-            return res.status(500).json({ error: "Server error. Please try again." });
+            res.status(500).json({ status: 'error', message: error.message });
         }
     },
 
     async changePassword(req, res) {
         try {
             const { currentPassword, newPassword } = req.body;
-
-            if (!currentPassword || !newPassword) {
-                return res.status(400).json({ error: "Both current and new passwords are required" });
-            }
-
+            if (!currentPassword || !newPassword) return res.status(400).json({ status: 'error', message: 'Both passwords required' });
             const student = await User.findByPk(req.user.id);
-            if (!student) {
-                return res.status(404).json({ error: "Student not found" });
-            }
-
-            // Check if current password is correct
-            const isMatch = await bcrypt.compare(currentPassword, student.password);
-            if (!isMatch) {
-                return res.status(401).json({ error: "Incorrect current password" });
-            }
-
-            // Hash and update the new password
-            student.password = await bcrypt.hash(newPassword, 10);
+            if (!student) return res.status(404).json({ status: 'error', message: 'Student not found' });
+            const isMatch = await require('bcrypt').compare(currentPassword, student.password);
+            if (!isMatch) return res.status(401).json({ status: 'error', message: 'Incorrect current password' });
+            student.password = await require('bcrypt').hash(newPassword, 10);
             await student.save();
-
-            return res.status(200).json({ message: "Password changed successfully" });
+            res.status(200).json({ status: 'success', message: 'Password changed successfully' });
         } catch (error) {
-            console.error("Change Password Error:", error);
-            return res.status(500).json({ error: "Server error. Please try again." });
+            res.status(500).json({ status: 'error', message: error.message });
         }
     }
 };
