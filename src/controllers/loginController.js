@@ -12,19 +12,30 @@ const loginController = {
         where: { email },
         include: [{ model: Role, as: 'role' }],
       });
+
       if (!user || !user.role || user.role.name !== 'STUDENT') {
         return res.status(404).json({ status: 'error', message: 'Student not found' });
       }
+
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
         return res.status(401).json({ status: 'error', message: 'Invalid credentials' });
       }
+
       const token = authService.generateToken(user);
-      res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' });
+      console.log("Generated token:", token); // <-- Debug line
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict'
+      });
       res.cookie('username', user.username);
-      return res.status(200).json({ status: 'success', message: 'Login successful' });
+
+      // Instead of returning JSON, perform a server-side redirect to the dashboard.
+      return res.redirect('/student/studentdashboard');
     } catch (error) {
-      res.status(500).json({ status: 'error', message: error.message });
+      return res.status(500).json({ status: 'error', message: error.message });
     }
   },
 
@@ -35,19 +46,28 @@ const loginController = {
         where: { email },
         include: [{ model: Role, as: 'role' }],
       });
+
       if (!user || !user.role || user.role.name !== 'TUTOR') {
         return res.status(404).json({ status: 'error', message: 'Tutor not found' });
       }
+
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
         return res.status(401).json({ status: 'error', message: 'Invalid credentials' });
       }
+
       const token = authService.generateToken(user);
-      res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' });
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict'
+      });
       res.cookie('username', user.username);
-      return res.status(200).json({ status: 'success', message: 'Login successful' });
+
+      // Tutor redirection—adjust to your tutor dashboard route.
+      return res.redirect('/tutor/tutordashboard');
     } catch (error) {
-      res.status(500).json({ status: 'error', message: error.message });
+      return res.status(500).json({ status: 'error', message: error.message });
     }
   }
 };
