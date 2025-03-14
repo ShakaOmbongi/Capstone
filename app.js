@@ -24,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
+
 // Import authentication middleware
 const { authenticateJWT } = require('./src/middleware/authMiddleware');
 
@@ -49,6 +50,7 @@ app.use('/student/test', authenticateJWT, studentTestRoutes);
 app.use('/tutor', authenticateJWT, tutorRoutes);
 app.use('/', logoutRoutes);
 app.use('/sessions', authenticateJWT, sessionRoutes);
+
 app.use('/chat-messages', authenticateJWT, chatMessageRoutes);
 
 // Catch-all handler for 404 - Not Found

@@ -4,6 +4,12 @@ const tutoringSessionController = require('../controllers/tutoringSessionControl
 
 const router = express.Router();
 
+// Join a session endpoint
+router.post('/request/:id', authenticateJWT, tutoringSessionController.joinSession);
+
+// Create a session with '/create'
+router.post('/create', authenticateJWT, tutoringSessionController.createSession);
+
 // Create a session
 router.post('/', authenticateJWT, tutoringSessionController.createSession);
 

@@ -41,7 +41,7 @@ exports.authenticateJWT = (req, res, next) => {
       });
     }
 
-    // Attach the decoded payload onto request
+    // Attach the decoded payload onto request (e.g., id, email, role)
     req.user = decoded;
     next();
   } catch (error) {
@@ -51,4 +51,25 @@ exports.authenticateJWT = (req, res, next) => {
       message: 'Invalid or expired token'
     });
   }
+};
+
+// New: Role-based authorization middleware
+exports.authorizeRole = (allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user || !req.user.role) {
+      return res.status(403).json({
+        status: 'error',
+        message: 'No role information available. Access denied.'
+      });
+    }
+
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        status: 'error',
+        message: 'You do not have permission to perform this action.'
+      });
+    }
+
+    next();
+  };
 };

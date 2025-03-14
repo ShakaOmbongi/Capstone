@@ -14,6 +14,21 @@ const tutoringSessionController = {
     }
   },
 
+  async joinSession(req, res) {
+    try {
+      const sessionId = req.params.id;
+      const studentId = req.user.id;
+      // Implement your business logic here. For example:
+      // - Check if the session exists.
+      // - Ensure the user isn't already part of the session.
+      // - Record the join request (or directly add the student to the session).
+      const result = await tutoringSessionService.joinSession(sessionId, studentId);
+      res.status(200).json({ status: 'success', message: 'Successfully joined the session', data: result });
+    } catch (error) {
+      res.status(500).json({ status: 'error', message: error.message });
+    }
+  },
+
   async getSessionById(req, res) {
     try {
       const session = await tutoringSessionService.getSessionById(req.params.id);

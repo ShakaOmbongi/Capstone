@@ -16,12 +16,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             const sessionsList = document.getElementById('sessionsList');
             sessionsList.innerHTML = '';
 
-            if (!data.sessions || data.sessions.length === 0) {
+            // Adjusted to use "data.data" based on your backend response
+            if (!data.data || data.data.length === 0) {
                 sessionsList.innerHTML = '<p class="text-muted">No available sessions.</p>';
                 return;
             }
 
-            data.sessions.forEach(session => {
+            data.data.forEach(session => {
                 const sessionItem = document.createElement('div');
                 sessionItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
 
@@ -40,6 +41,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 button.addEventListener('click', async function() {
                     const sessionId = this.getAttribute('data-id');
 
+                    // Ensure that you have an endpoint defined for joining a session
                     const joinResponse = await fetch(`http://localhost:3000/sessions/request/${sessionId}`, {
                         method: 'POST',
                         headers: {
