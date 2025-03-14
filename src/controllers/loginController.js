@@ -23,10 +23,9 @@ const loginController = {
       }
 
       const token = authService.generateToken(user);
-      console.log("Generated token:", token); // <-- Debug line
 
       res.cookie('token', token, {
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'Strict'
       });
@@ -58,7 +57,7 @@ const loginController = {
 
       const token = authService.generateToken(user);
       res.cookie('token', token, {
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'Strict'
       });

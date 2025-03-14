@@ -1,6 +1,7 @@
 document.getElementById("changePasswordForm").addEventListener("submit", async function (event) {
     event.preventDefault();
 
+    // Extract token from cookies
     const token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
 
     if (!token) {
@@ -11,6 +12,7 @@ document.getElementById("changePasswordForm").addEventListener("submit", async f
     const currentPassword = document.getElementById("currentPassword").value;
     const newPassword = document.getElementById("newPassword").value;
 
+    // Send PUT request to change password endpoint
     const response = await fetch("/student/changePassword", {
         method: "PUT",
         headers: {

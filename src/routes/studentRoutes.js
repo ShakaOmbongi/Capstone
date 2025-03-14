@@ -5,24 +5,25 @@ const { authenticateJWT } = require('../middleware/authMiddleware');
 const studentController = require('../controllers/studentController');
 const progressUpdateService = require('../services/ProgressUpdateService');
 const tutoringSessionService = require('../services/TutoringSessionService');
+const tutoringSessionController = require('../controllers/tutoringSessionController'); // path
 
 const router = express.Router();
 
-// Default student route: redirect to the dashboard
+// Redirect to student dashboard
 router.get('/', authenticateJWT, (req, res) => {
-  return res.redirect('/student/studentdashboard');
+  res.redirect('/student/studentdashboard');
 });
 
-// API endpoint to get profile data (returns JSON)
+// Get student profile data (JSON)
 router.get("/profile/data", authenticateJWT, studentController.getProfile);
 
-// Endpoint to update student profile
+// Update student profile (JSON)
 router.put("/updateProfile", authenticateJWT, studentController.updateProfile);
 
-// Endpoint to change password
+// Change student password
 router.put("/changePassword", authenticateJWT, studentController.changePassword);
 
-// Fetch student's login streak
+// Get student's login streak
 router.get('/login-streak', authenticateJWT, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -33,45 +34,55 @@ router.get('/login-streak', authenticateJWT, async (req, res) => {
   }
 });
 
-// Fetch student's tutoring session bookings (for calendar events)
-router.get('/bookings', authenticateJWT, async (req, res) => {
+// Get student's tutoring session  (for calendar)
+router.get('/sessions', authenticateJWT, async (req, res) => {
   try {
     const studentId = req.user.id;
     const sessions = await tutoringSessionService.getAllSessions({ studentId });
-    // Convert sessions to FullCalendar event format
+    // Map sessions to calendar event format
     const events = sessions.map(session => ({
       title: session.subject,
-      start: session.sessionDate 
+      start: session.sessionDate
     }));
-    res.status(200).json({ message: 'Bookings fetched successfully', events });
+    res.status(200).json({ message: 'sessions fetched successfully', events });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Serve Student Dashboard (HTML page)
+// Serve static HTML pages
 router.get('/studentdashboard', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/studentdashboard.html'));
 });
-
-// Serve Student Profile Page (HTML)
 router.get('/profile', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentProfile.html'));
 });
-
-// Serve Student Find Sessions Page (HTML)
 router.get('/findSessions', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentFindSession.html'));
 });
-
-// Serve Student Create Tutoring Sessions Page (HTML)
 router.get('/tutoringSessions', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentTutoringSessions.html'));
 });
-
-// Serve Student Chatrooms Page (HTML)
 router.get('/chat', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentChatrooms.html'));
+});
+
+// Student creates a tutoring session
+router.post('/sessions/create', authenticateJWT, tutoringSessionController.createSession);
+
+// Student fetches all tutoring sessions
+router.get('/sessions', authenticateJWT, async (req, res) => {
+  try {
+    const studentId = req.user.id;
+    const sessions = await tutoringSessionService.getAllSessions({ studentId });
+    res.status(200).json({
+      status: 'success',
+      message: 'Sessions fetched successfully',
+      sessions
+    });
+  } catch (error) {
+    res.status(500).json({ status: 'error', message: error.message });
+  }
 });
 
 module.exports = router;

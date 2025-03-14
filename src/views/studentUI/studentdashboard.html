@@ -66,22 +66,24 @@
   
   <!-- Script to fetch login streak -->
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      fetch('/student/login-streak', { credentials: 'include' })
-        .then(response => response.json())
-        .then(data => {
-          if (data.streak !== undefined) {
-            document.getElementById('streak').textContent = `Your current login streak: ${data.streak}`;
-          } else {
-            document.getElementById('streak').textContent = 'No streak data available';
-          }
-        })
-        .catch(err => {
-          console.error('Error fetching login streak:', err);
-          document.getElementById('streak').textContent = 'Error loading streak';
-        });
-    });
+    async function getLoginStreak() {
+      try {
+        const response = await fetch('/student/login-streak', { credentials: 'include' });
+        const data = await response.json();
+        if (data.streak !== undefined) {
+          document.getElementById('streak').textContent = `Your current login streak: ${data.streak}`;
+        } else {
+          document.getElementById('streak').textContent = 'No streak data available';
+        }
+      } catch (error) {
+        console.error('Error fetching login streak:', error);
+        document.getElementById('streak').textContent = 'Error loading streak';
+      }
+    }
+  
+    document.addEventListener('DOMContentLoaded', getLoginStreak);
   </script>
+  
   
   <!-- Script to initialize FullCalendar with bookings -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
