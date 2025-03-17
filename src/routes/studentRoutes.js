@@ -66,6 +66,9 @@ router.get('/tutoringSessions', authenticateJWT, (req, res) => {
 router.get('/chat', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentChatrooms.html'));
 });
+router.get('/About', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/studentUI/StudentAbout.html'));
+});
 
 // Student creates a tutoring session
 router.post('/sessions/create', authenticateJWT, tutoringSessionController.createSession);
