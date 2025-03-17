@@ -10,7 +10,7 @@ async function signup() {
       username: 'testtutor1',
       email: 'testtutor1@example.com',
       password: 'testtutor1',
-      roleid: 'tutor'
+      roleId: 'tutor'
     });
     console.log('Signup response:', response.data);
   } catch (error) {

@@ -43,7 +43,7 @@ const signUpController = {
         username,
         email,
         password,
-        roleid: studentRole.id,
+        roleId: studentRole.id,
       });
       const token = authService.generateToken({ 
         id: user.id, 
@@ -97,7 +97,7 @@ const signUpController = {
         username,
         email,
         password,
-        roleid: tutorRole.id,
+        roleId: tutorRole.id,
       });
 
       // Redirect to a tutor dashboard page

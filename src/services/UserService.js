@@ -3,13 +3,13 @@ const User = require('../entities/User'); // Import User model
 
 class UserService {
   // Register a new user with hashed password
-  async registerUser({ username, email, password, roleid }) {
+  async registerUser({ username, email, password, roleId }) {
     const hashedPassword = await bcrypt.hash(password, 10);
     return await User.create({
       username,
       email,
       password: hashedPassword,
-      roleid,
+      roleId,
       active: true,
       banned: false,
     });

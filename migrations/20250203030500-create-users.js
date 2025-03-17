@@ -24,7 +24,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      roleid: { // Foreign key to roles table
+      roleId: { // Foreign key to roles table
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
