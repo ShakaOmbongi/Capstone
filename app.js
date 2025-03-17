@@ -141,108 +141,108 @@ app.get("/api/chat-rooms", async (req, res) => {
 
 // ========================== FEEDBACK API ROUTES ==========================
 
-// GET: Fetch all feedback
-app.get("/api/feedback", async (req, res) => {
-  const { data, error } = await supabase
-      .from("feedback")
-      .select("id, user, comment");
+// // GET: Fetch all feedback
+// app.get("/api/feedback", async (req, res) => {
+//   const { data, error } = await supabase
+//       .from("feedback")
+//       .select("id, user, comment");
 
-  if (error) {
-      return res.status(500).json({ error: error.message });
-  }
+//   if (error) {
+//       return res.status(500).json({ error: error.message });
+//   }
 
-  res.json(data);
-});
+//   res.json(data);
+// });
 
-// DELETE: Remove feedback by ID
-app.delete("/api/feedback/:id", async (req, res) => {
-  const { id } = req.params;
+// // DELETE: Remove feedback by ID
+// app.delete("/api/feedback/:id", async (req, res) => {
+//   const { id } = req.params;
 
-  const { error } = await supabase
-      .from("feedback")
-      .delete()
-      .eq("id", id);
+//   const { error } = await supabase
+//       .from("feedback")
+//       .delete()
+//       .eq("id", id);
 
-  if (error) {
-      return res.status(500).json({ error: error.message });
-  }
+//   if (error) {
+//       return res.status(500).json({ error: error.message });
+//   }
 
-  res.status(200).json({ message: "Feedback deleted successfully." });
-});
+//   res.status(200).json({ message: "Feedback deleted successfully." });
+// });
 
-// ========================== USER API ROUTES ==========================
+// // ========================== USER API ROUTES ==========================
 
-// GET: Fetch all users
-app.get("/api/users", async (req, res) => {
-  const { data, error } = await supabase
-      .from("users")
-      .select("id, name, email, role");
+// // GET: Fetch all users
+// app.get("/api/users", async (req, res) => {
+//   const { data, error } = await supabase
+//       .from("users")
+//       .select("id, name, email, role");
 
-  if (error) {
-      return res.status(500).json({ error: error.message });
-  }
+//   if (error) {
+//       return res.status(500).json({ error: error.message });
+//   }
 
-  res.json(data);
-});
+//   res.json(data);
+// });
 
-// DELETE: Remove user by ID
-app.delete("/api/users/:id", async (req, res) => {
-  const { id } = req.params;
+// // DELETE: Remove user by ID
+// app.delete("/api/users/:id", async (req, res) => {
+//   const { id } = req.params;
 
-  const { error } = await supabase
-      .from("users")
-      .delete()
-      .eq("id", id);
+//   const { error } = await supabase
+//       .from("users")
+//       .delete()
+//       .eq("id", id);
 
-  if (error) {
-      return res.status(500).json({ error: error.message });
-  }
+//   if (error) {
+//       return res.status(500).json({ error: error.message });
+//   }
 
-  res.status(200).json({ message: "User deleted successfully." });
-});
+//   res.status(200).json({ message: "User deleted successfully." });
+// });
 
-// ========================== DASHBOARD STATS API ==========================
+// // ========================== DASHBOARD STATS API ==========================
 
-// GET: Total users count
-app.get("/api/stats/total-users", async (req, res) => {
-  const { count, error } = await supabase
-      .from("users")
-      .select("*", { count: "exact", head: true });
+// // GET: Total users count
+// app.get("/api/stats/total-users", async (req, res) => {
+//   const { count, error } = await supabase
+//       .from("users")
+//       .select("*", { count: "exact", head: true });
 
-  if (error) {
-      return res.status(500).json({ error: error.message });
-  }
+//   if (error) {
+//       return res.status(500).json({ error: error.message });
+//   }
 
-  res.json({ count });
-});
+//   res.json({ count });
+// });
 
-// GET: Active tutoring sessions count
-app.get("/api/stats/active-sessions", async (req, res) => {
-  const { count, error } = await supabase
-      .from("tutoring_sessions")
-      .select("*", { count: "exact", head: true })
-      .eq("status", "active"); // Assuming you have an 'active' status
+// // GET: Active tutoring sessions count
+// app.get("/api/stats/active-sessions", async (req, res) => {
+//   const { count, error } = await supabase
+//       .from("tutoring_sessions")
+//       .select("*", { count: "exact", head: true })
+//       .eq("status", "active"); // Assuming you have an 'active' status
 
-  if (error) {
-      return res.status(500).json({ error: error.message });
-  }
+//   if (error) {
+//       return res.status(500).json({ error: error.message });
+//   }
 
-  res.json({ count });
-});
+//   res.json({ count });
+// });
 
-// GET: Pending feedback count
-app.get("/api/stats/pending-feedback", async (req, res) => {
-  const { count, error } = await supabase
-      .from("feedback")
-      .select("*", { count: "exact", head: true })
-      .eq("status", "pending"); // Assuming feedback has a "pending" status
+// // GET: Pending feedback count
+// app.get("/api/stats/pending-feedback", async (req, res) => {
+//   const { count, error } = await supabase
+//       .from("feedback")
+//       .select("*", { count: "exact", head: true })
+//       .eq("status", "pending"); // Assuming feedback has a "pending" status
 
-  if (error) {
-      return res.status(500).json({ error: error.message });
-  }
+//   if (error) {
+//       return res.status(500).json({ error: error.message });
+//   }
 
-  res.json({ count });
-});
+//   res.json({ count });
+// });
 
 // Start the server
 server.listen(PORT, () => {
