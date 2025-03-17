@@ -44,13 +44,17 @@ app.use('/views', express.static(path.join(__dirname, 'src/views')));
 
 // Import routes from `src/routes/`
 const landingRoutes = require('./src/routes/landingRoutes');
-const signupRoutes  = require('./src/routes/signupRoutes');
-const loginRoutes   = require('./src/routes/loginRoutes');
+const signupRoutes = require('./src/routes/signupRoutes');
+const loginRoutes = require('./src/routes/loginRoutes');
 const studentRoutes = require('./src/routes/studentRoutes');
+const tutorRoutes = require('./src/routes/tutorRoutes');
+const logoutRoutes = require('./src/routes/logoutRoutes');
+const sessionRoutes = require('./src/routes/tutoringSessionRoutes');
 const tutorRoutes   = require('./src/routes/tutorRoutes');
 const logoutRoutes  = require('./src/routes/logoutRoutes');
 const sessionRoutes = require('./src/routes/tutoringSessionRoutes');
 const chatMessageRoutes = require('./src/routes/chatMessageRoutes');
+const studentTestRoutes = require('./src/routes/studentTestRoutes');
 
 // Mount routes
 app.use('/', landingRoutes);

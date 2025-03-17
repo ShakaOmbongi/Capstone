@@ -28,6 +28,11 @@ class TutoringSessionService {
   async deleteSession(sessionId) {
     return await tutoringSessionRepository.deleteSession(sessionId);
   }
+  
+  // Join a session by assigning the student to the session
+  async joinSession(sessionId, studentId) {
+    return await tutoringSessionRepository.joinSession(sessionId, studentId);
+  }
 }
 
 module.exports = new TutoringSessionService();

@@ -1,10 +1,14 @@
-'use strict';
-
 const express = require('express');
-const tutoringSessionController = require('../controllers/tutoringSessionController');
 const { authenticateJWT } = require('../middleware/authMiddleware');
+const tutoringSessionController = require('../controllers/tutoringSessionController'); // path
 
 const router = express.Router();
+
+// Join a session endpoint
+router.post('/request/:id', authenticateJWT, tutoringSessionController.joinSession);
+
+// Create a session with '/create'
+router.post('/create', authenticateJWT, tutoringSessionController.createSession);
 
 // Create a session
 router.post('/', authenticateJWT, tutoringSessionController.createSession);

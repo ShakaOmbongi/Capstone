@@ -1,61 +1,72 @@
 'use strict';
 
-module.exports = {
-  // Create a new tutoring session
-  createSession: async (req, res) => {
+const tutoringSessionService = require('../services/TutoringSessionService');
+
+const tutoringSessionController = {
+  async createSession(req, res) {
     try {
-      // Return a success message (replace with actual creation logic later)
-      res.status(201).json({ message: 'Tutoring session created successfully' });
+      const { subject, sessionDate, tutorId } = req.body;
+      const studentId = req.user.id;
+      const newSession = await tutoringSessionService.createSession({ tutorId, studentId, subject, sessionDate });
+      res.status(201).json({ status: 'success', message: 'Session booked successfully', data: newSession });
     } catch (error) {
-      // Return an error message if something goes wrong
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ status: 'error', message: error.message });
     }
   },
 
-  // Get all tutoring sessions
-  getSessions: async (req, res) => {
-    try {
-      // Return a success message (replace with logic to fetch sessions later)
-      res.status(200).json({ message: 'Fetched tutoring sessions' });
-    } catch (error) {
-      // Return an error message if something goes wrong
-      res.status(500).json({ error: error.message });
-    }
-  },
-
-  // Get a specific tutoring session by its ID
-  getSessionById: async (req, res) => {
+  async joinSession(req, res) {
     try {
       const sessionId = req.params.id;
-      // Return a success message with the session ID (replace with logic to fetch the session)
-      res.status(200).json({ message: `Fetched session with ID ${sessionId}` });
+      const studentId = req.user.id;
+      // Implement your business logic here. For example:
+      // - Check if the session exists.
+      // - Ensure the user isn't already part of the session.
+      // - Record the join request (or directly add the student to the session).
+      const result = await tutoringSessionService.joinSession(sessionId, studentId);
+      res.status(200).json({ status: 'success', message: 'Successfully joined the session', data: result });
     } catch (error) {
-      // Return an error message if something goes wrong
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ status: 'error', message: error.message });
     }
   },
 
-  // Update a tutoring session by its ID
-  updateSession: async (req, res) => {
+  async getSessionById(req, res) {
     try {
-      const sessionId = req.params.id;
-      // Return a success message with the session ID (replace with update logic later)
-      res.status(200).json({ message: `Session with ID ${sessionId} updated successfully` });
+      const session = await tutoringSessionService.getSessionById(req.params.id);
+      if (!session) return res.status(404).json({ status: 'error', message: 'Session not found' });
+      res.status(200).json({ status: 'success', message: 'Session fetched', data: session });
     } catch (error) {
-      // Return an error message if something goes wrong
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ status: 'error', message: error.message });
     }
   },
 
-  // Delete a tutoring session by its ID
-  deleteSession: async (req, res) => {
+  async getSessions(req, res) {
     try {
-      const sessionId = req.params.id;
-      // Return a success message with the session ID (replace with deletion logic later)
-      res.status(200).json({ message: `Session with ID ${sessionId} deleted successfully` });
+      const sessions = await tutoringSessionService.getAllSessions();
+      res.status(200).json({ status: 'success', message: 'Sessions fetched', data: sessions });
     } catch (error) {
-      // Return an error message if something goes wrong
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ status: 'error', message: error.message });
+    }
+  },
+
+  async updateSession(req, res) {
+    try {
+      const updated = await tutoringSessionService.updateSession(req.params.id, req.body);
+      if (!updated) return res.status(404).json({ status: 'error', message: 'Session not found or not updated' });
+      res.status(200).json({ status: 'success', message: 'Session updated', data: updated });
+    } catch (error) {
+      res.status(500).json({ status: 'error', message: error.message });
+    }
+  },
+
+  async deleteSession(req, res) {
+    try {
+      const deleted = await tutoringSessionService.deleteSession(req.params.id);
+      if (!deleted) return res.status(404).json({ status: 'error', message: 'Session not found or not deleted' });
+      res.status(200).json({ status: 'success', message: 'Session deleted' });
+    } catch (error) {
+      res.status(500).json({ status: 'error', message: error.message });
     }
   }
 };
+
+module.exports = tutoringSessionController;
