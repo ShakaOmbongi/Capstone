@@ -1,137 +1,165 @@
-/* ************************* CHAT PAGE - FIXED FULL PAGE STYLE *********************** */
+/* ************************* GENERAL STYLES *********************** */
 
 body {
-    font-family: Arial, sans-serif;
-    background: #f8f9fa;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    height: 100vh;
-    overflow: hidden; /* Prevent scrolling issues */
-  }
-  
-  
-  
-  .sidebar .nav-link {
-    display: block;
-    padding: 15px;
-    color: rgb(0, 0, 0);
-    text-decoration: none;
-    font-size: 18px;
-    border-radius: 5px;
-  }
-  
-  .sidebar .nav-link:hover, .sidebar .nav-link.active {
-    background-color: rgb(233, 94, 94);
-    color: white;
-  }
-  
-  /* Main Content - Chat Layout */
-  .main-content {
-    margin-left: 0px;  /* Ensures chat starts after the sidebar */
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    background: white;
-  }
-  
-  /* Chat Header */
-  .chat-header {
-    background: #f0f0f0;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 2px solid #ddd;
-  }
-  
-  /* Chat Window */
-  .chat-container {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    overflow-y: auto;
-    background: #fff;
-  }
-  
-  /* Messages */
-  .message-container {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    overflow-y: auto;
-    padding-bottom: 10px;
-  }
-  
-  .message {
-    padding: 12px 15px;
-    border-radius: 12px;
-    max-width: 60%;
-    word-wrap: break-word;
-    font-size: 1rem;
-    line-height: 1.4;
-    display: inline-block;
-  }
-  
-  /* User messages (right) */
-  .message.user {
-    background: #f84040;
-    color: white;
-    align-self: flex-end;
-    border-top-right-radius: 0;
-  }
-  
-  /* Tutor messages (left) */
-  .message.tutor {
-    background: #007bff;
-    color: white;
-    align-self: flex-start;
-    border-top-left-radius: 0;
-  }
-  
-  /* Chat Input Box - Fixed at Bottom */
-  .chat-input-container {
-    display: flex;
-    padding: 15px;
-    background: #f0f0f0;
-    border-top: 2px solid #ddd;
-    align-items: center;
-    position: fixed;
-    bottom: 0;
-    left: 250px; /* Pushes it next to the sidebar */
-    width: calc(100% - 280px); /* Ensures it takes full width */
-  }
-  
-  .chat-input-container input {
-    flex-grow: 1;
-    padding: 12px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
-    margin-right: 10px;
-    outline: none;
-    transition: border-color 0.3s ease-in-out;
-  }
-  
-  .chat-input-container input:focus {
-    border-color: #f84040;
-  }
-  
-  .chat-input-container button {
-    background: #f84040;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.3s ease-in-out;
-  }
-  
-  .chat-input-container button:hover {
-    background: #d83636;
-  }
-  
+  font-family: Arial, sans-serif;
+  background: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ************************* SIDEBAR STYLING *********************** */
+.sidebar {
+  height: 100vh;
+  width: 250px;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.sidebar img {
+  max-width: 260px;
+  margin-bottom: 15px;
+}
+
+.sidebar .nav {
+  padding: 0;
+  list-style-type: none;
+}
+
+.sidebar .nav-item {
+  width: 100%;
+}
+
+.sidebar .nav-link {
+  display: block;
+  padding: 15px;
+  color: black;
+  text-decoration: none;
+  font-size: 18px;
+  border-radius: 5px;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+  background-color: rgb(233, 94, 94);
+  color: white;
+}
+
+/* ************************* MAIN CHAT CONTENT *********************** */
+.main-content {
+  margin-left: 280px; /* Matches the sidebar width */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: white;
+}
+
+/* Chat Header */
+.chat-header {
+  background: #f0f0f0;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #ddd;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* Chat Container */
+.chat-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: auto;
+  background: #fff;
+}
+
+/* Messages Section */
+.message-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding-bottom: 10px;
+}
+
+/* Individual Messages */
+.message {
+  padding: 12px 15px;
+  border-radius: 12px;
+  max-width: 60%;
+  word-wrap: break-word;
+  font-size: 1rem;
+  line-height: 1.4;
+  display: inline-block;
+}
+
+/* User messages (Right Side) */
+.message.user {
+  background: #f84040;
+  color: white;
+  align-self: flex-end;
+  border-top-right-radius: 0;
+}
+
+/* Tutor messages (Left Side) */
+.message.tutor {
+  background: #007bff;
+  color: white;
+  align-self: flex-start;
+  border-top-left-radius: 0;
+}
+
+/* ************************* CHAT INPUT BOX *********************** */
+.chat-input-container {
+  display: flex;
+  padding: 15px;
+  background: #f0f0f0;
+  border-top: 2px solid #ddd;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  left: 290px; /* Adjusted for sidebar */
+  width: calc(100% - 280px); /* Full width minus sidebar */
+}
+
+.chat-input-container input {
+  flex-grow: 1;
+  padding: 12px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-right: 10px;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.chat-input-container input:focus {
+  border-color: #f84040;
+}
+
+.chat-input-container button {
+  background: #f84040;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease-in-out;
+}
+
+.chat-input-container button:hover {
+  background: #d83636;
+}

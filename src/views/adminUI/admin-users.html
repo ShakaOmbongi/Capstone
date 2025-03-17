@@ -21,6 +21,7 @@
     <div class="main-content">
         <h1>User Management</h1>
         <input type="text" id="search" placeholder="Search users...">
+
         <table>
             <thead>
                 <tr>
@@ -30,37 +31,8 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>Carissa Boddie</td>
-                    <td>cmboddie@uncg.edu</td>
-                    <td>Student</td>
-                    <td><button>Edit</button> <button class="delete-user">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>Alli Weavil</td>
-                    <td>adweavil@uncg.edu</td>
-                    <td>Tutor</td>
-                    <td><button>Edit</button> <button class="delete-user">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>Alex Wilson</td>
-                    <td>alexwilson@uncg.edu</td>
-                    <td>Student</td>
-                    <td><button>Edit</button> <button class="delete-user">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>Meghan Maynard</td>
-                    <td>meghanmaynard@ncat.edu</td>
-                    <td>Tutor</td>
-                    <td><button>Edit</button> <button class="delete-user">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>Jay Weldon</td>
-                    <td>jayweldon@gtcc.edu</td>
-                    <td>Tutor</td>
-                    <td><button>Edit</button> <button class="delete-user">Delete</button></td>
-                </tr>
+            <tbody id="user-table-body">
+                <!-- Users will be dynamically inserted here -->
             </tbody>
         </table>
     </div>

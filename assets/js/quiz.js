@@ -1,24 +1,44 @@
 document.addEventListener("DOMContentLoaded", function() {
     const questions = [
         { 
-            question: "How do you prefer to study?",
-            options: ["Reading textbooks", "Watching videos", "Group discussions", "Hands-on practice"]
+            question: "I follow written directions better than oral directions.",
+            options: ["Often", "Sometimes", "Seldom"]
         },
         { 
-            question: "What helps you remember information best?",
-            options: ["Writing notes", "Listening to explanations", "Explaining to others", "Doing practical exercises"]
+            question: "I can remember more about a subject through listening than reading.",
+            options: ["Often", "Sometimes", "Seldom"]
         },
         { 
-            question: "Which describes you best?",
-            options: ["I like structure and organization", "I prefer flexibility and creativity", "I learn best with others", "I need step-by-step guidance"]
+            question: "I bear down extremely hard when writing.",
+            options: ["Often", "Sometimes", "Seldom"]
         },
         { 
-            question: "How do you handle problem-solving?",
-            options: ["Research first", "Ask someone for help", "Work in a team", "Experiment until I get it"]
+            question: "I like to write things down or take notes for visual review.",
+            options: ["Often", "Sometimes", "Seldom"]
         },
         { 
-            question: "Which learning method do you enjoy the most?",
-            options: ["Lectures and reading", "Multimedia like videos", "Discussions and interactions", "Hands-on activities"]
+            question: "I require explanations of graphs, diagrams, or visual directions.",
+            options: ["Often", "Sometimes", "Seldom"]
+        },
+        { 
+            question: "I enjoy working with tools.",
+            options: ["Often", "Sometimes", "Seldom"]
+        },
+        { 
+            question: "I am skillful and enjoy developing and making graphs and charts.",
+            options: ["Often", "Sometimes", "Seldom"]
+        },
+        { 
+            question: "I can tell if sounds match when presented with pairs of sounds.",
+            options: ["Often", "Sometimes", "Seldom"]
+        },
+        { 
+            question: "I remember best by writing things down several times.",
+            options: ["Often", "Sometimes", "Seldom"]
+        },
+        { 
+            question: "I can understand and follow directions on maps.",
+            options: ["Often", "Sometimes", "Seldom"]
         }
     ];
 
@@ -70,22 +90,25 @@ document.addEventListener("DOMContentLoaded", function() {
         const results = { 
             Visual: 0, 
             Auditory: 0, 
-            Social: 0, 
             Kinesthetic: 0 
         };
 
         selectedAnswers.forEach(answer => {
-            if (["Reading textbooks", "Writing notes", "Lectures and reading"].includes(answer)) results.Visual++;
-            if (["Watching videos", "Listening to explanations", "Multimedia like videos"].includes(answer)) results.Auditory++;
-            if (["Group discussions", "Explaining to others", "Discussions and interactions"].includes(answer)) results.Social++;
-            if (["Hands-on practice", "Doing practical exercises", "Experiment until I get it"].includes(answer)) results.Kinesthetic++;
+            if (["Often"].includes(answer)) results.Visual++;
+            if (["Sometimes"].includes(answer)) results.Auditory++;
+            if (["Seldom"].includes(answer)) results.Kinesthetic++;
         });
 
         let highestType = Object.keys(results).reduce((a, b) => results[a] > results[b] ? a : b);
 
         alert(`Your learning style is: ${highestType}`);
-        window.location.href = "student-dashboard.html"; // Redirect after quiz completion
+        window.location.href = "studentdashboard.html"; // Redirect after quiz completion
     }
 
     loadQuestion(currentQuestionIndex);
+
+    // Citation for the questions
+    const citation = document.createElement("p");
+    citation.innerHTML = 'Questions sourced from the <a href="https://secure.studentachievement.colostate.edu/learningstyles/quiz.aspx" target="_blank">Collaborative for Student Achievement - Colorado State University</a>.';
+    document.body.appendChild(citation);
 });

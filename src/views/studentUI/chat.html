@@ -10,27 +10,35 @@
 <body>
 
     <!-- Sidebar -->
-    <nav class="sidebar">
-        <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link active" href="studentdashboard.html">Dashboard</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#calendar">Calendar</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="../landingUI/welcome.html">Logout</a>
-            </li>
-        </ul>
-    </nav>
+<nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
+    <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link active" href="studentdashboard.html">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="book-session.html">Book Session</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+        </li>
+    </ul>
+</nav>
+    
 
     <!-- Chat Section -->
     <main class="main-content">
         <!-- Chat Header -->
         <div class="chat-header">
-            <h2>Study Group Chat</h2>
+            <h2>Messages</h2>
         </div>
+
+        <!-- Chat List -->
+        <section class="chat-list">
+            <ul id="chatRooms">
+                <!-- Rooms will be dynamically loaded here -->
+            </ul>
+        </section>
 
         <!-- Chat Messages -->
         <section class="chat-container">
@@ -48,43 +56,85 @@
     </main>
 
     <script>
-        const socket = io("http://localhost:3000");
+        const socket = io("http://localhost:3000"); // Adjust backend URL if needed
+
+        const chatRooms = document.getElementById("chatRooms");
+        const messages = document.getElementById("messages");
         const messageInput = document.getElementById("messageInput");
         const usernameInput = document.getElementById("username");
-        const messages = document.getElementById("messages");
         const sendBtn = document.getElementById("sendBtn");
 
-        sendBtn.addEventListener("click", function () {
+        let currentConversationId = "";
+
+        // Fetch chat rooms dynamically
+        async function fetchChatRooms() {
+            const response = await fetch("/api/chat-rooms"); // API to get chat rooms
+            const rooms = await response.json();
+
+            chatRooms.innerHTML = "";
+            rooms.forEach(room => {
+                const li = document.createElement("li");
+                li.innerHTML = `<strong>${room.name}</strong><br>${room.lastMessage || "No messages yet"}`;
+                li.classList.add("chat-room");
+                li.addEventListener("click", () => joinRoom(room.id));
+                chatRooms.appendChild(li);
+            });
+        }
+
+        // Join a room when clicked
+        function joinRoom(conversationId) {
+            currentConversationId = conversationId;
+            messages.innerHTML = "<p>Loading messages...</p>";
+
+            socket.emit("joinRoom", conversationId);
+
+            // Load previous messages
+            socket.on("previousMessages", (loadedMessages) => {
+                messages.innerHTML = "";
+                loadedMessages.forEach(msg => {
+                    appendMessage(msg.senderId, msg.message, "tutor");
+                });
+            });
+        }
+
+        // Send message
+        sendBtn.addEventListener("click", () => {
             const messageText = messageInput.value.trim();
             const username = usernameInput.value.trim();
-            
-            if (messageText !== "" && username !== "") {
-                const messageData = { username, text: messageText };
-                
-                // Send message to the server
-                socket.emit("chatMessage", messageData);
-                
-                // Append message to the chat for the sender
-                appendMessage(messageData.username, messageData.text, "user");
+            const senderId = username; // In real case, use logged-in user ID
+            const receiverId = "someReceiver"; // Replace with actual recipient
 
-                // Clear input field
+            if (messageText !== "" && username !== "" && currentConversationId !== "") {
+                const messageData = { 
+                    conversationId: currentConversationId,
+                    senderId, 
+                    receiverId, 
+                    message: messageText 
+                };
+
+                socket.emit("chatMessage", messageData);
+                appendMessage(senderId, messageData.message, "user");
+
                 messageInput.value = "";
             }
         });
 
         // Listen for messages from the server
-        socket.on("chatMessage", function (data) {
-            appendMessage(data.username, data.text, "tutor");
+        socket.on("chatMessage", (data) => {
+            appendMessage(data.senderId, data.message, "tutor");
         });
 
-        // Function to append messages to the chat window
-        function appendMessage(username, text, senderType) {
+        // Function to append messages
+        function appendMessage(senderId, text, senderType) {
             const messageElement = document.createElement("div");
             messageElement.classList.add("message", senderType);
-            messageElement.innerHTML = `<strong>${username}:</strong> ${text}`;
+            messageElement.innerHTML = `<strong>${senderId}:</strong> ${text}`;
             messages.appendChild(messageElement);
-            messages.scrollTop = messages.scrollHeight; // Auto-scroll
+            messages.scrollTop = messages.scrollHeight;
         }
+
+        // Load chat rooms on page load
+        fetchChatRooms();
     </script>
 
 </body>
