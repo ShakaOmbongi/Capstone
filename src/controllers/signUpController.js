@@ -2,8 +2,13 @@
 
 const userService = require('../services/UserService');
 const Role = require('../entities/Role');
+const authService = require('../services/authService');
+
 
 const signUpController = {
+  // -------------------------
+  // Register Student
+  // -------------------------
   async registerStudent(req, res) {
     try {
       const { username, email, password, confirmPassword } = req.body;
@@ -19,13 +24,67 @@ const signUpController = {
         return res.status(400).json({ status: 'error', message: 'Passwords do not match' });
       }
 
-      // Find the STUDENT role
+      // Find the STUDENT role in the DB
       const studentRole = await Role.findOne({ where: { name: 'STUDENT' } });
       if (!studentRole) {
         return res.status(500).json({ status: 'error', message: 'Student role not found' });
       }
 
-      // Check if username or email already exists
+      // Check if username or email already exist
+      if (await userService.usernameExists(username)) {
+        return res.status(400).json({ status: 'error', message: 'Username already exists' });
+      }
+      if (await userService.emailExists(email)) {
+        return res.status(400).json({ status: 'error', message: 'Email already exists' });
+      }
+      
+      // Register the new student
+      await userService.registerUser({
+        username,
+        email,
+        password,
+        roleid: studentRole.id,
+      });
+      const token = authService.generateToken({ 
+        id: user.id, 
+        httpOnly: true,
+        // secure: process.env.NODE_ENV === 'production',
+        // sameSite: 'Strict'
+      });
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        // secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict'
+      });
+
+      return res.redirect('/student/studentdashboard');
+
+    } catch (error) {
+      // For unexpected errors, return a JSON error response
+      return res.status(500).json({ status: 'error', message: error.message });
+    }
+  },
+
+  // -------------------------
+  // Register Tutor
+  // -------------------------
+  async registerTutor(req, res) {
+    try {
+      const { username, email, password, confirmPassword } = req.body;
+
+      // Check if passwords match
+      if (password !== confirmPassword) {
+        return res.status(400).json({ status: 'error', message: 'Passwords do not match' });
+      }
+
+      // Find the TUTOR role in the DB
+      const tutorRole = await Role.findOne({ where: { name: 'TUTOR' } });
+      if (!tutorRole) {
+        return res.status(500).json({ status: 'error', message: 'Tutor role not found' });
+      }
+
+      // Check if username or email already exist
       if (await userService.usernameExists(username)) {
         return res.status(400).json({ status: 'error', message: 'Username already exists' });
       }
@@ -33,36 +92,20 @@ const signUpController = {
         return res.status(400).json({ status: 'error', message: 'Email already exists' });
       }
 
-      // Register the new student
-      const user = await userService.registerUser({
+      // Register the new tutor
+      await userService.registerUser({
         username,
         email,
         password,
-        roleId: studentRole.id,
+        roleid: tutorRole.id,
       });
 
-      return res.status(201).json({
-        status: 'success',
-        message: 'Student registered successfully',
-        data: user,
-      });
-    } catch (error) {
-      res.status(500).json({ status: 'error', message: error.message });
-    }
-  },
+      // Redirect to a tutor dashboard page
+      return res.redirect('/tutor/tutordashboard');
 
-  async registerTutor(req, res) {
-    try {
-      const { username, email, password, confirmPassword } = req.body;
-      if (password !== confirmPassword) return res.status(400).json({ status: 'error', message: 'Passwords do not match' });
-      const tutorRole = await Role.findOne({ where: { name: 'TUTOR' } });
-      if (!tutorRole) return res.status(500).json({ status: 'error', message: 'Tutor role not found' });
-      if (await userService.usernameExists(username)) return res.status(400).json({ status: 'error', message: 'Username already exists' });
-      if (await userService.emailExists(email)) return res.status(400).json({ status: 'error', message: 'Email already exists' });
-      const user = await userService.registerUser({ username, email, password, roleId: tutorRole.id });
-      return res.status(201).json({ status: 'success', message: 'Tutor registered successfully', data: user });
     } catch (error) {
-      res.status(500).json({ status: 'error', message: error.message });
+      // For unexpected errors, return a JSON error response
+      return res.status(500).json({ status: 'error', message: error.message });
     }
   }
 };

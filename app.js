@@ -38,11 +38,22 @@ const logoutRoutes = require('./src/routes/logoutRoutes');
 const sessionRoutes = require('./src/routes/tutoringSessionRoutes');
 const chatMessageRoutes = require('./src/routes/chatMessageRoutes');
 const studentTestRoutes = require('./src/routes/studentTestRoutes');
+const learningStyleRoutes = require('./src/routes/learningStyleRoutes');
+const openAI = require('./src/utils/openAIClient');
+
+async function doSomethingGPT() {
+  const response = await openai.chat.completions.create({
+    model: 'gpt-3.5-turbo',
+    messages: [{ role: 'user', content: 'Hello GPT!' }]
+  });
+  console.log(response.choices[0].message.content);
+}
 
 // Mount routes
 app.use('/', landingRoutes);
 app.use('/signup', signupRoutes);
 app.use('/login', loginRoutes);
+app.use('/learning-style', learningStyleRoutes);
 
 // Apply authentication middleware on routes that require a valid token
 app.use('/student', authenticateJWT, studentRoutes);

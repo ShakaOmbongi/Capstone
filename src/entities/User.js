@@ -3,7 +3,7 @@ const sequelize = require('../../db');//import
 
 class User extends Model {
   static associate(models) {
-    User.belongsTo(models.Role, { foreignKey: 'roleId', as: 'role' });
+    User.belongsTo(models.Role, { foreignKey: 'roleid', as: 'role' });
   }
 }
 
@@ -28,7 +28,7 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    roleId: {
+    roleid: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
