@@ -1,222 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>peerAid | Profile</title>
-  
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Bootstrap Bundle with Popper.js (Required for Dropdowns) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Bootstrap Bundle (Required for Icons) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-  
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="../../../assets/css/style.css">
-  
-  <!-- Custom JS -->
-  <link rel="stylesheet" href="../../../assets/css/script.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Profile</title>
+  <!-- Bootstrap CSS from CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../../../assets/css/style.css" />
 </head>
-
 <body class="bg-light">
   <div class="container-fluid">
     <div class="row">
-      <!-- Sidebar -->
+      <!-- Sidebar with navigation links -->
       <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
-        <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
+        <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;" />
         <ul class="nav flex-column">
-          <li class="nav-item">
-              <a class="nav-link" href="/student/studentdashboard">Home</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link active" href="/student/studentprofile">Profile</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="/student/studentschedule">Schedule</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="/logout">Logout</a>
-          </li>
-      </ul>
-  </nav>
+          <li class="nav-item"><a class="nav-link" href="/student/profile">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="/studentdashboard">dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/tutoringSessions">Create a Session</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/findSessions">Find a Session</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/chat">Chatrooms</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+        </ul>
+      </nav>
       
-      <!-- Main Content -->
+      <!-- Main Content Area -->
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <div class="container mt-5">
-            <div class="row">
-                <!-- Profile Section (Left) -->
-                <div class="col-md-5">
-                    <div class="card shadow-lg p-4 text-center">
-                        <img src="../../../assets/images/unsplash-1.jpg" class="rounded-circle mx-auto mb-3" 
-                             alt="Tutor Profile Picture" style="width: 140px; height: 140px; object-fit: cover;">
-                        <h2 class="mb-1">Sarah Wattson</h2>
-                        <p class="text-muted">Peer</p>
-                        <p class="text-muted">Kinesthetic Learner</p>
-                        <hr>
-                        
-                        <h4>About Me</h4>
-                        <p class="text-secondary">
-                          As a dedicated student and peer tutor, I love helping classmates grasp challenging concepts 
-                          while continuing to learn myself. I specialize in making math and science more approachable, 
-                          creating a supportive space where we can grow together. </p>
-                        
-                        <h4>Subjects</h4>
-                        <ul class="list-unstyled text-secondary">
-                            <li>Algebra</li>
-                            <li>Calculus</li>
-                            <li>Physics</li>
-                            <li>Biology</li>
-                        </ul>
-                        
-                        <h4>Availability</h4>
-                        <ul class="list-unstyled text-secondary">
-                            <li>Tuesday 10:00am - 11:30am</li>
-                            <li>Wednesday 2:00pm - 4:30pm</li>
-                            <li>Thursday 10:00am - 11:30am</li>
-                        </ul>
-                        
-                        <a href="#" class="btn btn-danger mt-3">Schedule a Session</a>
+        <!-- Header with dynamic greeting (updated by JS) -->
+        <div class="py-4" style="color: black;">
+          <h1 class="display-5" id="greeting">Hello, <span id="studentName">Student</span></h1>
+          <p class="text-muted">This is your profile.</p>
+        </div>
 
-                    </div>
-                </div>
-    
-                <!-- Reviews Section (Right) -->
-<div class="col-md-7">
-  <div class="card shadow-lg p-4">
-      <h4 class="text-center">Reviews</h4>
-      <hr>
-      
-      <!-- Single Review -->
-      <div class="review position-relative p-3 border rounded mb-3">
-          <!-- Three-dot menu -->
-          <div class="dropdown position-absolute top-0 end-0 m-2">
-            <button class="btn p-0 border-0 shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-three-dots-vertical"></i>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Report Review</a></li>
+        <!-- Profile Card: Shows current profile info -->
+        <div class="container mt-5 d-flex justify-content-center">
+          <div class="card shadow-lg p-4 text-center" style="max-width: 600px; width: 100%;">
+            <img src="../../../assets/images/unsplash-1.jpg" class="rounded-circle mx-auto mb-3" alt="Profile Picture" style="width: 140px; height: 140px; object-fit: cover;" />
+            <h2 class="mb-1" id="profileName">Student Name</h2>
+            <p class="text-muted" id="learningStyle">Learning Style Not Set</p>
+            <hr />
+            <h4>About Me</h4>
+            <p class="text-secondary" id="aboutMe">No bio available.</p>
+            <h4>Subjects</h4>
+            <ul class="list-unstyled text-secondary" id="subjectsList">
+              <!-- List populated dynamically -->
             </ul>
-        </div>
-          
-          <p><strong>⭐⭐⭐⭐⭐</strong></p>
-          <p class="text-secondary"><em>"Sarah is an amazing tutor! She made complex math concepts easy to understand and always kept me engaged. I highly recommend her!"</em></p>
-          <p class="text-muted">- Emma K.</p>
-      </div>
-
-
-<!-- Single Review -->
-      <div class="review position-relative p-3 border rounded mb-3">
-
-          <div class="dropdown position-absolute top-0 end-0 m-2">
-              <button class="btn p-0 border-0 shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="bi bi-three-dots-vertical"></i>
-              </button>
-              <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Report Review</a></li>
-              </ul>
+            <h4>Contact</h4>
+            <p class="mb-0 text-primary"><strong>Email:</strong> <span id="email">email@example.edu</span></p>
           </div>
-
-          <p><strong>⭐⭐⭐⭐</strong></p>
-          <p class="text-secondary"><em>"Great tutor! Sarah's explanations are clear, and she’s patient with my learning pace. She helped me improve my grades significantly."</em></p>
-          <p class="text-muted">- John D.</p>
-      </div>
-
-      <!-- Single Review -->
-      <div class="review position-relative p-3 border rounded mb-3">
-
-          <div class="dropdown position-absolute top-0 end-0 m-2">
-              <button class="btn p-0 border-0 shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="bi bi-three-dots-vertical"></i>
-              </button>
-              <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Report Review</a></li>
-              </ul>
-          </div>
-
-          <p><strong>⭐⭐⭐⭐⭐</strong></p>
-          <p class="text-secondary"><em>"Sarah is the best tutor I've had! She makes learning fun, and I've learned so much in just a few sessions!"</em></p>
-          <p class="text-muted">- Olivia P.</p>
-      </div>
-      <div class="text-center mt-3">
-        <a href="#" class="text-dark" style="font-size: 14px; text-decoration: underline;" data-bs-toggle="collapse" data-bs-target="#reviewForm">Leave a Review</a>
-    </div>
-    
-    <!-- Collapsible Review Form -->
-    <div id="reviewForm" class="collapse mt-3">
-        <div class="card p-3 shadow-sm position-relative">
-            <!-- Close Button (X) -->
-            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" id="closeReviewForm" aria-label="Close"></button>
-    
-            <h5 class="text-center">Write a Review</h5>
-            <form>
-                <div class="mb-3">
-                    <label for="reviewerName" class="form-label">Your Name</label>
-                    <input type="text" class="form-control" id="reviewerName" placeholder="Enter your name" required>
-                </div>
-                <div class="mb-3">
-                    <label for="rating" class="form-label">Rating</label>
-                    <select class="form-control" id="rating">
-                        <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
-                        <option value="4">⭐⭐⭐⭐ - Good</option>
-                        <option value="3">⭐⭐⭐ - Average</option>
-                        <option value="2">⭐⭐ - Poor</option>
-                        <option value="1">⭐ - Terrible</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="reviewText" class="form-label">Your Review</label>
-                    <textarea class="form-control" id="reviewText" rows="3" placeholder="Write your review here..." required></textarea>
-                </div>
-                <button type="submit" class="btn btn-danger w-100">Submit Review</button>
-            </form>
         </div>
+
+        <hr />
+
+        <!-- Profile Update Form: Updates username and email -->
+        <h2>Update Profile</h2>
+        <form id="updateProfileForm">
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <!-- Input with id "username" -->
+            <input type="text" class="form-control" id="username" required />
+          </div>
+          <div class="mb-3">
+            <label for="emailInput" class="form-label">Email</label>
+            <!-- Input with id "emailInput" -->
+            <input type="email" class="form-control" id="emailInput" required />
+          </div>
+          <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+
+        <hr />
+
+        <!-- Password Update Form: Change current password to new password -->
+        <h2>Change Password</h2>
+        <form id="changePasswordForm">
+          <div class="mb-3">
+            <label for="currentPassword" class="form-label">Current Password</label>
+            <input type="password" class="form-control" id="currentPassword" required autocomplete="current-password" />
+          </div>
+          <div class="mb-3">
+            <label for="newPassword" class="form-label">New Password</label>
+            <input type="password" class="form-control" id="newPassword" required autocomplete="new-password" />
+          </div>
+          <button type="submit" class="btn btn-danger">Change Password</button>
+        </form>
+      </main>
     </div>
+  </div>
   
-</div>
-    </main>
-        
-        
-
-  <!-- Script to update greeting with the logged-in username -->
-  <script>
-    // Function to get a cookie by name
-    function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-    
-    // demo for name: update the greeting element with the username from the cookie
-    document.addEventListener('DOMContentLoaded', function () {
-      const username = getCookie('username');
-      if (username) {
-        document.getElementById('greeting').textContent = `Hello, ${username}`;
-      }
-    });
-  </script>
-
-  <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Get the close button and form
-    const closeButton = document.getElementById("closeReviewForm");
-    const reviewForm = document.getElementById("reviewForm");
-
-    if (closeButton) {
-      closeButton.addEventListener("click", function () {
-        reviewForm.classList.remove("show"); // Hide the form
-      });
-    }
-  });
-</script>
-
+  <!-- External JS files for handling profile update and password change -->
+  <script src="../../../assets/js/updateprofile.js"></script>
+  <script src="../../../assets/js/changePassword.js"></script>
+  <!-- Bootstrap JS from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
