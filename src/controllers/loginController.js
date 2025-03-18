@@ -1,76 +1,72 @@
+'use strict';
+
 const authService = require('../services/authService');
-const bcrypt = require('bcrypt'); // For pw
-const { User, Role } = require('../entities'); // Import 
+const bcrypt = require('bcrypt');
+const { User, Role } = require('../entities');
 
 const loginController = {
   async loginStudent(req, res) {
-    const { email, password } = req.body;
-
     try {
-      // Find the user by email with role
+      const { email, password } = req.body;
       const user = await User.findOne({
         where: { email },
-        include: [{ model: Role, as: 'role' }]
+        include: [{ model: Role, as: 'role' }],
       });
 
-      console.log("DEBUG: Student login query result:", JSON.stringify(user, null, 2));
-
-      // Check if user exists and has the "STUDENT" role
       if (!user || !user.role || user.role.name !== 'STUDENT') {
-        return res.status(404).send('<h1>Student not found</h1>');
+        return res.status(404).json({ status: 'error', message: 'Student not found' });
       }
 
-      // Compare the provided password with the stored hashed password
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return res.status(401).send('<h1>Invalid credentials</h1>');
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ status: 'error', message: 'Invalid credentials' });
       }
 
-      // Generate sess
       const token = authService.generateToken(user);
-      res.cookie('token', token, { httpOnly: true });
 
-    
+      res.cookie('token', token, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict'
+      });
       res.cookie('username', user.username);
 
+      // Instead of returning JSON, perform a server-side redirect to the dashboard.
       return res.redirect('/student/studentdashboard');
     } catch (error) {
-      console.error('Student login error:', error);
-      return res.status(500).send(`<h1>Server error: ${error.message}</h1>`);
+      return res.status(500).json({ status: 'error', message: error.message });
     }
   },
 
   async loginTutor(req, res) {
-    const { email, password } = req.body;
-
     try {
+      const { email, password } = req.body;
       const user = await User.findOne({
         where: { email },
-        include: [{ model: Role, as: 'role' }]
+        include: [{ model: Role, as: 'role' }],
       });
 
-      console.log("DEBUG: Tutor login query result:", JSON.stringify(user, null, 2));
-
-     
       if (!user || !user.role || user.role.name !== 'TUTOR') {
-        return res.status(404).send('<h1>Tutor not found</h1>');
+        return res.status(404).json({ status: 'error', message: 'Tutor not found' });
       }
 
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return res.status(401).send('<h1>Invalid credentials</h1>');
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ status: 'error', message: 'Invalid credentials' });
       }
 
       const token = authService.generateToken(user);
-      res.cookie('token', token, { httpOnly: true });
-
-      // Also set a cookie for demo
+      res.cookie('token', token, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict'
+      });
       res.cookie('username', user.username);
 
+      // Tutor redirection—adjust to your tutor dashboard route.
       return res.redirect('/tutor/tutordashboard');
     } catch (error) {
-      console.error('Tutor login error:', error);
-      return res.status(500).send(`<h1>Server error: ${error.message}</h1>`);
+      return res.status(500).json({ status: 'error', message: error.message });
     }
   }
 };

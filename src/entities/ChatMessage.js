@@ -1,6 +1,5 @@
-
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../../db'); //import
+const sequelize = require('../../db'); // Import the DB connection
 
 class ChatMessage extends Model {
   static associate(models) {
@@ -26,16 +25,18 @@ ChatMessage.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    // map message in db
     content: {
       type: DataTypes.TEXT,
       allowNull: false,
+      field: 'message'
     },
   },
   {
     sequelize,
     modelName: 'ChatMessage',
     tableName: 'chat_messages',
-    timestamps: true, 
+    timestamps: true,
   }
 );
 

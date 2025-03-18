@@ -1,74 +1,58 @@
 'use strict';
 
-const { ChatMessage } = require('../entities'); // path
+const chatMessageService = require('../services/chatMessageService');
 
-module.exports = {
-  // Create a new chat message
+const chatMessageController = {
   async createMessage(req, res) {
     try {
-      const { senderId, conversationId, message } = req.body;
-      const newMessage = await ChatMessage.create({
-        senderId,
-        conversationId, 
-        message,
-      });
-      res.status(201).json(newMessage);
+      const { content, receiverId, conversationId } = req.body;
+      const senderId = req.user.id;
+      const newMessage = await chatMessageService.createMessage({ senderId, receiverId, conversationId, content });
+      res.status(201).json({ status: 'success', message: 'Message created', data: newMessage });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ status: 'error', message: error.message });
     }
   },
 
-  // Retrieve all chat messages 
   async getMessages(req, res) {
     try {
-      const messages = await ChatMessage.findAll();
-      res.status(200).json(messages);
+      const messages = await chatMessageService.getAllMessages(req.query);
+      res.status(200).json({ status: 'success', message: 'Messages fetched', data: messages });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ status: 'error', message: error.message });
     }
   },
 
-  // Retrieve a specific chat message by ID
   async getMessageById(req, res) {
     try {
-      const { id } = req.params;
-      const message = await ChatMessage.findByPk(id);
-      if (!message) {
-        return res.status(404).json({ error: 'Message not found' });
-      }
-      res.status(200).json(message);
+      const message = await chatMessageService.getMessageById(req.params.id);
+      if (!message) return res.status(404).json({ status: 'error', message: 'Message not found' });
+      res.status(200).json({ status: 'success', message: 'Message fetched', data: message });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ status: 'error', message: error.message });
     }
   },
 
-  // Update a chat message by ID 
   async updateMessage(req, res) {
     try {
-      const { id } = req.params;
-      const { message } = req.body;
-      const [updated] = await ChatMessage.update({ message }, { where: { id } });
-      if (updated) {
-        const updatedMessage = await ChatMessage.findByPk(id);
-        return res.status(200).json(updatedMessage);
-      }
-      throw new Error('Message not found');
+      const updates = req.body;
+      const updated = await chatMessageService.updateMessage(req.params.id, updates);
+      if (!updated) return res.status(404).json({ status: 'error', message: 'Message not found or not updated' });
+      res.status(200).json({ status: 'success', message: 'Message updated', data: updated });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ status: 'error', message: error.message });
     }
   },
 
-  // Delete a chat message by ID
   async deleteMessage(req, res) {
     try {
-      const { id } = req.params;
-      const deleted = await ChatMessage.destroy({ where: { id } });
-      if (deleted) {
-        return res.status(200).json({ message: 'Message deleted successfully' });
-      }
-      throw new Error('Message not found');
+      const deleted = await chatMessageService.deleteMessage(req.params.id);
+      if (!deleted) return res.status(404).json({ status: 'error', message: 'Message not found or not deleted' });
+      res.status(200).json({ status: 'success', message: 'Message deleted' });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ status: 'error', message: error.message });
     }
   }
 };
+
+module.exports = chatMessageController;
