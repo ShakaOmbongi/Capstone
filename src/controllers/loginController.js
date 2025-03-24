@@ -13,7 +13,7 @@ const loginController = {
         include: [{ model: Role, as: 'role' }],
       });
 
-      if (!user || !user.role || user.role.name !== 'STUDENT') {
+      if (!user || !user.role || user.role.name.toUpperCase() !== 'STUDENT') {
         return res.status(404).json({ status: 'error', message: 'Student not found' });
       }
 
@@ -22,16 +22,23 @@ const loginController = {
         return res.status(401).json({ status: 'error', message: 'Invalid credentials' });
       }
 
-      const token = authService.generateToken(user);
+      // Create a plain object payload with only the necessary properties
+      const tokenPayload = {
+        id: user.id,
+        roleId: user.roleId,
+        role: user.role.name.toUpperCase()
+      };
+      const token = authService.generateToken(tokenPayload);
 
+      // Set token cookie (httpOnly true, path: '/')
       res.cookie('token', token, {
-        httpOnly: false,
+        httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Strict'
+        sameSite: 'Strict',
+        path: '/'
       });
-      res.cookie('username', user.username);
-
-      // Instead of returning JSON, perform a server-side redirect to the dashboard.
+      res.cookie('username', user.username, { path: '/' });
+      
       return res.redirect('/student/studentdashboard');
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error.message });
@@ -46,7 +53,7 @@ const loginController = {
         include: [{ model: Role, as: 'role' }],
       });
 
-      if (!user || !user.role || user.role.name !== 'TUTOR') {
+      if (!user || !user.role || user.role.name.toUpperCase() !== 'TUTOR') {
         return res.status(404).json({ status: 'error', message: 'Tutor not found' });
       }
 
@@ -55,15 +62,22 @@ const loginController = {
         return res.status(401).json({ status: 'error', message: 'Invalid credentials' });
       }
 
-      const token = authService.generateToken(user);
-      res.cookie('token', token, {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Strict'
-      });
-      res.cookie('username', user.username);
+      // Generate token using a plain object payload
+      const tokenPayload = {
+        id: user.id,
+        roleId: user.roleId,
+        role: user.role.name.toUpperCase()
+      };
+      const token = authService.generateToken(tokenPayload);
 
-      // Tutor redirection—adjust to your tutor dashboard route.
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict',
+        path: '/'
+      });
+      res.cookie('username', user.username, { path: '/' });
+      
       return res.redirect('/tutor/tutordashboard');
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error.message });

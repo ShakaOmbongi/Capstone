@@ -1,26 +1,13 @@
-const jwt = require('jsonwebtoken'); // JWT library
-require('dotenv').config(); // Load env variables
+'use strict';
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'yourSecretKey';
 
-class AuthService {
-  // Generate a JWT token for a user
-  generateToken(user) {
-    const payload = {
-      id: user.id,
-      email: user.email,
-      role: user.role ? user.role.name : null, // Include role 
-    };
-
-    const secret = process.env.JWT_SECRET || 'defaultSecret';
-    const expiresIn = process.env.JWT_EXPIRES_IN || '1h';
-
-    return jwt.sign(payload, secret, { expiresIn });
+module.exports = {
+  generateToken: (payload) => {
+    console.log("Generating token with payload:", payload);
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+  },
+  verifyToken: (token) => {
+    return jwt.verify(token, JWT_SECRET);
   }
-
-  // Verify a JWT token and return its payload
-  verifyToken(token) {
-    const secret = process.env.JWT_SECRET || 'defaultSecret';
-    return jwt.verify(token, secret);
-  }
-}
-
-module.exports = new AuthService();
+};

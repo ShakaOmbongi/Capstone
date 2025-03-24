@@ -1,70 +1,76 @@
 'use strict';
 
 const learningStyleService = require('../services/learningStyleService');
+const LearningStyleResponse = require('../entities/LearningStyleResponse');
+
+// Hard-coded 10 questions (same as before)
+const HARD_CODED_QUESTIONS = [
+  { question: "I follow written directions better than oral directions.", options: ["Often", "Sometimes", "Seldom"] },
+  { question: "I can remember more about a subject through listening than reading.", options: ["Often", "Sometimes", "Seldom"] },
+  { question: "I bear down extremely hard when writing.", options: ["Often", "Sometimes", "Seldom"] },
+  { question: "I like to write things down or take notes for visual review.", options: ["Often", "Sometimes", "Seldom"] },
+  { question: "I require explanations of graphs, diagrams, or visual directions.", options: ["Often", "Sometimes", "Seldom"] },
+  { question: "I enjoy working with tools.", options: ["Often", "Sometimes", "Seldom"] },
+  { question: "I am skillful and enjoy developing and making graphs and charts.", options: ["Often", "Sometimes", "Seldom"] },
+  { question: "I can tell if sounds match when presented with pairs of sounds.", options: ["Often", "Sometimes", "Seldom"] },
+  { question: "I remember best by writing things down several times.", options: ["Often", "Sometimes", "Seldom"] },
+  { question: "I can understand and follow directions on maps.", options: ["Often", "Sometimes", "Seldom"] }
+];
 
 const learningStyleController = {
-  // GET /learning-style/questions
-  async getQuestions(req, res) {
-    try {
-      const questions = await learningStyleService.fetchQuestions();
-      return res.status(200).json({
-        status: 'success',
-        message: 'Learning style questions fetched',
-        data: questions
+  // GET /learning-style/quiz – serve the quiz form as HTML fragment
+  getQuizForm: (req, res) => {
+    let formHtml = `<form method="POST" action="/learning-style/quiz">`;
+    HARD_CODED_QUESTIONS.forEach((q, index) => {
+      formHtml += `<h3>Question ${index + 1}: ${q.question}</h3>`;
+      q.options.forEach(option => {
+        formHtml += `
+          <label>
+            <input type="radio" name="answer${index + 1}" value="${option}" required> ${option}
+          </label><br>
+        `;
       });
-    } catch (error) {
-      console.error('Error fetching questions:', error);
-      return res.status(500).json({ status: 'error', message: error.message });
-    }
+    });
+    formHtml += `<input type="hidden" name="userId" value="${req.user.id}">`;
+    formHtml += `<br><button type="submit">Submit Quiz</button></form>`;
+    res.send(formHtml);
   },
 
-  // POST /learning-style/responses
-  // Body: { responses: [ {questionId, answer}, ... ] }
-  async submitResponses(req, res) {
+  // POST /learning-style/quiz – process the quiz submission and return match result HTML fragment
+  async submitQuizForm(req, res) {
     try {
-      const { responses } = req.body;
-      if (!Array.isArray(responses) || responses.length === 0) {
-        return res.status(400).json({ status: 'error', message: 'No responses provided' });
+      const userId = req.body.userId;
+      const userRole = req.user.roleId; // numeric value from token
+      const answers = [];
+      for (let i = 1; i <= 10; i++) {
+        const answer = req.body[`answer${i}`];
+        if (!answer) return res.status(400).send(`Missing answer for question ${i}`);
+        answers.push(answer);
       }
-
-      const userId = req.user.id; // from authMiddleware
-      await learningStyleService.saveUserResponses(userId, responses);
-
-      return res.status(201).json({
-        status: 'success',
-        message: 'Responses saved successfully'
-      });
+      await learningStyleService.saveUserResponses(userId, userRole, answers);
+      const matchResult = await learningStyleService.generateMatch(userId);
+      
+      let resultHtml = `<h2>Match Result</h2>`;
+      if (!matchResult.matchUser) {
+        resultHtml += `<p>No suitable match found.</p>`;
+      } else {
+        resultHtml += `<p>Match Score: ${matchResult.score}</p>`;
+        resultHtml += `<p>Matched User: ${matchResult.matchUser.username}</p>`;
+        resultHtml += `<p>Explanation: ${matchResult.explanation}</p>`;
+      }
+      res.send(resultHtml);
     } catch (error) {
-      console.error('Error submitting responses:', error);
-      return res.status(500).json({ status: 'error', message: error.message });
+      res.status(500).send("Error processing quiz: " + error.message);
     }
   },
 
-  // GET /learning-style/match
-  async generateMatch(req, res) {
+  async quizTaken(req, res) {
     try {
       const userId = req.user.id;
-      const { matchUser, score, explanation } = await learningStyleService.generateMatch(userId);
-
-      if (!matchUser) {
-        return res.status(200).json({
-          status: 'success',
-          message: 'No suitable match found'
-        });
-      }
-
-      return res.status(200).json({
-        status: 'success',
-        message: 'Match found',
-        data: {
-          matchedUser: matchUser,
-          score,
-          explanation
-        }
-      });
+      const existingResponse = await LearningStyleResponse.findOne({ where: { userId } });
+      res.json({ taken: !!existingResponse });
     } catch (error) {
-      console.error('Error generating match:', error);
-      return res.status(500).json({ status: 'error', message: error.message });
+      res.status(500).json({ status: 'error', message: error.message });
     }
   }
 };

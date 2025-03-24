@@ -24,7 +24,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-
 // Import authentication middleware
 const { authenticateJWT } = require('./src/middleware/authMiddleware');
 
@@ -39,10 +38,12 @@ const sessionRoutes = require('./src/routes/tutoringSessionRoutes');
 const chatMessageRoutes = require('./src/routes/chatMessageRoutes');
 const studentTestRoutes = require('./src/routes/studentTestRoutes');
 const learningStyleRoutes = require('./src/routes/learningStyleRoutes');
+
 const openAI = require('./src/utils/openAIClient');
 
+// Example function to test OpenAI (update variable name accordingly)
 async function doSomethingGPT() {
-  const response = await openai.chat.completions.create({
+  const response = await openAI.chat.completions.create({
     model: 'gpt-3.5-turbo',
     messages: [{ role: 'user', content: 'Hello GPT!' }]
   });
@@ -61,7 +62,6 @@ app.use('/student/test', authenticateJWT, studentTestRoutes);
 app.use('/tutor', authenticateJWT, tutorRoutes);
 app.use('/', logoutRoutes);
 app.use('/sessions', authenticateJWT, sessionRoutes);
-
 app.use('/chat-messages', authenticateJWT, chatMessageRoutes);
 
 // Catch-all handler for 404 - Not Found
