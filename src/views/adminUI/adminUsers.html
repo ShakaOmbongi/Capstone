@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin User Controls - PeerAid</title>
-  <link rel="stylesheet" href="/assets/css/admin.css" />
+  <title>Admin User Management - PeerAid</title>
+  <link rel="stylesheet" href="/assets/css/admin.css">
   <style>
     /* Basic styling for the users table */
     table {
@@ -20,9 +20,6 @@
       background-color: #f2f2f2;
       text-align: left;
     }
-    button {
-      margin-right: 5px;
-    }
   </style>
 </head>
 <body>
@@ -30,15 +27,16 @@
     <h2>PeerAid Admin</h2>
     <ul>
       <li><a href="admin-dashboard.html">Dashboard</a></li>
-      <li><a class="active" href="admin-user-controls.html">User Management</a></li>
+      <li><a class="active" href="admin-users.html">User Management</a></li>
       <li><a href="admin-feedback.html">Feedback</a></li>
-      <li><a href="admin-sessions.html">Session Management</a></li>
+      <li><a href="admin-analytics.html">Analytics</a></li>
+      <li><a href="admin-flagged-users.html">Flagged Users</a></li>
       <li><a href="../landingUI/welcome.html">Logout</a></li>
     </ul>
   </div>
 
   <div class="main-content">
-    <h1>User Management & Controls</h1>
+    <h1>User Management</h1>
     <table id="usersTable">
       <thead>
         <tr>
@@ -46,25 +44,32 @@
           <th>Username</th>
           <th>Email</th>
           <th>Role</th>
-          <th>Status</th>
-          <th>Actions</th>
+          <th>Flag Reason</th>
+          <th>Suspended</th>
         </tr>
       </thead>
       <tbody>
-        <!-- User rows will be dynamically inserted here -->
+        <!-- User rows will be inserted dynamically -->
       </tbody>
     </table>
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", async function() {
+      // Retrieve the admin token from localStorage (set on admin login)
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        alert("No admin token found. Please log in again.");
+        window.location.href = '/admin-login.html'; // or your admin login page path
+        return;
+      }
+
       try {
-        // Fetch all users from the admin API.
         const response = await fetch("http://localhost:3000/admin/users", {
           method: "GET",
           headers: {
-            "Content-Type": "application/json"
-            // Add an Authorization header if needed.
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
           }
         });
         const data = await response.json();
@@ -77,70 +82,19 @@
               <td>${user.id}</td>
               <td>${user.username}</td>
               <td>${user.email}</td>
-              <td>${user.role}</td>
-              <td>${user.suspended ? "Suspended" : "Active"}</td>
-              <td>
-                <button class="change-role" data-id="${user.id}">Change Role</button>
-                <button class="toggle-suspend" data-id="${user.id}">${user.suspended ? "Activate" : "Suspend"}</button>
-              </td>
+              <td>${user.roleId}</td>
+              <td>${user.flagReason ? user.flagReason : "N/A"}</td>
+              <td>${user.suspended ? "Yes" : "No"}</td>
             `;
             usersTableBody.appendChild(row);
           });
-
-          // Attach event listener for Change Role buttons.
-          document.querySelectorAll(".change-role").forEach(button => {
-            button.addEventListener("click", async function() {
-              const userId = this.getAttribute("data-id");
-              const newRole = prompt("Enter new role (e.g., student, tutor, admin):");
-              if (newRole) {
-                const updateResponse = await fetch(`http://localhost:3000/admin/users/${userId}/role`, {
-                  method: "PUT",
-                  headers: {
-                    "Content-Type": "application/json"
-                    // Include Authorization header if needed.
-                  },
-                  body: JSON.stringify({ role: newRole })
-                });
-                const updateData = await updateResponse.json();
-                if (updateResponse.ok) {
-                  alert("User role updated successfully");
-                  location.reload();
-                } else {
-                  alert(updateData.error || "Failed to update user role");
-                }
-              }
-            });
-          });
-
-          // Attach event listener for Suspend/Activate buttons.
-          document.querySelectorAll(".toggle-suspend").forEach(button => {
-            button.addEventListener("click", async function() {
-              const userId = this.getAttribute("data-id");
-              if (confirm("Are you sure you want to change the user's suspended status?")) {
-                const suspendResponse = await fetch(`http://localhost:3000/admin/users/${userId}/suspend`, {
-                  method: "PUT",
-                  headers: {
-                    "Content-Type": "application/json"
-                    // Include Authorization header if needed.
-                  },
-                  // Optionally, you could pass additional data in the body if needed.
-                  body: JSON.stringify({})
-                });
-                const suspendData = await suspendResponse.json();
-                if (suspendResponse.ok) {
-                  alert("User status updated successfully");
-                  location.reload();
-                } else {
-                  alert(suspendData.error || "Failed to update user status");
-                }
-              }
-            });
-          });
         } else {
           console.error("Failed to fetch users:", data.error);
+          alert("Error fetching users: " + data.error);
         }
       } catch (error) {
         console.error("Error fetching users:", error);
+        alert("An error occurred while fetching users.");
       }
     });
   </script>

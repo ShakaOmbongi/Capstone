@@ -25,10 +25,11 @@ router.get('/tutorlogin', (req, res) => {
   res.sendFile(path.join(__dirname, '../views/landingUI/tutorlogin.html'));
 });
 
-// Admin login page.
-router.get('/admin-dashboard.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/adminUI/admin-dashboard.html'));
+// Admin Login Route (public)
+router.get('/adminlogin', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/LandingUI/adminlogin.html'));
 });
+
 
 // Additional static pages.
 router.get('/about', (req, res) => {
