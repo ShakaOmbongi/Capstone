@@ -21,18 +21,23 @@
       <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
         <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
         <ul class="nav flex-column">
-          <li class="nav-item">
-              <a class="nav-link active" href="/student/studentdashboard">Home</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="/student/studentprofile">Profile</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="/student/studentschedule">Schedule</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="/logout">Logout</a>
-          </li>
+
+        <li class="nav-item"><a class="nav-link active" href="/student/studentdashboard">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/studentschedule">Calendar</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/chat">Messages</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/studentprofile">Profile</a></li>
+
+        <hr />
+
+        <li class="nav-item"><a class="nav-link" href="/student/bookSessions">Book a Session</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/tutoringSessions">Create a Session</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/findSessions">Find a Session</a></li>
+
+        <hr />
+
+        <li class="nav-item"><a class="nav-link" href="/student/About">About Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/settings">Settings</a></li>
+        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
       </ul>
   </nav>
         
@@ -48,7 +53,7 @@
         </div>
         
         <!-- Upcoming Schedule Section -->
-        <section class="mb-4">
+        <section class="mb-4" id="upcoming-schedule">
           <h2>Upcoming Schedule</h2>
           <div class="row">
             <div class="col-md-4">
@@ -79,8 +84,8 @@
         </section>
 
         <!-- Peer/Tutor Matches Section -->
-<section class="mb-4">
-  <h2>Peer/Tutor Matches</h2>
+        <section class="mb-4" id="peer-tutor-matches">
+          <h2>Peer/Tutor Matches</h2>
   <div class="row">
     
     <!-- Tutor Card 1 -->
@@ -147,7 +152,7 @@
 </section>
 
 <!-- Session Requests Section -->
-<section class="mb-4">
+<section class="mb-4" id="session-requests">
   <h2>Session Requests</h2>
   <div class="row">
     
@@ -167,7 +172,7 @@
             <p class="card-text text-secondary">I have a question about an alegbra problem. Please help!</p>
 
              <!-- Left-Aligned View Request Link -->
-        <a href="/student/viewrequest" class="text-dark" style="font-size: 14px; text-decoration: underline;">View Request</a>
+        <a href="/student/details" class="text-dark" style="font-size: 14px; text-decoration: underline;">View Request</a>
           </div>
         </div>
       </div>
@@ -189,7 +194,7 @@
         <p class="card-text text-secondary">I really need help with my calc assignment. I'd love to meet when you're free.</p>
         
         <!-- Left-Aligned View Request Link -->
-        <a href="/student/viewrequest" class="text-dark" style="font-size: 14px; text-decoration: underline;">View Request</a>
+        <a href="/student/details" class="text-dark" style="font-size: 14px; text-decoration: underline;">View Request</a>
       </div>
     </div>
   </div>
@@ -211,7 +216,7 @@
             <p class="card-text text-secondary">I am having trouble wiht psysics and I was hoping you could help?</p>
 
              <!-- Left-Aligned View Request Link -->
-        <a href="/student/viewrequest" class="text-dark" style="font-size: 14px; text-decoration: underline;">View Request</a>
+        <a href="/student/details" class="text-dark" style="font-size: 14px; text-decoration: underline;">View Request</a>
           </div>
         </div>
       </div>
@@ -226,14 +231,14 @@
         <section class="mb-4">
           <div class="row">
             <!-- Calendar Section -->
-            <div class="col-md-6">
+            <div class="col-md-6" id="calendar-section">
               <h3>Calendar</h3>
               <div id="calendar-container" class="card shadow-sm p-3">
                 <div id="calendar"></div>
               </div>
             </div>
             <!-- Messages Section -->
-<div class="col-md-6">
+<div class="col-md-6" id="messages-section">
   <h3>Messages</h3>
   <div class="card shadow-sm">
       <div class="card-body p-0">
@@ -329,7 +334,9 @@
   
   <!-- Script to initialize FullCalendar with bookings -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
   <script src="../../../assets/js/calender.js" ></script>
+  <script src="../../../assets/js/visibility.js" ></script>
   
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
