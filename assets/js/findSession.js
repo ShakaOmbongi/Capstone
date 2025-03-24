@@ -160,10 +160,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
   }
 
-  // Example function to open an edit modal.
-  // Ensure your HTML includes a modal with the corresponding IDs.
+  // Function to open the edit modal and populate it with session data.
   function openEditModal(sessionId) {
-    // Fetch session details
+    // Fetch session details.
     fetch(`http://localhost:3000/sessions/${sessionId}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
@@ -183,6 +182,34 @@ document.addEventListener('DOMContentLoaded', async function() {
         alert("Error loading session for editing");
       });
   }
+
+  // Event listener for edit form submission.
+  document.getElementById('editSessionForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const sessionId = document.getElementById('editSessionId').value;
+    const updatedData = {
+      subject: document.getElementById('editSubject').value,
+      sessionDate: document.getElementById('editDate').value,
+      description: document.getElementById('editDescription').value,
+    };
+    const editResponse = await fetch(`http://localhost:3000/sessions/${sessionId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedData)
+    });
+    const result = await editResponse.json();
+    if (editResponse.ok) {
+      alert('Session updated successfully!');
+      // Hide the modal using Bootstrap's modal API.
+      bootstrap.Modal.getInstance(document.getElementById('editSessionModal')).hide();
+      loadSessions(); // Reload sessions list.
+    } else {
+      alert(result.error || 'Failed to update session');
+    }
+  });
 
   loadSessions();
 });

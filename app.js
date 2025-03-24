@@ -39,10 +39,19 @@ const sessionRoutes = require('./src/routes/tutoringSessionRoutes');
 const chatMessageRoutes = require('./src/routes/chatMessageRoutes');
 const studentTestRoutes = require('./src/routes/studentTestRoutes');
 
+// Admin login route
+const adminAuthRoutes = require('./src/routes/adminRoutesAuth');
+app.use('/admin/auth', adminAuthRoutes);
+
+// Admin routes (protected, from adminRoutes.js)
+const adminRoutes = require('./src/routes/adminRoutes');
+app.use('/admin', adminRoutes);
+
 // Mount routes
 app.use('/', landingRoutes);
 app.use('/signup', signupRoutes);
 app.use('/login', loginRoutes);
+
 
 // Apply authentication middleware on routes that require a valid token
 app.use('/student', authenticateJWT, studentRoutes);

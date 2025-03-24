@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Session Management - PeerAid</title>
+  <link rel="stylesheet" href="/assets/css/admin.css" />
+  <style>
+    /* Basic styling for the sessions table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    table th {
+      background-color: #f2f2f2;
+      text-align: left;
+    }
+    button {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>PeerAid Admin</h2>
+    <ul>
+      <li><a href="admin-dashboard.html">Dashboard</a></li>
+      <li><a href="admin-users.html">User Management</a></li>
+      <li><a class="active" href="admin-sessions.html">Session Management</a></li>
+      <li><a href="admin-feedback.html">Feedback</a></li>
+      <li><a href="../landingUI/welcome.html">Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <h1>All Tutoring Sessions</h1>
+    <table id="sessionsTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Tutor</th>
+          <th>Student</th>
+          <th>Subject</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Session rows will be inserted dynamically here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async function() {
+      try {
+        // Replace with your actual API endpoint
+        const response = await fetch("http://localhost:3000/admin/sessions", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+            // Include an Authorization header if needed.
+          }
+        });
+        const data = await response.json();
+        if (response.ok) {
+          const sessionsTableBody = document.querySelector("#sessionsTable tbody");
+          sessionsTableBody.innerHTML = ""; // Clear any existing rows.
+
+          data.sessions.forEach(session => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${session.id}</td>
+              <td>${session.tutor ? session.tutor.username : "N/A"}</td>
+              <td>${session.student ? session.student.username : "N/A"}</td>
+              <td>${session.subject}</td>
+              <td>${new Date(session.sessionDate).toLocaleString()}</td>
+              <td>${session.status}</td>
+              <td>${session.description || ""}</td>
+              <td>
+                <button class="delete-session" data-id="${session.id}">Delete</button>
+              </td>
+            `;
+            sessionsTableBody.appendChild(row);
+          });
+
+          // Add event listeners for "Delete" buttons.
+          document.querySelectorAll(".delete-session").forEach(button => {
+            button.addEventListener("click", async function() {
+              const sessionId = this.getAttribute("data-id");
+              if (!confirm("Are you sure you want to delete this session?")) return;
+              const deleteResponse = await fetch(`http://localhost:3000/admin/sessions/${sessionId}`, {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json"
+                  // Include Authorization header if needed.
+                }
+              });
+              const deleteData = await deleteResponse.json();
+              if (deleteResponse.ok) {
+                alert("Session deleted successfully");
+                // Optionally, re-fetch the sessions to update the table.
+                location.reload();
+              } else {
+                alert(deleteData.error || "Failed to delete session");
+              }
+            });
+          });
+        } else {
+          console.error("Failed to fetch sessions:", data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching sessions:", error);
+      }
+    });
+  </script>
+</body>
+</html>
