@@ -35,6 +35,8 @@ const sessionRoutes = require('./src/routes/tutoringSessionRoutes');
 const chatMessageRoutes = require('./src/routes/chatMessageRoutes');
 const studentTestRoutes = require('./src/routes/studentTestRoutes');
 
+const tutorUserRoutes = require('./src/routes/tutorUserRoutes');
+app.use('/tutoruser', tutorUserRoutes);
 
 // Admin routes
 const adminAuthRoutes = require('./src/routes/adminRoutesAuth');
