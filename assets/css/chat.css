@@ -1,5 +1,4 @@
 /* ************************* GENERAL STYLES *********************** */
-
 body {
   font-family: Arial, sans-serif;
   background: #f8f9fa;
@@ -54,7 +53,7 @@ body {
 
 /* ************************* MAIN CHAT CONTENT *********************** */
 .main-content {
-  margin-left: 280px; /* Matches the sidebar width */
+  margin-left: 250px; /* Matches sidebar width */
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -74,51 +73,71 @@ body {
   font-weight: bold;
 }
 
-/* Chat Container */
-.chat-container {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  overflow-y: auto;
-  background: #fff;
-}
-
-/* Messages Section */
+/* ************************* CHAT MESSAGES *********************** */
 .message-container {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   gap: 12px;
   overflow-y: auto;
-  padding-bottom: 10px;
+  padding: 20px;
+  background: #ffffff;
+  height: calc(100vh - 120px); /* Prevent overlap with input box */
+  scrollbar-width: thin;
+  width: calc(100% - 250px); /* Full width minus sidebar */
 }
 
-/* Individual Messages */
+/* Chat Bubbles */
 .message {
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* User messages (Right Side, RED) */
+.message.user {
+  justify-content: flex-end;
+}
+
+.message.user .bubble {
+  background: #f84040;
+  color: white;
   padding: 12px 15px;
-  border-radius: 12px;
-  max-width: 60%;
+  border-radius: 16px;
+  max-width: 50%;
   word-wrap: break-word;
   font-size: 1rem;
-  line-height: 1.4;
+  text-align: left;
+  border-top-right-radius: 0;
+  font-weight: bold;
   display: inline-block;
 }
 
-/* User messages (Right Side) */
-.message.user {
-  background: #f84040;
-  color: white;
-  align-self: flex-end;
-  border-top-right-radius: 0;
+/* Receiver messages (Left Side, BLUE) */
+.message.receiver {
+  justify-content: flex-start;
 }
 
-/* Tutor messages (Left Side) */
-.message.tutor {
+.message.receiver .bubble {
   background: #007bff;
   color: white;
-  align-self: flex-start;
+  padding: 12px 15px;
+  border-radius: 16px;
+  max-width: 50%;
+  word-wrap: break-word;
+  font-size: 1rem;
+  text-align: left;
   border-top-left-radius: 0;
+  font-weight: bold;
+  display: inline-block;
+}
+
+/* Sender Name Above Message */
+.sender-name {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 3px;
+  color: black;
 }
 
 /* ************************* CHAT INPUT BOX *********************** */
@@ -130,8 +149,8 @@ body {
   align-items: center;
   position: fixed;
   bottom: 0;
-  left: 290px; /* Adjusted for sidebar */
-  width: calc(100% - 280px); /* Full width minus sidebar */
+  left: 250px; /* Matches sidebar width */
+  width: calc(100% - 250px); /* Full width minus sidebar */
 }
 
 .chat-input-container input {
