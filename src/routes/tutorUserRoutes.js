@@ -8,6 +8,11 @@ const tutoringSessionController = require('../controllers/tutoringSessionControl
 
 const router = express.Router();
 
+
+// Redirect root of tutor user routes to the dashboard
+router.get('/', authenticateJWT, (req, res) => {
+    res.redirect('/tutoruser/tutordashboard');
+  });
 // Redirect to tutor dashboard
 router.get('/tutordashboard', authenticateJWT, (req, res) => {
     res.sendFile(path.join(__dirname, '../views/tutorUI/tutordashboard.html'));
