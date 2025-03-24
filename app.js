@@ -1,24 +1,20 @@
-'use strict';
+// app.js
 require('dotenv').config();
 const express = require('express');
-const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const server = http.createServer(app); // Create HTTP server
+const io = new Server(server, {
+  cors: {
+    origin: "http://127.0.0.1:3000",
+    methods: ["GET", "POST"]
+  }
+});
 
-// Security middleware (Helmet helps secure HTTP headers)
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      "default-src": ["'self'"],
-      "script-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-      "style-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-    },
-  })
-);
-// Middleware for parsing JSON payloads and cookies
+// Middleware for parsing JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -27,42 +23,35 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 // Import authentication middleware
 const { authenticateJWT } = require('./src/middleware/authMiddleware');
 
-// Import route files
+// Serve static files (CSS, JS, Images)
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use('/css', express.static(path.join(__dirname, 'assets/css')));
+app.use('/images', express.static(path.join(__dirname, 'assets/images')));
+app.use('/js', express.static(path.join(__dirname, 'assets/js')));
+app.use('/views', express.static(path.join(__dirname, 'src/views')));
+
+// Import routes from `src/routes/`
 const landingRoutes = require('./src/routes/landingRoutes');
 const signupRoutes = require('./src/routes/signupRoutes');
 const loginRoutes = require('./src/routes/loginRoutes');
 const studentRoutes = require('./src/routes/studentRoutes');
-const tutorRoutes = require('./src/routes/tutorRoutes');
-const logoutRoutes = require('./src/routes/logoutRoutes');
-const sessionRoutes = require('./src/routes/tutoringSessionRoutes');
+const tutorRoutes   = require('./src/routes/tutorRoutes');
+const logoutRoutes  = require('./src/routes/logoutRoutes');
+const sessionRoutes = require('./src/routes/tutoringSessionRoutes'); 
 const chatMessageRoutes = require('./src/routes/chatMessageRoutes');
-const studentTestRoutes = require('./src/routes/studentTestRoutes');
-const learningStyleRoutes = require('./src/routes/learningStyleRoutes');
 
-const openAI = require('./src/utils/openAIClient');
 
-// Example function to test OpenAI (update variable name accordingly)
-async function doSomethingGPT() {
-  const response = await openAI.chat.completions.create({
-    model: 'gpt-3.5-turbo',
-    messages: [{ role: 'user', content: 'Hello GPT!' }]
-  });
-  console.log(response.choices[0].message.content);
-}
 
 // Mount routes
-app.use('/', landingRoutes);
-app.use('/signup', signupRoutes);
-app.use('/login', loginRoutes);
-app.use('/learning-style', learningStyleRoutes);
+app.use('/', landingRoutes);       
+app.use('/signup', signupRoutes);   
+app.use('/login', loginRoutes);     
+app.use('/student', studentRoutes);  
+app.use('/tutor', tutorRoutes);      
+app.use('/', logoutRoutes);         
+app.use('/sessions', sessionRoutes); 
+app.use('/chat-messages', chatMessageRoutes);
 
-// Apply authentication middleware on routes that require a valid token
-app.use('/student', authenticateJWT, studentRoutes);
-app.use('/student/test', authenticateJWT, studentTestRoutes);
-app.use('/tutor', authenticateJWT, tutorRoutes);
-app.use('/', logoutRoutes);
-app.use('/sessions', authenticateJWT, sessionRoutes);
-app.use('/chat-messages', authenticateJWT, chatMessageRoutes);
 
 // Catch-all handler for 404 - Not Found
 app.use((req, res, next) => {
@@ -81,7 +70,25 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start the server
-app.listen(PORT, () => {
+// ========================== SOCKET.IO CHAT HANDLING ==========================
+io.on("connection", (socket) => {
+    console.log("A user connected:", socket.id);
+
+    // Handle receiving messages from clients
+    socket.on("chatMessage", (data) => {
+        console.log("Message received:", data);
+       
+        // Broadcast the message to all connected clients
+        io.emit("chatMessage", data);
+    });
+
+    // Handle user disconnecting
+    socket.on("disconnect", () => {
+        console.log("A user disconnected:", socket.id);
+    });
+});
+
+// Start the server with Socket.io support
+server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

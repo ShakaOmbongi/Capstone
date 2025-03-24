@@ -47,6 +47,7 @@
     }
   </style>
 </head>
+
 <body class="bg-light">
   <div class="container-fluid">
     <div class="row">
@@ -54,14 +55,16 @@
       <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
         <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
         <ul class="nav flex-column">
-          <li class="nav-item"><a class="nav-link" href="/student/profile">Profile</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/tutoringSessions">Create a Session</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/findSessions">Find a Session</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/chat">Chatrooms</a></li>
-          <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Home</a>
+          </li>
+          <!-- Logout link using route -->
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
         </ul>
       </nav>
-
+      
       <!-- Main Content -->
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         <div class="py-4" style="color: black;">
@@ -71,8 +74,55 @@
         </div>
         <section class="mb-4">
           <h2>Upcoming Schedule</h2>
-          <div id="calendar-container" class="card shadow-sm p-3">
-            <div id="calendar"></div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Math Tutoring</h5>
+                  <p class="card-text">9 Feb | 11:00 AM</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Science Study Group</h5>
+                  <p class="card-text">11 Feb | 11:00 AM</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Explore Forest Park</h5>
+                  <p class="card-text">13 Dec | 10:00 AM</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Calendar and Messages Section -->
+        <section class="mb-4">
+          <div class="row">
+            <!-- Calendar Section -->
+            <div class="col-md-6">
+              <h3>Calendar</h3>
+              <div id="calendar-container" class="card shadow-sm p-3">
+                <div id="calendar"></div>
+              </div>
+            </div>
+            <!-- Messages Section -->
+            <div class="col-md-6">
+              <h3>💬 Messages</h3>
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <p><strong>Jane Cooper:</strong> Morning! ☀️</p>
+                  <p><strong>Brooklyn Simon:</strong> Let's join us, Wendy!</p>
+                  <p><strong>Brian Tracy:</strong> That’s cool, see you soon!</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
