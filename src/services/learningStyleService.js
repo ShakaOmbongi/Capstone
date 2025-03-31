@@ -58,8 +58,6 @@ module.exports = {
     } else {
       return { matchUser: null, score: 0, explanation: 'User role not supported for matching' };
     }
-    const oppositeRole = await Role.findOne({ where: { name: oppositeRoleName } });
-    if (!oppositeRole) return { matchUser: null, score: 0, explanation: `Opposite role (${oppositeRoleName}) not found` };
 
     const candidates = await User.findAll({ where: { roleId: oppositeRole.id } });
     if (!candidates || candidates.length === 0) return { matchUser: null, score: 0, explanation: 'No potential matches found' };
