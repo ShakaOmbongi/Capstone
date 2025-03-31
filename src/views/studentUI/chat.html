@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeerAid Chat</title>
+    <link rel="stylesheet" href="../../../assets/css/chat.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
+        <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
+        <ul class="nav flex-column">
+
+        <li class="nav-item"><a class="nav-link" href="/student/studentdashboard">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/studentschedule">Calendar</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/student/chat">Messages</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/studentprofile">Profile</a></li>
+
+        <hr />
+
+        <li class="nav-item"><a class="nav-link" href="/student/bookSessions">Book a Session</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/tutoringSessions">Create a Session</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/findSessions">Find a Session</a></li>
+
+        <hr />
+
+        <li class="nav-item"><a class="nav-link" href="/student/About">About Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/faq">FAQs</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/settings">Settings</a></li>
+        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+      </ul>
+  </nav>
+
+    <!-- Chat Section -->
+    <main class="main-content">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <h2>Study Group Chat</h2>
+        </div>
+
+        <!-- Chat Messages -->
+        <section class="chat-container">
+            <div id="messages" class="message-container">
+                <!-- Messages will be added dynamically -->
+            </div>
+        </section>
+
+        <!-- Chat Input -->
+        <div class="chat-input-container">
+            <input type="text" id="username" placeholder="Enter your name..." required>
+            <input type="text" id="messageInput" placeholder="Type your message..." required>
+            <button type="submit" id="sendBtn">Send</button>
+        </div>
+    </main>
+
+    <script>
+        const socket = io("http://localhost:3000");
+        const messageInput = document.getElementById("messageInput");
+        const usernameInput = document.getElementById("username");
+        const messages = document.getElementById("messages");
+        const sendBtn = document.getElementById("sendBtn");
+
+        sendBtn.addEventListener("click", function () {
+            const messageText = messageInput.value.trim();
+            const username = usernameInput.value.trim();
+            
+            if (messageText !== "" && username !== "") {
+                const messageData = { username, text: messageText };
+                
+                // Send message to the server
+                socket.emit("chatMessage", messageData);
+                
+                // Append message to the chat for the sender
+                appendMessage(messageData.username, messageData.text, "user");
+
+                // Clear input field
+                messageInput.value = "";
+            }
+        });
+
+        // Listen for messages from the server
+        socket.on("chatMessage", function (data) {
+            appendMessage(data.username, data.text, "tutor");
+        });
+
+        // Function to append messages to the chat window
+        function appendMessage(username, text, senderType) {
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("message", senderType);
+            messageElement.innerHTML = `<strong>${username}:</strong> ${text}`;
+            messages.appendChild(messageElement);
+            messages.scrollTop = messages.scrollHeight; // Auto-scroll
+        }
+    </script>
+
+</body>
+</html>

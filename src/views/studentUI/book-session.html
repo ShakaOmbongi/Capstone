@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Tutoring Session</title>
+    <link rel="stylesheet" href="../../../assets/css/booking.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
+        <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
+        <ul class="nav flex-column">
+
+        <li class="nav-item"><a class="nav-link" href="/student/studentdashboard">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/studentschedule">Calendar</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/chat">Messages</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/studentprofile">Profile</a></li>
+
+        <hr />
+
+        <li class="nav-item"><a class="nav-link active" href="/student/bookSessions">Book a Session</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/tutoringSessions">Create a Session</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/findSessions">Find a Session</a></li>
+
+        <hr />
+
+        <li class="nav-item"><a class="nav-link" href="/student/About">About Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/faq">FAQs</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/settings">Settings</a></li>
+        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+      </ul>
+  </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h2>Book a Tutoring Session</h2>
+
+        <form id="bookingForm">
+            <label for="tutor">Select Tutor:</label>
+            <select id="tutor" required>
+                <option value="">-- Select a Tutor --</option>
+                <option value="tutor1">John Doe (Math)</option>
+                <option value="tutor2">Jane Smith (Science)</option>
+                <option value="tutor3">Michael Lee (English)</option>
+            </select>
+
+            <label for="date">Select Date:</label>
+            <input type="date" id="date" required>
+
+            <label for="time">Select Time:</label>
+            <input type="time" id="time" required>
+
+            <label for="notes">Additional Notes (Optional):</label>
+            <textarea id="notes" placeholder="Any specific topics or questions?"></textarea>
+
+            <button type="submit">Book Session</button>
+        </form>
+
+        <p id="confirmationMessage" style="display: none; color: green;"></p>
+    </main>
+
+    <script>
+        $("#bookingForm").on("submit", function(event) {
+            event.preventDefault();
+
+            const bookingData = {
+                tutor: $("#tutor").val(),
+                date: $("#date").val(),
+                time: $("#time").val(),
+                notes: $("#notes").val()
+            };
+
+            $.post("/book-session", bookingData, function(response) {
+                $("#confirmationMessage").text(response.message).show();
+                $("#bookingForm").trigger("reset");  // Clear the form
+            }).fail(function() {
+                alert("Error booking session. Please try again.");
+            });
+        });
+    </script>
+
+</body>
+</html>

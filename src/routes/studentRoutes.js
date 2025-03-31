@@ -57,6 +57,9 @@ router.get('/studentdashboard', authenticateJWT, (req, res) => {
 router.get('/profile', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentProfile.html'));
 });
+router.get('/bookSessions', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/studentUI/book-session.html'));
+});
 router.get('/findSessions', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentFindSession.html'));
 });
@@ -65,6 +68,18 @@ router.get('/tutoringSessions', authenticateJWT, (req, res) => {
 });
 router.get('/chat', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentChatrooms.html'));
+});
+router.get('/settings', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/studentUI/settings.html'));
+});
+router.get('/details', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/studentUI/viewDetails.html'));
+});
+router.get('/About', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/studentUI/StudentAbout.html'));
+});
+router.get('/faq', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/studentUI/faq.html'));
 });
 
 // Student creates a tutoring session

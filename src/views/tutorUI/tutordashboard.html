@@ -11,6 +11,7 @@
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
   <!-- Custom Styles -->
   <link rel="stylesheet" href="../../../assets/css/style.css">
+<<<<<<< HEAD
   <style>
     /* Modal Styles for Quiz Popup */
     .modal {
@@ -47,6 +48,11 @@
       color: black;
     }
   </style>
+=======
+  
+  <!-- Custom JS -->
+  <link rel="stylesheet" href="../../../assets/css/script.css">
+>>>>>>> origin/Frontend-to-Backend
 </head>
 <body class="bg-light">
   <div class="container-fluid">
@@ -55,6 +61,7 @@
       <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
         <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
         <ul class="nav flex-column">
+<<<<<<< HEAD
           <!-- Updated links to match tutor pages -->
           <li class="nav-item"><a class="nav-link" href="/tutor/tutordashboard">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link" href="/tutor/tutorprofile">Profile</a></li>
@@ -62,6 +69,21 @@
           <li class="nav-item"><a class="nav-link" href="/tutor/chat">Chatrooms</a></li>
           <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
         </ul>
+=======
+          <li class="nav-item">
+              <a class="nav-link active" href="/tutor/tutordashboard">Home</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="/tutor/tutorprofile">Profile</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="/tutor/tutorschedule">Schedule</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+          </li>
+      </ul>
+>>>>>>> origin/Frontend-to-Backend
       </nav>
 
       <!-- Main Content -->
@@ -74,6 +96,7 @@
 
         <!-- Upcoming Sessions Section -->
         <section class="mb-4">
+<<<<<<< HEAD
           <h2>Upcoming Tutoring Sessions</h2>
           <div class="row" id="upcomingSessions">
             <p>Loading sessions...</p>
@@ -81,8 +104,116 @@
         </section>
 
         <!-- Calendar & Notifications Section -->
+=======
+          <h2>Upcoming Schedule</h2>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Math Tutoring</h5>
+                  <p class="card-text">9 Feb | 11:00 AM</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Science Study Group</h5>
+                  <p class="card-text">11 Feb | 11:00 AM</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Math Tutoring</h5>
+                  <p class="card-text">23 Feb | 10:00 AM</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Session Requests Section -->
+<section class="mb-4">
+  <h2>Session Requests</h2>
+  <div class="row">
+    
+    <!-- Tutor Card 1 -->
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body d-flex">
+          <img src="../../../assets/images/unsplash-2.jpg" class="rounded-circle" 
+               alt="Tutor Profile Picture" style="width: 80px; height: 80px; object-fit: cover;">
+          <div class="ms-3">
+            <h5 class="card-title mb-1">
+              <a href="/student/studentmatches" style="text-decoration: none; color: inherit;">
+                Sarah Wattson
+              </a>
+            </h5>
+            <p class="card-text mb-1 text-muted">Algebra & Physics</p>
+            <p class="card-text text-secondary">I have a question about an alegbra problem. Please help!</p>
+
+             <!-- Left-Aligned View Request Link -->
+        <a href="/student/viewrequest" class="text-dark" style="font-size: 14px; text-decoration: underline;">View Request</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tutor Card 2 -->
+<div class="col-md-4">
+  <div class="card shadow-sm">
+    <div class="card-body d-flex">
+      <img src="../../../assets/images/unsplash-3.jpg" class="rounded-circle" 
+           alt="Tutor Profile Picture" style="width: 80px; height: 80px; object-fit: cover;">
+      <div class="ms-3">
+        <h5 class="card-title mb-1">
+          <a href="/student/studentmatches" style="text-decoration: none; color: inherit;">
+            Emma Larson
+          </a>
+        </h5>
+        <p class="card-text mb-1 text-muted">Calculus & Statistics</p>
+        <p class="card-text text-secondary">I really need help with my calc assignment. I'd love to meet when you're free.</p>
+        
+        <!-- Left-Aligned View Request Link -->
+        <a href="/student/viewrequest" class="text-dark" style="font-size: 14px; text-decoration: underline;">View Request</a>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    <!-- Tutor Card 3 -->
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body d-flex">
+          <img src="../../../assets/images/unsplash-1.jpg" class="rounded-circle" 
+               alt="Tutor Profile Picture" style="width: 80px; height: 80px; object-fit: cover;">
+          <div class="ms-3">
+            <h5 class="card-title mb-1">
+              <a href="/student/studentmatches" style="text-decoration: none; color: inherit;">
+                John Doe
+              </a>
+            </h5>
+            <p class="card-text mb-1 text-muted">Physics & Engineering</p>
+            <p class="card-text text-secondary">I am having trouble wiht psysics and I was hoping you could help?</p>
+
+             <!-- Left-Aligned View Request Link -->
+        <a href="/student/viewrequest" class="text-dark" style="font-size: 14px; text-decoration: underline;">View Request</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</section>
+
+        
+        <!-- Calendar and Messages Section -->
+>>>>>>> origin/Frontend-to-Backend
         <section class="mb-4">
           <div class="row">
+            <!-- Calendar Section -->
             <!-- Calendar Section -->
             <div class="col-md-6">
               <h3>Calendar</h3>
@@ -90,6 +221,7 @@
                 <div id="calendar"></div>
               </div>
             </div>
+<<<<<<< HEAD
             <!-- Notifications Section -->
             <div class="col-md-6">
               <h3>Notifications</h3>
@@ -99,13 +231,67 @@
                   <p><strong>Feedback:</strong> Your latest session review is available.</p>
                   <p><strong>Reminder:</strong> Upcoming session in 1 hour.</p>
                 </div>
+=======
+            <!-- Messages Section -->
+<div class="col-md-6">
+  <h3>Messages</h3>
+  <div class="card shadow-sm">
+      <div class="card-body p-0">
+          <!-- Message 1 -->
+          <a href="/chat/jane-cooper" class="d-flex align-items-center p-3 border-bottom text-decoration-none text-dark">
+              <div class="d-flex flex-column">
+                  <strong>Jane Cooper</strong>
+                  <span class="text-muted small">Did you have any trouble with the assignment?</span>
+>>>>>>> origin/Frontend-to-Backend
               </div>
+          </a>
+
+          <!-- Message 2 -->
+          <a href="/chat/brooklyn-simon" class="d-flex align-items-center p-3 border-bottom text-decoration-none text-dark">
+              <div class="d-flex flex-column">
+                  <strong>Psy Study Group</strong>
+                  <span class="text-muted small">I have no idea.</span>
+              </div>
+          </a>
+
+          <!-- Message 3 -->
+          <a href="/chat/brian-tracy" class="d-flex align-items-center p-3 border-bottom text-decoration-none text-dark">
+              <div class="d-flex flex-column">
+                  <strong>Brian Tracy</strong>
+                  <span class="text-muted small">That’s cool, see you in class!</span>
+              </div>
+          </a>
+
+          <!-- Message 4 -->
+          <a href="/chat/brian-tracy" class="d-flex align-items-center p-3 border-bottom text-decoration-none text-dark">
+            <div class="d-flex flex-column">
+                <strong>Computer Science Study Group</strong>
+                <span class="text-muted small">How did you do the problem for #4?</span>
             </div>
+        </a>
+
+        <!-- Message 5 -->
+        <a href="/chat/brian-tracy" class="d-flex align-items-center p-3 border-bottom text-decoration-none text-dark">
+          <div class="d-flex flex-column">
+              <strong>Brooklyn Simon</strong>
+              <span class="text-muted small">Do you have the notes for the last test?</span>
           </div>
+      </a>
+      <!-- Message 6 -->
+      <a href="/chat/brian-tracy" class="d-flex align-items-center p-3 border-bottom text-decoration-none text-dark">
+        <div class="d-flex flex-column">
+            <strong>John Doe</strong>
+            <span class="text-muted small">Let me know if you need help.</span>
+        </div>
+    </a>
+      </div>
+  </div>
+</div>
         </section>
       </main>
     </div>
   </div>
+<<<<<<< HEAD
   
 <!-- Quiz Modal -->
 <div id="quizModal" class="modal">
@@ -172,6 +358,46 @@
       console.error('Error loading quiz form:', error);
     }
   }
+=======
+
+  <!-- Script to update greeting with the logged-in username -->
+  <script>
+    // Function to get a cookie by name
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+    
+    // demo for name: update the greeting element with the username from the cookie
+    document.addEventListener('DOMContentLoaded', function () {
+      const username = getCookie('username');
+      if (username) {
+        document.getElementById('greeting').textContent = `Hello, ${username}`;
+      }
+    });
+  </script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var calendarEl = document.getElementById('calendar');
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: [
+          { title: 'Meeting', start: '2025-02-09T11:00:00', end: '2025-02-09T12:00:00' },
+          { title: 'Conference', start: '2025-02-15', allDay: true },
+          { title: 'Workshop', start: '2025-02-20T14:00:00' }
+        ]
+      });
+      calendar.render();
+    });
+  </script>
+>>>>>>> origin/Frontend-to-Backend
 
   function closeModal() {
     document.getElementById('quizModal').style.display = 'none';
