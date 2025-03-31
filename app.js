@@ -6,7 +6,6 @@ const http = require('http');
 const { Server } = require('socket.io'); // Ensure this is also imported if using Socket.io
 const cookieParser = require('cookie-parser');
 const path = require('path');
-const helmet = require('helmet');
 
 
 const app = express();
@@ -51,7 +50,6 @@ app.use('/', landingRoutes);
 app.use('/signup', signupRoutes);
 app.use('/login', loginRoutes);
 app.use('/learning-style', learningStyleRoutes);
-origin/Frontend-to-Backend
 
 // Apply authentication middleware on routes that require a valid token
 app.use('/student', authenticateJWT, studentRoutes);
