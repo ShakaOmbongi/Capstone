@@ -25,19 +25,23 @@ const signUpController = {
       if (await userService.emailExists(email)) {
         return res.status(400).json({ status: 'error', message: 'Email already exists' });
       }
+
       const user = await userService.registerUser({
         username,
         email,
         password,
         roleId: studentRole.id,
       });
+
+      // Generate a token that includes numeric roleId and role name
       const token = authService.generateToken({
         id: user.id,
         roleId: studentRole.id,
-        role: studentRole.name.toUpperCase()
+        role: studentRole.name.toUpperCase(),
       });
+      // Set the token as an httpOnly cookie
       res.cookie('token', token, { httpOnly: true, sameSite: 'Strict' });
-      // Redirect to student dashboard where the quiz pop-up will appear
+      // Redirect to the student dashboard
       return res.redirect('/student/studentdashboard');
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error.message });
@@ -60,18 +64,21 @@ const signUpController = {
       if (await userService.emailExists(email)) {
         return res.status(400).json({ status: 'error', message: 'Email already exists' });
       }
+
       const user = await userService.registerUser({
         username,
         email,
         password,
         roleId: tutorRole.id,
       });
+
       const token = authService.generateToken({
         id: user.id,
         roleId: tutorRole.id,
-        role: tutorRole.name.toUpperCase()
+        role: tutorRole.name.toUpperCase(),
       });
       res.cookie('token', token, { httpOnly: true, sameSite: 'Strict' });
+      // Redirect to the tutor dashboard
       return res.redirect('/tutor/tutordashboard');
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error.message });

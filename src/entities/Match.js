@@ -14,21 +14,18 @@ Match.init(
     studentId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      field: 'student_id'
     },
     tutorId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      field: 'tutor_id'
     },
-    matchScore: {
-      type: DataTypes.INTEGER,
+    match_score: {
+      type: DataTypes.FLOAT,
       allowNull: false,
-      field: 'match_score'
     },
     explanation: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: false,
     }
   },
   {
@@ -36,7 +33,8 @@ Match.init(
     modelName: 'Match',
     tableName: 'matches',
     timestamps: true,
-    underscored: true,  // This will map createdAt -> created_at and updatedAt -> updated_at
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 );
 

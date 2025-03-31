@@ -14,7 +14,10 @@ LearningStyleResponse.init(
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      field: 'userId'
+    },
+    role: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     answer1: { type: DataTypes.TEXT, allowNull: false },
     answer2: { type: DataTypes.TEXT, allowNull: false },
@@ -26,8 +29,6 @@ LearningStyleResponse.init(
     answer8: { type: DataTypes.TEXT, allowNull: false },
     answer9: { type: DataTypes.TEXT, allowNull: false },
     answer10: { type: DataTypes.TEXT, allowNull: false },
-    // role is stored as a numeric value (e.g., 7 for STUDENT, 8 for TUTOR)
-    role: { type: DataTypes.INTEGER, allowNull: false }
   },
   {
     sequelize,
@@ -36,7 +37,6 @@ LearningStyleResponse.init(
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    underscored: true
   }
 );
 
