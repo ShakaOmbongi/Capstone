@@ -1,12 +1,8 @@
-'use strict';
 require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
-const http = require('http');
-const { Server } = require('socket.io'); // Ensure this is also imported if using Socket.io
 const cookieParser = require('cookie-parser');
 const path = require('path');
-
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,8 +28,6 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // Import authentication middleware
 const { authenticateJWT } = require('./src/middleware/authMiddleware');
-
-// Import route files
 const landingRoutes = require('./src/routes/landingRoutes');
 const signupRoutes = require('./src/routes/signupRoutes');
 const loginRoutes = require('./src/routes/loginRoutes');
