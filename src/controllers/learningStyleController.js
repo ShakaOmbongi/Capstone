@@ -47,7 +47,6 @@ const HARD_CODED_QUESTIONS = [
 
 const learningStyleController = {
   // GET /learning-style/quiz
-  // Returns an HTML form (with radio inputs named answer1 ... answer10) for the quiz.
   getQuizForm: (req, res) => {
     let formHtml = `
       <!DOCTYPE html>
@@ -70,14 +69,12 @@ const learningStyleController = {
         `;
       });
     });
-    // Hidden field for userId from the token
     formHtml += `<input type="hidden" name="userId" value="${req.user.id}">`;
     formHtml += `<br><button type="submit">Submit Quiz</button></form></body></html>`;
     res.send(formHtml);
   },
 
   // POST /learning-style/quiz
-  // Processes the submitted quiz form.
   submitQuizForm: async (req, res) => {
     try {
       const userId = req.body.userId;
@@ -107,6 +104,32 @@ const learningStyleController = {
         resultHtml += `<p>Match Score: ${matchResult.score}</p>`;
         resultHtml += `<p>Matched User: ${matchResult.matchUser.username}</p>`;
         resultHtml += `<p>Explanation: ${matchResult.explanation}</p>`;
+        resultHtml += `<p>Learning Style: ${matchResult.learning_style || 'N/A'}</p>`;
+        
+        // Accept Match button with no alert popup
+        resultHtml += `
+          <button id="acceptMatchBtn">Accept Match</button>
+          <script>
+            async function acceptMatch() {
+              try {
+                const res = await fetch('/student/matches/accept', {
+                  method: 'POST',
+                  credentials: 'include'
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                  // Instead of alerting, notify the parent window to close the quiz modal
+                  window.parent.postMessage('closeQuizModal', '*');
+                } else {
+                  console.error(data.message || 'Could not accept match');
+                }
+              } catch (error) {
+                console.error('Error accepting match:', error);
+              }
+            }
+            document.getElementById('acceptMatchBtn').addEventListener('click', acceptMatch);
+          </script>
+        `;
       }
       resultHtml += `</body></html>`;
       res.send(resultHtml);
@@ -116,7 +139,6 @@ const learningStyleController = {
   },
 
   // GET /learning-style/taken
-  // Returns whether the current user has already taken the quiz.
   checkQuizStatus: async (req, res) => {
     try {
       const userId = req.user.id;

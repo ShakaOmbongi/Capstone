@@ -21,11 +21,20 @@ Match.init(
     },
     match_score: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true,
     },
     explanation: {
       type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    learning_style: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    accepted: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
+      defaultValue: false
     }
   },
   {

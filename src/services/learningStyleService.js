@@ -29,13 +29,13 @@ const learningStyleService = {
     // Fetch the current user.
     const user = await User.findByPk(userId);
     if (!user) {
-      return { matchUser: null, score: 0, explanation: 'User not found' };
+      return { matchUser: null, score: 0, explanation: 'User not found', learning_style: 'N/A' };
     }
 
     // Fetch the user's latest quiz responses.
     const userResp = await this.getLatestUserResponses(userId);
     if (!userResp) {
-      return { matchUser: null, score: 0, explanation: 'No quiz responses for user' };
+      return { matchUser: null, score: 0, explanation: 'No quiz responses for user', learning_style: 'N/A' };
     }
     const userAnswers = [
       userResp.answer1, userResp.answer2, userResp.answer3,
@@ -47,14 +47,17 @@ const learningStyleService = {
     // Determine the opposite role.
     let oppositeRoleId = (user.roleId === 7) ? 8 : 7;
     // Get all users with the opposite role.
-    const candidates = await User.findAll({ where: { roleId: oppositeRoleId } });
+    const candidates = await User.findAll({
+      where: { roleId: oppositeRoleId }
+    });
     if (!candidates || candidates.length === 0) {
-      return { matchUser: null, score: 0, explanation: 'No potential matches found' };
+      return { matchUser: null, score: 0, explanation: 'No potential matches found', learning_style: 'N/A' };
     }
 
-    let bestScore = 0;
+    let bestScore = -1;
     let bestCandidate = null;
     let bestExplanation = '';
+    let bestLearningStyle = 'N/A';
 
     // Compare the current user's answers with each candidate's answers.
     for (const candidate of candidates) {
@@ -70,36 +73,40 @@ const learningStyleService = {
 
       const prompt = this._buildPrompt(user.roleId, userAnswers, candidate.roleId, candidateAnswers);
       try {
-        // Dynamically import the OpenAI module (ESM-only)
         const openaiModule = await import('openai');
         const { OpenAI } = openaiModule;
         const openai = new OpenAI({
           apiKey: process.env.OPENAI_API_KEY
         });
         const gptResponse = await openai.chat.completions.create({
-          model: 'gpt-o3-mini',
+          model: 'gpt-3.5-turbo',
           messages: [{ role: 'user', content: prompt }],
           temperature: 0.6
         });
         const content = gptResponse.choices[0].message.content;
-        const { score, explanation } = this._parseGPTOutput(content);
-        if (score > bestScore) {
+        const { score, explanation, learningStyle } = this._parseGPTOutput(content);
+        if (score >= bestScore) {
           bestScore = score;
           bestCandidate = candidate;
           bestExplanation = explanation;
+          bestLearningStyle = learningStyle;
         }
       } catch (err) {
         console.error(`Error generating match for candidate ${candidate.id}:`, err);
       }
     }
 
+    // Fallback: if no candidate was scored, choose the first candidate.
     if (!bestCandidate) {
-      return { matchUser: null, score: 0, explanation: 'No suitable match found' };
+      bestCandidate = candidates[0];
+      bestScore = 0;
+      bestExplanation = 'Default match selected (no quiz responses available for candidates)';
+      bestLearningStyle = 'N/A';
     }
 
-    // Save the match in the database.
+    // For a student, assume the match record is saved with studentId = userId and tutorId = bestCandidate.id.
     let studentId, tutorId;
-    if (user.roleId === 7) { // user is student
+    if (user.roleId === 7) {
       studentId = userId;
       tutorId = bestCandidate.id;
     } else {
@@ -111,7 +118,8 @@ const learningStyleService = {
         studentId,
         tutorId,
         match_score: bestScore,
-        explanation: bestExplanation
+        explanation: bestExplanation,
+        learning_style: bestLearningStyle
       });
     } catch (err) {
       console.error('Error saving match:', err);
@@ -124,7 +132,8 @@ const learningStyleService = {
         email: bestCandidate.email
       },
       score: bestScore,
-      explanation: bestExplanation
+      explanation: bestExplanation,
+      learning_style: bestLearningStyle
     };
   },
 
@@ -142,20 +151,19 @@ const learningStyleService = {
     const userRoleStr = roleMap[userRoleId] || 'user';
     const candidateRoleStr = roleMap[candidateRoleId] || 'user';
 
-    let prompt = `You are an expert learning styles consultant. You are here to ensure that every student and tutor are matched perfectly and accurately. Give the student and tutor their learning style based on their question answers (either auditory, tactile, or visual). Give specific pros and cons based on the question answer choices and give recommendations for how to work best together.\n`;
-    prompt += `The first set of answers is from a ${userRoleStr} and the second is from a ${candidateRoleStr}.\n\n`;
-    prompt += `First Person Answers:\n`;
+    let prompt = `You are an expert learning styles consultant. Based on the following quiz answers, determine a compatibility score (0-100), provide a detailed explanation, and recommend a learning style (auditory, tactile, or visual).\n\n`;
+    prompt += `First Person (${userRoleStr}) Answers:\n`;
     userAnswers.forEach((ans, i) => {
       prompt += `${i + 1}. ${ans}\n`;
     });
-    prompt += `\nSecond Person Answers:\n`;
+    prompt += `\nSecond Person (${candidateRoleStr}) Answers:\n`;
     candidateAnswers.forEach((ans, i) => {
       prompt += `${i + 1}. ${ans}\n`;
     });
     prompt += `\nReturn in this format:\n`;
     prompt += `Compatibility Score: [0-100]\n`;
-    prompt += `Explanation: [detailed explanation with specific examples]\n`;
-    prompt += `Learning Style: [either auditory, tactile, or visual based on the responses]\n`;
+    prompt += `Explanation: [detailed explanation]\n`;
+    prompt += `Learning Style: [auditory/tactile/visual]\n`;
     return prompt;
   },
 
@@ -163,16 +171,27 @@ const learningStyleService = {
   _parseGPTOutput(content) {
     let score = 0;
     let explanation = '';
+    let learningStyle = '';
     const scoreMatch = content.match(/Compatibility Score:\s*(\d+)/i);
     if (scoreMatch) {
       score = parseInt(scoreMatch[1], 10);
     }
-    const explanationMatch = content.match(/Explanation:\s*(.*)/is);
+    // Explanation: capture text between "Explanation:" and "Learning Style:"
+    const explanationMatch = content.match(/Explanation:\s*(.*?)(?=Learning Style:)/is);
     if (explanationMatch) {
       explanation = explanationMatch[1].trim();
+    } else {
+      const altExplanationMatch = content.match(/Explanation:\s*(.*)/is);
+      if (altExplanationMatch) {
+         explanation = altExplanationMatch[1].trim();
+      }
+    }
+    const lsMatch = content.match(/Learning Style:\s*(auditory|tactile|visual)/i);
+    if (lsMatch) {
+      learningStyle = lsMatch[1].toLowerCase();
     }
     score = Math.max(0, Math.min(score, 100));
-    return { score, explanation };
+    return { score, explanation, learningStyle };
   }
 };
 

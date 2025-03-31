@@ -11,42 +11,6 @@
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
   <!-- Custom Styles -->
   <link rel="stylesheet" href="../../../assets/css/style.css">
-  <style>
-    /* Modal Styles */
-    .modal {
-      display: none; 
-      position: fixed;
-      z-index: 1050; 
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-    .modal-content {
-      background-color: #fff;
-      margin: 10% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
-      max-width: 600px;
-      border-radius: 0.3rem;
-      position: relative;
-    }
-    .close {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      color: #aaa;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .close:hover {
-      color: black;
-    }
-  </style>
 </head>
 <body class="bg-light">
   <div class="container-fluid">
@@ -55,14 +19,22 @@
       <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
         <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
         <ul class="nav flex-column">
-          <li class="nav-item"><a class="nav-link" href="/student/profile">Profile</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/student/studentdashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/studentschedule">Calendar</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/chat">Messages</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/studentprofile">Profile</a></li>
+          <hr />
+          <li class="nav-item"><a class="nav-link" href="/student/bookSessions">Book a Session</a></li>
           <li class="nav-item"><a class="nav-link" href="/student/tutoringSessions">Create a Session</a></li>
           <li class="nav-item"><a class="nav-link" href="/student/findSessions">Find a Session</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/chat">Chatrooms</a></li>
+          <hr />
+          <li class="nav-item"><a class="nav-link" href="/student/About">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/faq">FAQs</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/settings">Settings</a></li>
           <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
         </ul>
       </nav>
-
+      
       <!-- Main Content -->
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         <!-- Header with dynamic greeting -->
@@ -76,25 +48,95 @@
         <!-- Upcoming Schedule Section -->
         <section class="mb-4" id="upcoming-schedule">
           <h2>Upcoming Schedule</h2>
-          <div id="calendar-container" class="card shadow-sm p-3">
-            <div id="calendar"></div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Math Tutoring</h5>
+                  <p class="card-text">9 Feb | 11:00 AM</p>
+                </div>
+              </div>
+            </div>
+            <!-- Additional schedule cards can be added here -->
+          </div>
+        </section>
+
+        <!-- Dynamic Peer/Tutor Matches Section -->
+        <section class="mb-4" id="peer-tutor-matches">
+          <h2>Peer/Tutor Matches</h2>
+          <div id="matches-container" class="row">
+            <!-- Dynamic match card will be inserted here -->
+          </div>
+        </section>
+
+        <!-- Session Requests Section -->
+        <section class="mb-4" id="session-requests">
+          <h2>Session Requests</h2>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-body d-flex">
+                  <img src="../../../assets/images/unsplash-2.jpg" class="rounded-circle" alt="Tutor Picture" style="width: 80px; height: 80px; object-fit: cover;">
+                  <div class="ms-3">
+                    <h5 class="card-title mb-1">
+                      <a href="/student/studentmatches" style="text-decoration: none; color: inherit;">Sarah Wattson</a>
+                    </h5>
+                    <p class="card-text mb-1 text-muted">Algebra & Physics</p>
+                    <p class="card-text text-secondary">I have a question about an algebra problem. Please help!</p>
+                    <a href="/student/details" class="text-dark" style="font-size: 14px; text-decoration: underline;">View Request</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Calendar and Messages Section -->
+        <section class="mb-4">
+          <div class="row">
+            <!-- Calendar Section -->
+            <div class="col-md-6" id="calendar-section">
+              <h3>Calendar</h3>
+              <div id="calendar-container" class="card shadow-sm p-3">
+                <div id="calendar"></div>
+              </div>
+            </div>
+            <!-- Messages Section -->
+            <div class="col-md-6" id="messages-section">
+              <h3>Messages</h3>
+              <div class="card shadow-sm">
+                <div class="card-body p-0">
+                  <a href="/chat/jane-cooper" class="d-flex align-items-center p-3 border-bottom text-decoration-none text-dark">
+                    <div class="d-flex flex-column">
+                      <strong>Jane Cooper</strong>
+                      <span class="text-muted small">Did you have any trouble with the assignment?</span>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
     </div>
   </div>
-  
+
   <!-- Quiz Modal -->
-  <div id="quizModal" class="modal">
-    <div class="modal-content" id="modalContent">
-      <span class="close" id="closeModal">&times;</span>
-      <div id="quizContainer">
-        <!-- Quiz form will be loaded here via AJAX -->
+  <div class="modal fade" id="quizModal" tabindex="-1" aria-labelledby="quizModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="quizModalLabel">Learning Style Quiz</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <iframe src="/learning-style/quiz" width="100%" height="500px" style="border: none;"></iframe>
+        </div>
       </div>
     </div>
   </div>
-  
-  <!-- Script to update greeting using cookie -->
+
+  <!-- Scripts -->
   <script>
     function getCookie(name) {
       const value = `; ${document.cookie}`;
@@ -108,8 +150,7 @@
       }
     });
   </script>
-  
-  <!-- Script to fetch login streak -->
+
   <script>
     async function getLoginStreak() {
       try {
@@ -127,87 +168,84 @@
     }
     document.addEventListener('DOMContentLoaded', getLoginStreak);
   </script>
-  
-  <!-- FullCalendar JS -->
+
+  <script>
+    async function checkQuizTaken() {
+      try {
+        const response = await fetch('/learning-style/taken', { credentials: 'include' });
+        const data = await response.json();
+        if (!data.taken) {
+          const quizModalEl = document.getElementById('quizModal');
+          var quizModal = new bootstrap.Modal(quizModalEl);
+          quizModal.show();
+        }
+      } catch (error) {
+        console.error('Error checking quiz status:', error);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', checkQuizTaken);
+  </script>
+
+  <!-- Load dynamic match from backend without Accept button -->
+  <script>
+    async function loadMatch() {
+      try {
+        const response = await fetch('/student/matches', { credentials: 'include' });
+        const data = await response.json();
+        const container = document.getElementById('matches-container');
+        container.innerHTML = '';
+        if (data.status === 'success' && data.match) {
+          const match = data.match;
+          const card = document.createElement('div');
+          card.className = 'col-md-4';
+          card.innerHTML = `
+            <div class="card shadow-sm">
+              <div class="card-body d-flex">
+                <img src="../../../assets/images/unsplash-1.jpg" class="rounded-circle" alt="Tutor Picture" style="width: 80px; height: 80px; object-fit: cover;">
+                <div class="ms-3">
+                  <h5 class="card-title mb-1">
+                    <a href="/studentmatches/${match.tutorId}" style="text-decoration: none; color: inherit;">
+                      ${match.username}
+                    </a>
+                  </h5>
+                  <p class="card-text mb-1 text-muted">Tutor</p>
+                  <p class="card-text mb-1 text-muted">Match Score: ${match.match_score}</p>
+                  <p class="card-text mb-1 text-muted">Learning Style: ${match.learning_style}</p>
+                  <p class="card-text text-secondary">${match.explanation}</p>
+                </div>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        } else {
+          container.innerHTML = '<p>No match found.</p>';
+        }
+      } catch (error) {
+        console.error('Error fetching match:', error);
+        document.getElementById('matches-container').innerHTML = '<p>Error loading match.</p>';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', loadMatch);
+  </script>
+
+  <!-- Parent page listener for quiz modal closure (optional if needed) -->
+  <script>
+    window.addEventListener('message', (event) => {
+      if (event.data === 'closeQuizModal') {
+        const quizModalEl = document.getElementById('quizModal');
+        const quizModal = bootstrap.Modal.getInstance(quizModalEl);
+        if (quizModal) {
+          quizModal.hide();
+        }
+        loadMatch(); // Refresh match data after closing the quiz modal.
+      }
+    });
+  </script>
+
+  <!-- FullCalendar and custom JS -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
   <script src="../../../assets/js/calender.js"></script>
-  
-  <!-- Script to handle quiz modal popup -->
-  <script>
-    async function loadQuizForm() {
-      // Check if the user has already taken the quiz
-      try {
-        const resp = await fetch('/learning-style/taken', { credentials: 'include' });
-        const data = await resp.json();
-        if (data.taken) {
-          // Quiz already taken; do not display the modal.
-          return;
-        }
-      } catch (err) {
-        console.error('Error checking quiz status:', err);
-        return;
-      }
-      
-      // If quiz not taken, display the modal and load the quiz form.
-      var modal = document.getElementById('quizModal');
-      modal.style.display = 'block';
-      
-      fetch('/learning-style/quiz', { credentials: 'include' })
-        .then(response => response.text())
-        .then(html => {
-          document.getElementById('quizContainer').innerHTML = html;
-          const quizForm = document.querySelector('#quizContainer form');
-          if (quizForm) {
-            quizForm.addEventListener('submit', async function(e) {
-              e.preventDefault();
-              const formData = new FormData(quizForm);
-              const params = new URLSearchParams();
-              for (const [key, value] of formData.entries()) {
-                params.append(key, value);
-              }
-              // Validate that all 10 questions are answered.
-              for (let i = 1; i <= 10; i++) {
-                if (!params.get('answer' + i)) {
-                  alert('Please answer all questions before submitting.');
-                  return;
-                }
-              }
-              try {
-                const res = await fetch('/learning-style/quiz', {
-                  method: 'POST',
-                  credentials: 'include',
-                  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                  body: params.toString()
-                });
-                const resultHtml = await res.text();
-                document.getElementById('modalContent').innerHTML = `
-                  <span class="close" id="closeModal">&times;</span>
-                  ${resultHtml}
-                  <br><button id="closeBtn" class="btn btn-primary mt-3">Close</button>
-                `;
-                document.getElementById('closeBtn').addEventListener('click', closeModal);
-                document.getElementById('closeModal').addEventListener('click', closeModal);
-              } catch (err) {
-                console.error('Quiz submission error:', err);
-              }
-            });
-          }
-        })
-        .catch(error => console.error('Error loading quiz form:', error));
-    }
-
-    function closeModal() {
-      document.getElementById('quizModal').style.display = 'none';
-    }
-    
-    window.addEventListener('load', loadQuizForm);
-    window.onclick = function(event) {
-      var modal = document.getElementById('quizModal');
-      if (event.target == modal) {
-        modal.style.display = 'none';
-      }
-    };
-  </script>
+  <script src="../../../assets/js/visibility.js"></script>
   
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
