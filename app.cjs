@@ -7,7 +7,7 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Security middleware (Helmet helps secure HTTP headers)
+// Security middleware
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -18,7 +18,10 @@ app.use(
   })
 );
 
+<<<<<<< HEAD:app.cjs
 // Middleware for parsing JSON payloads and cookies
+=======
+>>>>>>> origin/tutorupdate:app.js
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -26,8 +29,12 @@ app.use(cookieParser());
 // Serve static assets
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
+<<<<<<< HEAD:app.cjs
 // Import authentication middleware and routes
 const { authenticateJWT } = require('./src/middleware/authMiddleware');
+=======
+// Import route files
+>>>>>>> origin/tutorupdate:app.js
 const landingRoutes = require('./src/routes/landingRoutes');
 const signupRoutes = require('./src/routes/signupRoutes');
 const loginRoutes = require('./src/routes/loginRoutes');
@@ -39,10 +46,21 @@ const chatMessageRoutes = require('./src/routes/chatMessageRoutes');
 const studentTestRoutes = require('./src/routes/studentTestRoutes');
 const learningStyleRoutes = require('./src/routes/learningStyleRoutes');
 
-// Mount routes
+const tutorUserRoutes = require('./src/routes/tutorUserRoutes');
+app.use('/tutoruser', tutorUserRoutes);
+
+// Admin routes
+const adminAuthRoutes = require('./src/routes/adminRoutesAuth');
+app.use('/admin/auth', adminAuthRoutes);
+
+const adminRoutes = require('./src/routes/adminRoutes');
+app.use('/admin', adminRoutes);
+
+// Mount other routes
 app.use('/', landingRoutes);
 app.use('/signup', signupRoutes);
 app.use('/login', loginRoutes);
+<<<<<<< HEAD:app.cjs
 app.use('/learning-style', learningStyleRoutes);
 
 // Apply authentication middleware on routes that require a valid token
@@ -52,13 +70,18 @@ app.use('/tutor', authenticateJWT, tutorRoutes);
 app.use('/', logoutRoutes);
 app.use('/sessions', authenticateJWT, sessionRoutes);
 app.use('/chat-messages', authenticateJWT, chatMessageRoutes);
+=======
+app.use('/student', studentRoutes);
+app.use('/student/test', studentTestRoutes);
+app.use('/tutor', tutorRoutes);
+app.use('/', logoutRoutes);
+app.use('/sessions', sessionRoutes);
+app.use('/chat-messages', chatMessageRoutes);
+>>>>>>> origin/tutorupdate:app.js
 
 // Catch-all handler for 404 - Not Found
 app.use((req, res, next) => {
-  res.status(404).json({
-    status: 'error',
-    message: 'Not Found'
-  });
+  res.status(404).json({ status: 'error', message: 'Not Found' });
 });
 
 // Centralized error-handling middleware

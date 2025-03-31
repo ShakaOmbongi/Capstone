@@ -32,6 +32,10 @@ TutoringSession.init(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    description: { // Optional description
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     status: {
       type: DataTypes.STRING,
       defaultValue: 'pending',

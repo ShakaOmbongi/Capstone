@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Session Management - PeerAid</title>
+  <link rel="stylesheet" href="/assets/css/admin.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    /* Basic styling for the sessions table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar for Admin Navigation -->
+  <div class="sidebar">
+    <h2>PeerAid Admin</h2>
+    <ul>
+      <li><a href="/admin/admin-dashboard">Dashboard</a></li>
+      <li><a href="/admin/admin-users">User Management</a></li>
+      <li><a href="/admin/admin-feedback">Feedback</a></li>
+      <li><a href="/admin/admin-analytics">Analytics</a></li>
+      <li><a href="/admin/flagged-users">Flagged Users</a></li>
+      <li><a href="/logout">Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <h1>Admin Session Management</h1>
+    <table id="sessionsTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Subject</th>
+          <th>Session Date</th>
+          <th>Status</th>
+          <th>Tutor</th>
+          <th>Student</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Session rows will be dynamically inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async function() {
+      // Retrieve the admin token from localStorage
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        alert("Admin token not found. Please log in again.");
+        window.location.href = '/adminlogin'; // Update with your admin login page route if needed
+        return;
+      }
+      
+      try {
+        // Fetch all tutoring sessions (admin endpoint, no studentId filter)
+        const response = await fetch("http://localhost:3000/admin/sessions", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        
+        const data = await response.json();
+        if (response.ok) {
+          const sessionsTableBody = document.querySelector("#sessionsTable tbody");
+          sessionsTableBody.innerHTML = ""; // Clear any existing rows
+          
+          // Assuming data.sessions is an array of session objects.
+          data.sessions.forEach(session => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${session.id}</td>
+              <td>${session.subject}</td>
+              <td>${new Date(session.sessionDate).toLocaleString()}</td>
+              <td>${session.status}</td>
+              <td>${session.tutor ? session.tutor.username : "N/A"}</td>
+              <td>${session.student ? session.student.username : "N/A"}</td>
+            `;
+            sessionsTableBody.appendChild(row);
+          });
+        } else {
+          console.error("Failed to fetch sessions:", data.error);
+          alert("Error fetching sessions: " + data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching sessions:", error);
+        alert("An error occurred while fetching sessions.");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -19,7 +19,8 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      studentId: { // Student foreign key
+      studentId: { // Student foreign key (if a session is created by a tutor and a student hasn't been assigned yet, 
+                  // you might consider making this allowNull: true; adjust based on your use case)
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -36,6 +37,10 @@ module.exports = {
       sessionDate: { // Session date/time
         type: Sequelize.DATE,
         allowNull: false,
+      },
+      description: { // Optional description for the session
+        type: Sequelize.TEXT,
+        allowNull: true,
       },
       status: { // Session status
         type: Sequelize.STRING,

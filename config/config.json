@@ -2,10 +2,14 @@
   "development": {
     "username": "postgres",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "password": "pw",
 =======
     "password": "password",
 >>>>>>> origin/Frontend-to-Backend
+=======
+    "password": "qw23",
+>>>>>>> origin/tutorupdate
     "database": "PeerAId",
     "host": "127.0.0.1",
     "port": 5432,
@@ -14,10 +18,14 @@
   "test": {
     "username": "postgres",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "password": "pw",
 =======
     "password": "password",
 >>>>>>> origin/Frontend-to-Backend
+=======
+    "password": "qw23",
+>>>>>>> origin/tutorupdate
     "database": "PeerAId_test",
     "host": "127.0.0.1",
     "port": 5432,
@@ -47,5 +55,9 @@
 }
 =======
  }
+<<<<<<< HEAD
  
 >>>>>>> origin/Frontend-to-Backend
+=======
+ 
+>>>>>>> origin/tutorupdate
