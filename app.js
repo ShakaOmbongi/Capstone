@@ -1,12 +1,9 @@
 'use strict';
 require('dotenv').config();
 const express = require('express');
-<<<<<<< HEAD
 const helmet = require('helmet');
-=======
 const http = require('http');
 const { Server } = require('socket.io'); // Ensure this is also imported if using Socket.io
->>>>>>> origin/Frontend-to-Backend
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const helmet = require('helmet');
@@ -47,19 +44,14 @@ const logoutRoutes = require('./src/routes/logoutRoutes');
 const sessionRoutes = require('./src/routes/tutoringSessionRoutes');
 const chatMessageRoutes = require('./src/routes/chatMessageRoutes');
 const studentTestRoutes = require('./src/routes/studentTestRoutes');
-<<<<<<< HEAD
 const learningStyleRoutes = require('./src/routes/learningStyleRoutes');
-=======
->>>>>>> origin/Frontend-to-Backend
 
 // Mount routes
 app.use('/', landingRoutes);
 app.use('/signup', signupRoutes);
 app.use('/login', loginRoutes);
-<<<<<<< HEAD
 app.use('/learning-style', learningStyleRoutes);
-=======
->>>>>>> origin/Frontend-to-Backend
+origin/Frontend-to-Backend
 
 // Apply authentication middleware on routes that require a valid token
 app.use('/student', authenticateJWT, studentRoutes);
