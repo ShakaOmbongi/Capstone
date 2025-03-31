@@ -18,10 +18,7 @@ app.use(
   })
 );
 
-<<<<<<< HEAD:app.cjs
 // Middleware for parsing JSON payloads and cookies
-=======
->>>>>>> origin/tutorupdate:app.js
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -29,12 +26,8 @@ app.use(cookieParser());
 // Serve static assets
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-<<<<<<< HEAD:app.cjs
 // Import authentication middleware and routes
 const { authenticateJWT } = require('./src/middleware/authMiddleware');
-=======
-// Import route files
->>>>>>> origin/tutorupdate:app.js
 const landingRoutes = require('./src/routes/landingRoutes');
 const signupRoutes = require('./src/routes/signupRoutes');
 const loginRoutes = require('./src/routes/loginRoutes');
@@ -60,7 +53,6 @@ app.use('/admin', adminRoutes);
 app.use('/', landingRoutes);
 app.use('/signup', signupRoutes);
 app.use('/login', loginRoutes);
-<<<<<<< HEAD:app.cjs
 app.use('/learning-style', learningStyleRoutes);
 
 // Apply authentication middleware on routes that require a valid token
@@ -70,14 +62,6 @@ app.use('/tutor', authenticateJWT, tutorRoutes);
 app.use('/', logoutRoutes);
 app.use('/sessions', authenticateJWT, sessionRoutes);
 app.use('/chat-messages', authenticateJWT, chatMessageRoutes);
-=======
-app.use('/student', studentRoutes);
-app.use('/student/test', studentTestRoutes);
-app.use('/tutor', tutorRoutes);
-app.use('/', logoutRoutes);
-app.use('/sessions', sessionRoutes);
-app.use('/chat-messages', chatMessageRoutes);
->>>>>>> origin/tutorupdate:app.js
 
 // Catch-all handler for 404 - Not Found
 app.use((req, res, next) => {
