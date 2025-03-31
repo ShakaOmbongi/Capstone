@@ -71,12 +71,7 @@ const loginController = {
       });
       res.cookie('username', user.username);
 
-<<<<<<< HEAD
       return res.redirect('/tutor/tutordashboard');
-=======
-      // Tutor redirection—adjust to your tutor dashboard route.
-      return res.redirect('/tutoruser/tutordashboard');
->>>>>>> origin/tutorupdate
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error.message });
     }
