@@ -1,6 +1,5 @@
 'use strict';
 
-const getOpenaiClient = require('../utils/openAIClient');
 const LearningStyleResponse = require('../entities/LearningStyleResponse');
 const User = require('../entities/User');
 const Role = require('../entities/Role');
@@ -10,8 +9,8 @@ const learningStyleService = {
   // Save quiz answers into the database.
   async saveUserResponses(userId, role, answers) {
     return await LearningStyleResponse.create({
-      userId: userId,
-      role: role,
+      userId,
+      role,
       answer1: answers[0],
       answer2: answers[1],
       answer3: answers[2],
@@ -48,9 +47,7 @@ const learningStyleService = {
     // Determine the opposite role.
     let oppositeRoleId = (user.roleId === 7) ? 8 : 7;
     // Get all users with the opposite role.
-    const candidates = await User.findAll({
-      where: { roleId: oppositeRoleId }
-    });
+    const candidates = await User.findAll({ where: { roleId: oppositeRoleId } });
     if (!candidates || candidates.length === 0) {
       return { matchUser: null, score: 0, explanation: 'No potential matches found' };
     }
@@ -73,8 +70,12 @@ const learningStyleService = {
 
       const prompt = this._buildPrompt(user.roleId, userAnswers, candidate.roleId, candidateAnswers);
       try {
-        // Dynamically obtain the OpenAI client.
-        const openai = await getOpenaiClient();
+        // Dynamically import the OpenAI module (ESM-only)
+        const openaiModule = await import('openai');
+        const { OpenAI } = openaiModule;
+        const openai = new OpenAI({
+          apiKey: process.env.OPENAI_API_KEY
+        });
         const gptResponse = await openai.chat.completions.create({
           model: 'gpt-o3-mini',
           messages: [{ role: 'user', content: prompt }],
@@ -170,7 +171,6 @@ const learningStyleService = {
     if (explanationMatch) {
       explanation = explanationMatch[1].trim();
     }
-    // Clamp score between 0 and 100.
     score = Math.max(0, Math.min(score, 100));
     return { score, explanation };
   }
