@@ -26,7 +26,7 @@ app.use(cookieParser());
 // Serve static assets
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-// Import authentication middleware
+// Import authentication middleware and routes
 const { authenticateJWT } = require('./src/middleware/authMiddleware');
 const landingRoutes = require('./src/routes/landingRoutes');
 const signupRoutes = require('./src/routes/signupRoutes');

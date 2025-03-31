@@ -1,10 +1,13 @@
-'use strict';
 require('dotenv').config();
 
-const { OpenAI } = require('openai');
+function getOpenaiClient() {
+  // Use dynamic import to load the openai package
+  return import('openai').then((module) => {
+    const { OpenAI } = module;
+    return new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
+    });
+  });
+}
 
-const openaiClient = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
-
-module.exports = openaiClient;
+module.exports = getOpenaiClient;
