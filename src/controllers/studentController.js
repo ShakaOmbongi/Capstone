@@ -97,7 +97,6 @@ const studentController = {
   async acceptMatch(req, res) {
     try {
       const studentId = req.user.id;
-      // Find the most recent pending match (accepted === false) for this student.
       const match = await Match.findOne({
         where: { studentId, accepted: false },
         order: [['created_at', 'DESC']]

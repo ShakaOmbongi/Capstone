@@ -11,48 +11,9 @@
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
   <!-- Custom Styles -->
   <link rel="stylesheet" href="../../../assets/css/style.css">
-<<<<<<< HEAD
-  <style>
-    /* Modal Styles for Quiz Popup */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1050;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.5);
-    }
-    .modal-content {
-      background-color: #fff;
-      margin: 10% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
-      max-width: 600px;
-      border-radius: 0.3rem;
-      position: relative;
-    }
-    .close {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      color: #aaa;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .close:hover {
-      color: black;
-    }
-  </style>
-=======
   
   <!-- Custom JS -->
   <link rel="stylesheet" href="../../../assets/css/script.css">
->>>>>>> origin/Frontend-to-Backend
 </head>
 <body class="bg-light">
   <div class="container-fluid">
@@ -61,23 +22,18 @@
       <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
         <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
         <ul class="nav flex-column">
-<<<<<<< HEAD
-<<<<<<< HEAD
           <!-- Updated links to match tutor pages -->
           <li class="nav-item"><a class="nav-link" href="/tutor/tutordashboard">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link" href="/tutor/tutorprofile">Profile</a></li>
           <li class="nav-item"><a class="nav-link" href="/tutor/tutorschedule">My Sessions</a></li>
           <li class="nav-item"><a class="nav-link" href="/tutor/chat">Chatrooms</a></li>
-=======
           <li class="nav-item"><a class="nav-link" href="/tutoruser/profile">Profile</a></li>
           <li class="nav-item"><a class="nav-link" href="/tutoruser/tutordashboard">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link" href="/tutoruser/tutoringSessions">Create a Session</a></li>
           <li class="nav-item"><a class="nav-link" href="/tutoruser/findSessions">Find a Session</a></li>
           <li class="nav-item"><a class="nav-link active" href="/tutoruser/chat">Chatrooms</a></li>
->>>>>>> origin/tutorupdate
           <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
         </ul>
-=======
           <li class="nav-item">
               <a class="nav-link active" href="/tutor/tutordashboard">Home</a>
           </li>
@@ -91,7 +47,6 @@
               <a class="nav-link" href="/logout">Logout</a>
           </li>
       </ul>
->>>>>>> origin/Frontend-to-Backend
       </nav>
 
       <!-- Main Content -->
@@ -104,15 +59,6 @@
 
         <!-- Upcoming Sessions Section -->
         <section class="mb-4">
-<<<<<<< HEAD
-          <h2>Upcoming Tutoring Sessions</h2>
-          <div class="row" id="upcomingSessions">
-            <p>Loading sessions...</p>
-          </div>
-        </section>
-
-        <!-- Calendar & Notifications Section -->
-=======
           <h2>Upcoming Schedule</h2>
           <div class="row">
             <div class="col-md-4">
@@ -218,7 +164,6 @@
 
         
         <!-- Calendar and Messages Section -->
->>>>>>> origin/Frontend-to-Backend
         <section class="mb-4">
           <div class="row">
             <!-- Calendar Section -->
@@ -229,17 +174,6 @@
                 <div id="calendar"></div>
               </div>
             </div>
-<<<<<<< HEAD
-            <!-- Notifications Section -->
-            <div class="col-md-6">
-              <h3>Notifications</h3>
-              <div class="card shadow-sm">
-                <div class="card-body">
-                  <p><strong>New Request:</strong> A student has booked a session.</p>
-                  <p><strong>Feedback:</strong> Your latest session review is available.</p>
-                  <p><strong>Reminder:</strong> Upcoming session in 1 hour.</p>
-                </div>
-=======
             <!-- Messages Section -->
 <div class="col-md-6">
   <h3>Messages</h3>
@@ -250,7 +184,6 @@
               <div class="d-flex flex-column">
                   <strong>Jane Cooper</strong>
                   <span class="text-muted small">Did you have any trouble with the assignment?</span>
->>>>>>> origin/Frontend-to-Backend
               </div>
           </a>
 
@@ -299,74 +232,6 @@
       </main>
     </div>
   </div>
-<<<<<<< HEAD
-  
-<!-- Quiz Modal -->
-<div id="quizModal" class="modal">
-  <div class="modal-content" id="modalContent">
-    <span class="close" id="closeModal">&times;</span>
-    <div id="quizContainer">
-      <!-- Quiz form will be loaded here via AJAX -->
-    </div>
-  </div>
-</div>
-
-<script>
-  async function loadQuizForm() {
-    try {
-      // Check if quiz has been taken
-      const resp = await fetch('/learning-style/taken', { credentials: 'include' });
-      const data = await resp.json();
-      if (data.taken) return; // Do not show quiz if already taken
-      
-      const modal = document.getElementById('quizModal');
-      modal.style.display = 'block';
-      
-      const response = await fetch('/learning-style/quiz', { credentials: 'include' });
-      const html = await response.text();
-      document.getElementById('quizContainer').innerHTML = html;
-      
-      const quizForm = document.querySelector('#quizContainer form');
-      if (quizForm) {
-        quizForm.addEventListener('submit', async function(e) {
-          e.preventDefault();
-          const formData = new FormData(quizForm);
-          const params = new URLSearchParams();
-          for (const [key, value] of formData.entries()) {
-            params.append(key, value);
-          }
-          // Validate all answers are present
-          for (let i = 1; i <= 10; i++) {
-            if (!params.get('answer' + i)) {
-              alert('Please answer all questions before submitting.');
-              return;
-            }
-          }
-          try {
-            const resSubmit = await fetch('/learning-style/quiz', {
-              method: 'POST',
-              credentials: 'include',
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: params.toString()
-            });
-            const resultHtml = await resSubmit.text();
-            document.getElementById('modalContent').innerHTML = `
-              <span class="close" id="closeModal">&times;</span>
-              ${resultHtml}
-              <br><button id="closeBtn" class="btn btn-primary mt-3">Close</button>
-            `;
-            document.getElementById('closeBtn').addEventListener('click', closeModal);
-            document.getElementById('closeModal').addEventListener('click', closeModal);
-          } catch (err) {
-            console.error('Quiz submission error:', err);
-          }
-        });
-      }
-    } catch (error) {
-      console.error('Error loading quiz form:', error);
-    }
-  }
-=======
 
   <!-- Script to update greeting with the logged-in username -->
   <script>
@@ -405,7 +270,6 @@
       calendar.render();
     });
   </script>
->>>>>>> origin/Frontend-to-Backend
 
   function closeModal() {
     document.getElementById('quizModal').style.display = 'none';
@@ -423,7 +287,5 @@
 
   <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- FullCalendar JS -->
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 </body>
 </html>
