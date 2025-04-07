@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const { authenticateJWT } = require('../middleware/authMiddleware');
 const { User, TutoringSession } = require('../entities');
+const tutorController = require('../controllers/tutorController'); // Import the tutor controller with match endpoints
 
 const router = express.Router();
 
@@ -98,5 +99,11 @@ router.delete('/sessions/:id', authenticateJWT, async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+// NEW: Retrieve the match for the logged-in tutor.
+router.get('/matches', authenticateJWT, tutorController.getMatch);
+
+// NEW: Accept the pending match for the logged-in tutor.
+router.post('/matches/accept', authenticateJWT, tutorController.acceptMatch);
 
 module.exports = router;

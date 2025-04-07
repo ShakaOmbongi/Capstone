@@ -46,7 +46,7 @@ const HARD_CODED_QUESTIONS = [
 ];
 
 const learningStyleController = {
-  // GET /learning-style/quiz
+  // GET /learning-style/quiz – Return the quiz HTML form.
   getQuizForm: (req, res) => {
     let formHtml = `
       <!DOCTYPE html>
@@ -69,17 +69,18 @@ const learningStyleController = {
         `;
       });
     });
+    // Hidden field for userId
     formHtml += `<input type="hidden" name="userId" value="${req.user.id}">`;
     formHtml += `<br><button type="submit">Submit Quiz</button></form></body></html>`;
     res.send(formHtml);
   },
 
-  // POST /learning-style/quiz
+  // POST /learning-style/quiz – Process the quiz and generate a match.
   submitQuizForm: async (req, res) => {
     try {
       const userId = req.body.userId;
       const answers = [];
-      for (let i = 1; i <= 10; i++) {
+      for (let i = 1; i <= HARD_CODED_QUESTIONS.length; i++) {
         const ans = req.body[`answer${i}`];
         if (!ans) {
           return res.status(400).send(`Missing answer for question ${i}`);
@@ -106,19 +107,25 @@ const learningStyleController = {
         resultHtml += `<p>Explanation: ${matchResult.explanation}</p>`;
         resultHtml += `<p>Learning Style: ${matchResult.learning_style || 'N/A'}</p>`;
         
-        // Accept Match button with no alert popup
+        // For tutors, we force the endpoint to be '/tutor/matches/accept'
+        const endpoint = (req.user.role && req.user.role.toUpperCase() === 'TUTOR')
+            ? '/tutor/matches/accept'
+            : '/student/matches/accept';
+        console.log('User role:', req.user.role, 'using endpoint:', endpoint);
+        
         resultHtml += `
           <button id="acceptMatchBtn">Accept Match</button>
           <script>
             async function acceptMatch() {
               try {
-                const res = await fetch('/student/matches/accept', {
+                const response = await fetch('${endpoint}', {
                   method: 'POST',
                   credentials: 'include'
                 });
-                const data = await res.json();
+                const data = await response.json();
+                console.log('Accept match response:', data);
                 if (data.status === 'success') {
-                  // Instead of alerting, notify the parent window to close the quiz modal
+                  // Notify the parent window to close the quiz modal and reload match data.
                   window.parent.postMessage('closeQuizModal', '*');
                 } else {
                   console.error(data.message || 'Could not accept match');
@@ -138,7 +145,7 @@ const learningStyleController = {
     }
   },
 
-  // GET /learning-style/taken
+  // GET /learning-style/taken – Check if the user has already taken the quiz.
   checkQuizStatus: async (req, res) => {
     try {
       const userId = req.user.id;

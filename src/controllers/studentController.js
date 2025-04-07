@@ -93,7 +93,7 @@ const studentController = {
     }
   },
 
-  // Accept the pending match.
+  // NEW: Accept the pending match.
   async acceptMatch(req, res) {
     try {
       const studentId = req.user.id;
@@ -104,13 +104,16 @@ const studentController = {
       if (!match) {
         return res.status(404).json({ status: 'error', message: 'No pending match found' });
       }
-      // Update the record.
-      await match.update({ accepted: true });
+      console.log('Before update, accepted:', match.accepted);
+      // Set accepted to true and then save the change.
+      match.accepted = true;
+      await match.save();
+      console.log('After update, accepted:', match.accepted);
       return res.status(200).json({ status: 'success', message: 'Match accepted', match });
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error.message });
     }
-  }
+  },
 };
 
 module.exports = studentController;

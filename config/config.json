@@ -1,15 +1,9 @@
 {
   "development": {
     "username": "postgres",
-<<<<<<< HEAD
-<<<<<<< HEAD
     "password": "pw",
-=======
     "password": "password",
->>>>>>> origin/Frontend-to-Backend
-=======
     "password": "qw23",
->>>>>>> origin/tutorupdate
     "database": "PeerAId",
     "host": "127.0.0.1",
     "port": 5432,
@@ -17,15 +11,9 @@
   },
   "test": {
     "username": "postgres",
-<<<<<<< HEAD
-<<<<<<< HEAD
     "password": "pw",
-=======
     "password": "password",
->>>>>>> origin/Frontend-to-Backend
-=======
     "password": "qw23",
->>>>>>> origin/tutorupdate
     "database": "PeerAId_test",
     "host": "127.0.0.1",
     "port": 5432,
@@ -33,15 +21,15 @@
   },
   "production": {
     "username": "postgres",
-<<<<<<< HEAD
+
     "password": "",
     "database": "postgres",
     "host": "host",
-=======
+
     "password": "0VLOduKfMJizvOMi",
     "database": "postgres",
     "host": "db.mdnnxwpxypxgwhfkzgok.supabase.co",
->>>>>>> origin/Frontend-to-Backend
+
     "port": 5432,
     "dialect": "postgres",
     "dialectOptions": {
@@ -51,13 +39,7 @@
       }
     }
   }
-<<<<<<< HEAD
+
 }
-=======
- }
-<<<<<<< HEAD
- 
->>>>>>> origin/Frontend-to-Backend
-=======
- 
->>>>>>> origin/tutorupdate
+
+
