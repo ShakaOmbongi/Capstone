@@ -67,14 +67,15 @@
           const feedbackTableBody = document.getElementById("feedbackTableBody");
           feedbackTableBody.innerHTML = ""; // Clear existing content.
           data.feedback.forEach(item => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${item.user}</td>
-              <td>${item.text}</td>
-              <td><button class="delete-feedback" data-id="${item.id}">Delete</button></td>
-            `;
-            feedbackTableBody.appendChild(row);
-          });
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${item.reviewer?.username || 'N/A'}</td>
+    <td>${item.comment}</td>
+    <td><button class="delete-feedback" data-id="${item.id}">Delete</button></td>
+  `;
+  feedbackTableBody.appendChild(row);
+});
+
 
           // Attach event listeners for all delete buttons.
           document.querySelectorAll(".delete-feedback").forEach(button => {

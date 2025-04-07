@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,14 +15,18 @@
       border-collapse: collapse;
       margin-top: 20px;
     }
-    table th, table td {
+
+    table th,
+    table td {
       border: 1px solid #ddd;
       padding: 8px;
     }
+
     table th {
       background-color: #f2f2f2;
       text-align: left;
     }
+
     /* Styling for the metrics chart */
     .metrics-box {
       background-color: #f9f9f9;
@@ -31,28 +36,29 @@
     }
   </style>
 </head>
+
 <body>
   <div class="sidebar">
     <h2>PeerAid Admin</h2>
     <ul class="nav">
-        <li class="nav-item">
-          <a class="nav-link active" href="/admin/admin-dashboard">Dashboard</a>
-        </li>
-    
-        <li class="nav-item">
-          <a class="nav-link" href="/admin/flagged-users">Flagged Users</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/admin/admin-analytics">Analytics</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/admin/admin-feedback">Feedback</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/logout">Logout</a>
-        </li>
-      </ul>
-      
+      <li class="nav-item">
+        <a class="nav-link active" href="/admin/admin-dashboard">Dashboard</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/flagged-users">Flagged Users</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/admin-analytics">Analytics</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/admin-feedback">Feedback</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Logout</a>
+      </li>
+    </ul>
+
   </div>
 
   <div class="main-content">
@@ -118,7 +124,7 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", async function() {
+    document.addEventListener("DOMContentLoaded", async function () {
       // --------------------------
       // Fetch and display All Users
       // --------------------------
@@ -137,13 +143,14 @@
           usersData.users.forEach(user => {
             const row = document.createElement("tr");
             row.innerHTML = `
-              <td>${user.id}</td>
-              <td>${user.username}</td>
-              <td>${user.email}</td>
-              <td>${user.role}</td>
-            `;
+    <td>${user.id}</td>
+    <td>${user.username}</td>
+    <td>${user.email}</td>
+    <td>${user.role?.name || 'N/A'}</td>  <!--  SHOWS role name -->
+  `;
             usersTableBody.appendChild(row);
           });
+
           // Update Total Users stat.
           document.getElementById("totalUsers").textContent = usersData.users.length;
         } else {
@@ -199,7 +206,7 @@
           // Assume metricsData.dailySignups is an array of objects { date: "YYYY-MM-DD", count: number }
           const labels = metricsData.dailySignups.map(item => item.date);
           const dataCounts = metricsData.dailySignups.map(item => item.count);
-          
+
           const ctx = document.getElementById("userJoinChart").getContext("2d");
           new Chart(ctx, {
             type: "line",
@@ -236,4 +243,5 @@
     });
   </script>
 </body>
+
 </html>

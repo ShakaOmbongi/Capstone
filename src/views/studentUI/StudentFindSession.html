@@ -16,9 +16,9 @@
         <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;" />
         <ul class="nav flex-column">
           <li class="nav-item"><a class="nav-link" href="/student/profile">Profile</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/studentdashboard">dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/studentdashboard">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link" href="/student/tutoringSessions">Create a Session</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/findSessions">Find a Session</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/student/findSessions">Find a Session</a></li>
           <li class="nav-item"><a class="nav-link" href="/student/chat">Chatrooms</a></li>
           <li class="nav-item"><a class="nav-link" href="/student/about">About Us</a></li>
           <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
@@ -29,6 +29,28 @@
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         <h1 class="mt-4">Available Tutoring Sessions</h1>
         <div id="message"></div>
+
+        <!-- 🔍 Filter Section -->
+        <div class="row mb-4">
+          <div class="col-md-4 mb-2">
+            <input type="text" class="form-control" id="filterSubject" placeholder="Filter by subject...">
+          </div>
+          <div class="col-md-3 mb-2">
+            <input type="date" class="form-control" id="filterDate">
+          </div>
+          <div class="col-md-3 mb-2">
+            <select class="form-select" id="filterLearningStyle">
+              <option value="">All Learning Styles</option>
+              <option value="Visual">Visual</option>
+              <option value="Auditory">Auditory</option>
+              <option value="Kinesthetic">Kinesthetic</option>
+              <option value="Reading/Writing">Reading/Writing</option>
+            </select>
+          </div>
+          <div class="col-md-2 mb-2">
+            <button class="btn btn-primary w-100" id="applyFilters">Apply Filters</button>
+          </div>
+        </div>
 
         <!-- Section for the user's own sessions -->
         <h2>My Sessions</h2>
@@ -41,7 +63,7 @@
     </div>
   </div>
 
-  <!-- Edit Session Modal (placed at the bottom of the page) -->
+  <!-- Edit Session Modal -->
   <div class="modal fade" id="editSessionModal" tabindex="-1" aria-labelledby="editSessionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <form id="editSessionForm" class="modal-content">
@@ -50,7 +72,6 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <!-- Hidden field for session ID -->
           <input type="hidden" id="editSessionId" />
           <div class="mb-3">
             <label for="editSubject" class="form-label">Subject</label>
@@ -73,9 +94,9 @@
     </div>
   </div>
 
-  <!-- Link to the JavaScript file -->
+  <!-- Scripts -->
   <script src="../../../assets/js/findSession.js"></script>
-  <!-- Bootstrap JS -->
+  <!-- Only include sessionActions.js if the table for pending sessions is on this page -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

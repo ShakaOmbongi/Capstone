@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", async function () {
-  // Helper to get a cookie by name
   function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -7,7 +6,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     return null;
   }
 
-  // Get the token from cookies
   const token = getCookie("token");
   if (!token) {
     alert("No token found. Please log in.");
@@ -15,75 +13,88 @@ document.addEventListener("DOMContentLoaded", async function () {
     return;
   }
 
-  // Fetch and pre-populate the current profile data
+  // Load profile data
   try {
     const response = await fetch("/student/profile/data", {
       method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
+      headers: { "Authorization": `Bearer ${token}` }
     });
-    if (!response.ok) {
-      throw new Error("Failed to fetch profile");
-    }
+
+    if (!response.ok) throw new Error("Failed to fetch profile");
+
     const data = await response.json();
     const profile = data.profile || {};
 
-    // Update profile display elements on the page
+    // Display data
     document.getElementById("studentName").textContent = profile.username || "Student";
     document.getElementById("profileName").textContent = profile.username || "Student";
     document.getElementById("email").textContent = profile.email || "email@example.edu";
+    document.getElementById("bio").textContent = profile.bio || "No bio available.";
+    document.getElementById("subjectsList").innerHTML = profile.subjects
+      ? profile.subjects.split(',').map(sub => `<li>${sub.trim()}</li>`).join('')
+      : '<li>No subjects listed.</li>';
+    document.getElementById("availabilityInput").value = profile.availability || "";
 
-    // Pre-populate the update form fields
+    // Pre-fill form fields
     document.getElementById("username").value = profile.username || "";
     document.getElementById("emailInput").value = profile.email || "";
+    document.getElementById("bioInput").value = profile.bio || "";
+    document.getElementById("subjectsInput").value = profile.subjects || "";
+
+    if (document.getElementById("learningStyle")) {
+      document.getElementById("learningStyle").textContent = profile.learningstyle || "Learning Style Not Set";
+    }
+
+    if (document.getElementById("profilePic")) {
+      document.getElementById("profilePic").src = profile.profilePic || "default.jpg";
+    }
   } catch (error) {
     console.error("Error loading profile:", error);
     alert("Error loading profile");
   }
 
-  // Listen for update profile form submission
+  // Update profile form
   document.getElementById("updateProfileForm").addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    // Re-fetch the token
     const token = getCookie("token");
     if (!token) {
       alert("You must be logged in to update your profile.");
       return;
     }
 
-    // Get the updated values from the input fields
-    const usernameInput = document.getElementById("username");
-    const emailInput = document.getElementById("emailInput");
-    if (!usernameInput || !emailInput) {
-      alert("Required input elements are missing.");
-      return;
-    }
-    const newUsername = usernameInput.value;
-    const newEmail = emailInput.value;
+    const form = document.getElementById("updateProfileForm");
+    const formData = new FormData(form);
 
-    // Send the updated profile data to the server
     try {
       const response = await fetch("/student/updateProfile", {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ username: newUsername, email: newEmail })
+        body: formData
       });
 
       const result = await response.json();
       if (response.ok) {
         alert("Profile updated successfully!");
-        // Update the display elements on the page with new data
-        document.getElementById("studentName").textContent = newUsername;
-        document.getElementById("profileName").textContent = newUsername;
-        document.getElementById("email").textContent = newEmail;
 
-        // Update the username cookie so that the dashboard displays the new name
-        document.cookie = `username=${newUsername}; path=/;`;
+        // Update display
+        document.getElementById("studentName").textContent = result.data.username;
+        document.getElementById("profileName").textContent = result.data.username;
+        document.getElementById("email").textContent = result.data.email;
+        document.getElementById("bio").textContent = result.data.bio || "No bio available.";
+        document.getElementById("availabilityInput").value = result.data.availability || "";
+
+        document.getElementById("subjectsList").innerHTML = result.data.subjects
+          ? result.data.subjects.split(',').map(sub => `<li>${sub.trim()}</li>`).join('')
+          : '<li>No subjects listed.</li>';
+
+        if (document.getElementById("profilePic")) {
+          document.getElementById("profilePic").src = result.data.profilePic || "default.jpg";
+        }
+
+        document.cookie = `username=${result.data.username}; path=/;`;
       } else {
         alert(result.error || "Failed to update profile.");
       }
@@ -93,3 +104,28 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   });
 });
+
+// Add availability block to textarea
+function addAvailability() {
+  const day = document.getElementById("daySelect").value;
+  const start = document.getElementById("startTimeSelect").value;
+  const end = document.getElementById("endTimeSelect").value;
+
+  if (day === "Day" || start === "Start Time" || end === "End Time") {
+    alert("Please select a valid day, start time, and end time.");
+    return;
+  }
+
+  const availabilityInput = document.getElementById("availabilityInput");
+  const newEntry = `${day} ${start}-${end}`;
+
+  if (availabilityInput.value) {
+    availabilityInput.value += `, ${newEntry}`;
+  } else {
+    availabilityInput.value = newEntry;
+  }
+
+  document.getElementById("daySelect").selectedIndex = 0;
+  document.getElementById("startTimeSelect").selectedIndex = 0;
+  document.getElementById("endTimeSelect").selectedIndex = 0;
+}

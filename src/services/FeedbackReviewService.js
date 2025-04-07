@@ -8,6 +8,14 @@ class FeedbackReviewService {
     if (reviewData.rating < 1 || reviewData.rating > 5) {
       throw new Error('Rating must be between 1 and 5.');
     }
+    // Optionally, validate the comment length or ensure it exists
+    if (!reviewData.comment || reviewData.comment.trim().length === 0) {
+      throw new Error('Comment is required.');
+    }
+    // Optionally, if reviews are for a person, ensure reviewedUserId is provided
+    if (!reviewData.reviewedUserId) {
+      throw new Error('Reviewed user ID is required.');
+    }
     return await feedbackReviewRepository.createReview(reviewData);
   }
 

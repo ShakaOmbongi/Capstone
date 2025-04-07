@@ -15,7 +15,12 @@ app.use(
       "default-src": ["'self'"],
       "script-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
       "style-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-    },
+      "img-src": [
+        "'self'",
+        "data:",
+        "https://mdnnxwpxypxgwhfkzgok.supabase.co"
+      ]
+    }
   })
 );
 
@@ -45,6 +50,14 @@ app.use('/admin/auth', adminAuthRoutes);
 const adminRoutes = require('./src/routes/adminRoutes');
 app.use('/admin', adminRoutes);
 
+const joinRequestRoutes = require('./src/routes/joinRequestRoutes');
+app.use('/student/join', joinRequestRoutes);
+
+const feedbackRoutes = require('./src/routes/feedbackRoutes');
+app.use('/admin/feedback', feedbackRoutes);
+
+
+
 // Mount other routes
 app.use('/', landingRoutes);
 app.use('/signup', signupRoutes);
@@ -55,6 +68,7 @@ app.use('/tutor', tutorRoutes);
 app.use('/', logoutRoutes);
 app.use('/sessions', sessionRoutes);
 app.use('/chat-messages', chatMessageRoutes);
+app.use('/uploads', express.static('uploads'));
 
 // Catch-all handler for 404 - Not Found
 app.use((req, res, next) => {

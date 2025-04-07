@@ -3,24 +3,22 @@ document.addEventListener('DOMContentLoaded', function () {
   const messageDiv = document.getElementById('message');
 
   form.addEventListener('submit', async function (event) {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
 
-    // Extract session details from the form inputs
     const subject = document.getElementById('subject').value;
     const sessionDate = document.getElementById('sessionDate').value;
+    const description = document.getElementById('description')?.value || '';
 
-    console.log("DEBUG: Sending request with data:", { subject, sessionDate });
+    console.log("DEBUG: Sending request with data:", { subject, sessionDate, description });
 
     try {
-      // Send a POST request to your API endpoint for session creation.
-      const response = await fetch('http://localhost:3000/sessions/create', {
+      const response = await fetch('/sessions/create', {
         method: 'POST',
-        credentials: 'include', // This ensures the cookie is sent with the request
+        credentials: 'include', // Include cookies (JWT token)
         headers: {
           'Content-Type': 'application/json'
         },
-        // Adjust tutorId as needed
-        body: JSON.stringify({ subject, sessionDate, tutorId: 1 })
+        body: JSON.stringify({ subject, sessionDate, description }) // Send dynamic form input
       });
 
       const result = await response.json();
