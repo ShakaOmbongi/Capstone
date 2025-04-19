@@ -1,4 +1,3 @@
-// src/entities/TutoringSession.js
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../../db');
 
@@ -6,6 +5,12 @@ class TutoringSession extends Model {
   static associate(models) {
     TutoringSession.belongsTo(models.User, { foreignKey: 'tutorId', as: 'tutor' });
     TutoringSession.belongsTo(models.User, { foreignKey: 'studentId', as: 'student' });
+
+  
+    TutoringSession.hasMany(models.FeedbackReview, {
+      foreignKey: 'sessionId',
+      as: 'reviews'
+    });
   }
 }
 

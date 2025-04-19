@@ -2,7 +2,7 @@
 const { User, UserProfile } = require('../entities');
 
 const studentController = {
-  // ✅ GET profile with bio + profile pic + subjects + availability + learning style
+  // GET profile with bio + profile pic + subjects + availability + learning style
   async getProfile(req, res) {
     try {
       const student = await User.findByPk(req.user.id, {
@@ -34,7 +34,7 @@ const studentController = {
     }
   },
 
-  // ✅ UPDATE profile: username, email, image, bio, subjects, and availability
+  // UPDATE profile: username, email, image, bio, subjects, and availability
   async updateProfile(req, res) {
     try {
       const { username, email, bio, subjects, availability } = req.body;
@@ -81,7 +81,7 @@ const studentController = {
       student.email = email;
       await student.save();
 
-      // ✅ Create or update profile fields
+      //  Create or update profile fields
       const [profile, created] = await UserProfile.findOrCreate({
         where: { userId: student.id },
         defaults: { bio, subjects, availability }
@@ -112,7 +112,7 @@ const studentController = {
     }
   },
 
-  // ✅ CHANGE PASSWORD
+  // CHANGE PASSWORD
   async changePassword(req, res) {
     try {
       const { currentPassword, newPassword } = req.body;

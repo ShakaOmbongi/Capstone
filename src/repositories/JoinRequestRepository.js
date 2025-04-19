@@ -9,6 +9,7 @@ class JoinRequestRepository {
   }
 
   async getRequestsBySessionCreator(userId) {
+    // Find all sessions created by or assigned to this user
     const sessions = await TutoringSession.findAll({
       where: {
         [Op.or]: [
@@ -17,15 +18,16 @@ class JoinRequestRepository {
         ]
       }
     });
-  
+
     const sessionIds = sessions.map(s => s.id);
-  
+
     return await JoinRequest.findAll({
       where: {
         sessionId: {
           [Op.in]: sessionIds
         }
       },
+      attributes: { exclude: ['userId'] }, 
       include: [
         {
           model: User,
@@ -39,7 +41,7 @@ class JoinRequestRepository {
       ]
     });
   }
-  
+
   async updateRequestStatus(requestId, status) {
     return await JoinRequest.update({ status }, { where: { id: requestId } });
   }

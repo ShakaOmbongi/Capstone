@@ -40,13 +40,14 @@ const feedbackReviewController = {
   // Get all reviews (with optional filtering via query parameters)
   async getAllReviews(req, res) {
     try {
-      const reviews = await feedbackReviewService.getAllReviews(); // no filters
+      const reviews = await feedbackReviewService.getAllReviews();
       res.status(200).json({
         status: 'success',
         message: 'Reviews fetched successfully',
-        feedback: reviews  // <-- IMPORTANT! Must match what's used in HTML
+        feedback: reviews
       });
     } catch (error) {
+      console.error("Error fetching all feedback reviews:", error); // Helpful log
       res.status(500).json({ status: 'error', message: error.message });
     }
   }
