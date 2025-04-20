@@ -20,9 +20,17 @@ User.init({
   password: { type: DataTypes.STRING, allowNull: false },
   roleId: { type: DataTypes.INTEGER, allowNull: false },
   profilePic: { type: DataTypes.STRING, allowNull: true },
-  suspended: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
-  flagReason: { type: DataTypes.TEXT, allowNull: true }
-
+  suspended: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+    field: 'suspended'
+  },
+  flagReason: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    field: 'flagreason' 
+  }
 }, {
   sequelize,
   modelName: 'User',

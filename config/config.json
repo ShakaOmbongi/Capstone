@@ -17,9 +17,9 @@
   },
   "production": {
     "username": "postgres",
-    "password": "1",
+    "password": "0VLOduKfMJizvOMi",
     "database": "postgres",
-    "host": "db.1.supabase.co",
+    "host": "db.mdnnxwpxypxgwhfkzgok.supabase.co",
     "port": 5432,
     "dialect": "postgres",
     "dialectOptions": {
