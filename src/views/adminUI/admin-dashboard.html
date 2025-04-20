@@ -142,38 +142,7 @@
         console.error("Error fetching users:", error);
       }
 
-      // --------------------------
-      // Fetch and display Flagged Users
-      // --------------------------
-      try {
-        const flaggedResponse = await fetch("http://localhost:3000/admin/flagged-users", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json"
-            // Add Authorization header if needed.
-          }
-        });
-        const flaggedData = await flaggedResponse.json();
-        if (flaggedResponse.ok) {
-          const flaggedTableBody = document.querySelector("#flaggedUsersTable tbody");
-          flaggedTableBody.innerHTML = "";
-          flaggedData.flaggedUsers.forEach(user => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${user.id}</td>
-              <td>${user.username}</td>
-              <td>${user.email}</td>
-              <td>${user.flagReason || "N/A"}</td>
-            `;
-            flaggedTableBody.appendChild(row);
-          });
-        } else {
-          console.error("Failed to fetch flagged users:", flaggedData.error);
-        }
-      } catch (error) {
-        console.error("Error fetching flagged users:", error);
-      }
-
+      
       // --------------------------
       // Fetch and display Analytics Metrics (Daily New Users)
       // --------------------------

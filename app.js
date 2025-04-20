@@ -8,12 +8,11 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Security middleware
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
       "default-src": ["'self'"],
-      "script-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+      "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net"],
       "style-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
       "img-src": [
         "'self'",
@@ -23,6 +22,7 @@ app.use(
     }
   })
 );
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

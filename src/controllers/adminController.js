@@ -25,21 +25,6 @@ const adminController = {
     }
   },
 
-  //  Fetch flagged users
-  async getFlaggedUsers(req, res) {
-    try {
-      const flaggedUsers = await User.findAll({
-        where: {
-          flagReason: { [Op.ne]: null }
-        },
-        attributes: ['id', 'username', 'email', 'flagReason']
-      });
-      return res.status(200).json({ flaggedUsers });
-    } catch (error) {
-      console.error("Error fetching flagged users:", error);
-      return res.status(500).json({ error: error.message });
-    }
-  },
 
   //  Fetch daily signup metrics
   async getMetrics(req, res) {
