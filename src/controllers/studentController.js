@@ -118,6 +118,9 @@ const studentController = {
   async changePassword(req, res) {
     try {
       const { currentPassword, newPassword } = req.body;
+      if (!currentPassword || !newPassword) {
+          return res.status(400).json({ status: 'error', message: 'Both passwords required'});
+      }
       const student = await User.findByPk(req.user.id);
       if (!student) {
         return res.status(404).json({ status: 'error', message: 'Student not found' });

@@ -7,7 +7,6 @@ const studentController = require('../controllers/studentController');
 const progressUpdateService = require('../services/ProgressUpdateService');
 const tutoringSessionService = require('../services/TutoringSessionService');
 const tutoringSessionController = require('../controllers/tutoringSessionController');
-const tutoringSessionController = require('../controllers/tutoringSessionController');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
