@@ -5,13 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>peerAid Tutor Dashboard</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- FullCalendar CSS -->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
+  <!-- Custom Styles -->
   <link rel="stylesheet" href="../../../assets/css/style.css">
-  
-  <!-- Custom JS -->
-  <link rel="stylesheet" href="../../../assets/css/script.css">
 </head>
-
 <body class="bg-light">
   <div class="container-fluid">
     <div class="row">
@@ -19,11 +17,17 @@
       <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
         <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
         <ul class="nav flex-column">
-          <li class="nav-item"><a class="nav-link" href="/tutoruser/profile">Profile</a></li>
-          <li class="nav-item"><a class="nav-link active" href="/tutoruser/tutordashboard">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link" href="/tutoruser/tutoringSessions">Create a Session</a></li>
-          <li class="nav-item"><a class="nav-link" href="/tutoruser/findSessions">Find a Session</a></li>
-          <li class="nav-item"><a class="nav-link" href="/tutoruser/chat">Chatrooms</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/tutor/tutordashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutor/tutorschedule">Calendar</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutor/chat">Messages</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutor/tutorprofile">Profile</a></li>
+          <hr />
+          <li class="nav-item"><a class="nav-link" href="/tutor/bookSessions">Book a Session</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutor/findSessions">Find a Session</a></li>
+          <hr />
+          <li class="nav-item"><a class="nav-link" href="/tutor/About">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutor/faq">FAQs</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutor/settings">Settings</a></li>
           <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
         </ul>
       </nav>
@@ -33,13 +37,52 @@
         <div class="py-4 text-black">
           <h1 class="display-5" id="greeting">Hello, Tutor</h1>
           <p class="text-muted">This is your dashboard.</p>
+          <!-- Display login streak -->
+          <h3 id="streak">Your current login streak: Loading...</h3>
         </div>
+        
+        <!-- Upcoming Schedule Section -->
+        <section class="mb-4" id="upcoming-schedule">
+          <h2>Upcoming Schedule</h2>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Science Tutoring</h5>
+                  <p class="card-text">10 Feb | 2:00 PM</p>
+                </div>
+              </div>
+            </div>
+            <!-- Additional schedule cards as needed -->
+          </div>
+        </section>
 
-        <!-- Calendar -->
-        <section class="mb-4">
-          <h2>Your Tutoring Schedule</h2>
-          <div id="calendar-container" class="card shadow-sm p-3">
-            <div id="calendar"></div>
+        <!-- Dynamic Peer/Tutor Matches Section -->
+        <section class="mb-4" id="peer-tutor-matches">
+          <h2>Peer/Tutor Matches</h2>
+          <div id="matches-container" class="row">
+            <!-- Dynamic match card will be inserted here -->
+          </div>
+        </section>
+
+        <!-- Session Requests Section -->
+        <section class="mb-4" id="session-requests">
+          <h2>Session Requests</h2>
+          <div class="row">
+            <!-- Example session request card -->
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-body d-flex">
+                  <img src="../../../assets/images/unsplash-2.jpg" class="rounded-circle" alt="Student Picture" style="width: 80px; height: 80px; object-fit: cover;">
+                  <div class="ms-3">
+                    <h5 class="card-title mb-1"><a href="/tutor/tutormatches" style="text-decoration: none; color: inherit;">John Doe</a></h5>
+                    <p class="card-text mb-1 text-muted">Math & Physics</p>
+                    <p class="card-text text-secondary">I need help with calculus problems.</p>
+                    <a href="/tutor/details" class="text-dark" style="font-size: 14px; text-decoration: underline;">View Request</a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -78,8 +121,22 @@
             </tbody>
           </table>
         </section>
-        
       </main>
+    </div>
+  </div>
+
+  <!-- Quiz Modal (appears if tutor hasn't taken the quiz) -->
+  <div class="modal fade" id="quizModal" tabindex="-1" aria-labelledby="quizModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="quizModalLabel">Learning Style Quiz</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <iframe src="/learning-style/quiz" width="100%" height="500px" style="border: none;"></iframe>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -90,7 +147,6 @@
       const parts = value.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop().split(';').shift();
     }
-
     document.addEventListener('DOMContentLoaded', function () {
       const username = getCookie('username');
       if (username) {
@@ -99,10 +155,106 @@
     });
   </script>
 
+  <script>
+    async function getLoginStreak() {
+      try {
+        const response = await fetch('/tutor/login-streak', { credentials: 'include' });
+        const data = await response.json();
+        if (data.streak !== undefined) {
+          document.getElementById('streak').textContent = `Your current login streak: ${data.streak}`;
+        } else {
+          document.getElementById('streak').textContent = 'No streak data available';
+        }
+      } catch (error) {
+        console.error('Error fetching login streak:', error);
+        document.getElementById('streak').textContent = 'Error loading streak';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', getLoginStreak);
+  </script>
+
+  <script>
+    async function checkQuizTaken() {
+      try {
+        // Assuming the same endpoint works for both tutors and students.
+        const response = await fetch('/learning-style/taken', { credentials: 'include' });
+        const data = await response.json();
+        if (!data.taken) {
+          const quizModalEl = document.getElementById('quizModal');
+          var quizModal = new bootstrap.Modal(quizModalEl);
+          quizModal.show();
+        }
+      } catch (error) {
+        console.error('Error checking quiz status:', error);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', checkQuizTaken);
+  </script>
+
+  <!-- Load dynamic match from backend -->
+  <script>
+    async function loadMatch() {
+      try {
+        // For tutors, you might use a different endpoint if needed,
+        // but if the match record is created in the same way, this can be reused.
+        const response = await fetch('/tutor/matches', { credentials: 'include' });
+        const data = await response.json();
+        const container = document.getElementById('matches-container');
+        container.innerHTML = '';
+        if (data.status === 'success' && data.match) {
+          const match = data.match;
+          const card = document.createElement('div');
+          card.className = 'col-md-4';
+          card.innerHTML = `
+            <div class="card shadow-sm">
+              <div class="card-body d-flex">
+                <img src="../../../assets/images/unsplash-1.jpg" class="rounded-circle" alt="Match Picture" style="width: 80px; height: 80px; object-fit: cover;">
+                <div class="ms-3">
+                  <h5 class="card-title mb-1">
+                    <a href="/tutormatches/${match.studentId}" style="text-decoration: none; color: inherit;">
+                      ${match.username}
+                    </a>
+                  </h5>
+                  <p class="card-text mb-1 text-muted">Student</p>
+                  <p class="card-text mb-1 text-muted">Match Score: ${match.match_score}</p>
+                  <p class="card-text mb-1 text-muted">Learning Style: ${match.learning_style}</p>
+                  <p class="card-text text-secondary">${match.explanation}</p>
+                </div>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        } else {
+          container.innerHTML = '<p>No match found.</p>';
+        }
+      } catch (error) {
+        console.error('Error fetching match:', error);
+        document.getElementById('matches-container').innerHTML = '<p>Error loading match.</p>';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', loadMatch);
+  </script>
+
+  <!-- Parent page listener for quiz modal closure -->
+  <script>
+    window.addEventListener('message', (event) => {
+      if (event.data === 'closeQuizModal') {
+        const quizModalEl = document.getElementById('quizModal');
+        const quizModal = bootstrap.Modal.getInstance(quizModalEl);
+        if (quizModal) {
+          quizModal.hide();
+        }
+        loadMatch(); // Refresh match data after closing the quiz modal.
+      }
+    });
+  </script>
+
+  <!-- FullCalendar and custom JS -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
   <script src="../../../assets/js/calender.js"></script>
-  <script src="../../../assets/js/sessionActionsTutor.js"></script>
-  <script src="../../../assets/js/joinRequests.js"></script>
+  <script src="../../../assets/js/visibility.js"></script>
+  
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

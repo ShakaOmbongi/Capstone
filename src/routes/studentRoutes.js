@@ -7,6 +7,7 @@ const studentController = require('../controllers/studentController');
 const progressUpdateService = require('../services/ProgressUpdateService');
 const tutoringSessionService = require('../services/TutoringSessionService');
 const tutoringSessionController = require('../controllers/tutoringSessionController');
+const tutoringSessionController = require('../controllers/tutoringSessionController');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -55,8 +56,7 @@ router.get('/sessions', authenticateJWT, async (req, res) => {
         role: session.tutorId === userId ? 'Creator' : 'Participant'
       }
     }));
-
-    res.status(200).json({ events });
+    res.status(200).json({ message: 'Sessions fetched successfully', events });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -105,7 +105,7 @@ router.get('/faq', authenticateJWT, (req, res) => {
 // Student creates a tutoring session
 router.post('/sessions/create', authenticateJWT, tutoringSessionController.createSession);
 
-// Student fetches all tutoring sessions
+// Student fetches all tutoring sessions (JSON)
 router.get('/sessions', authenticateJWT, async (req, res) => {
   try {
     const studentId = req.user.id;
@@ -134,5 +134,11 @@ router.get('/studentschedule', authenticateJWT, (req, res) => {
 router.get('/studentmatches', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/studentmatches.html'));
 });
+
+// NEW: Endpoint to fetch the student's dynamic match data.
+router.get('/matches', authenticateJWT, studentController.getMatch);
+
+// NEW: Endpoint to accept a pending match.
+router.post('/matches/accept', authenticateJWT, studentController.acceptMatch);
 
 module.exports = router;

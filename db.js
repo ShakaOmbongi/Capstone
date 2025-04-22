@@ -1,6 +1,7 @@
 // db.js
-const { Sequelize } = require('sequelize');
 require('dotenv').config();
+const { Sequelize } = require('sequelize');
+const pg = require('pg'); // Explicitly require the pg package
 
 const sequelize = new Sequelize(
   process.env.DB_NAME, 
@@ -13,10 +14,10 @@ const sequelize = new Sequelize(
     dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false, 
+        rejectUnauthorized: false,
       },
     },
-    logging: console.log, 
+    logging: console.log,
   }
 );
 

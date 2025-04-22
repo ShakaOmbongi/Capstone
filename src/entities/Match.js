@@ -2,9 +2,9 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../../db');
 
-class LearningStyleResult extends Model {}
+class Match extends Model {}
 
-LearningStyleResult.init(
+Match.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -19,7 +19,7 @@ LearningStyleResult.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    score: {
+    match_score: {
       type: DataTypes.FLOAT,
       allowNull: true,
     },
@@ -31,15 +31,20 @@ LearningStyleResult.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    accepted: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    }
   },
   {
     sequelize,
-    modelName: 'LearningStyleResult',
-    tableName: 'learning_style_results',
+    modelName: 'Match',
+    tableName: 'matches',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   }
 );
 
-module.exports = LearningStyleResult;
+module.exports = Match;

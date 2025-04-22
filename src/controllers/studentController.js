@@ -1,5 +1,7 @@
 'use strict';
-const { User, UserProfile } = require('../entities');
+const { User, UserProfile, Match } = require('../entities');
+const { Op } = require('sequelize');
+const bcrypt = require('bcrypt');
 
 const studentController = {
   // GET profile with bio + profile pic + subjects + availability + learning style
@@ -112,29 +114,83 @@ const studentController = {
     }
   },
 
-  // CHANGE PASSWORD
+  // Change the student's password
   async changePassword(req, res) {
     try {
       const { currentPassword, newPassword } = req.body;
-      if (!currentPassword || !newPassword) {
-        return res.status(400).json({ status: 'error', message: 'Both passwords required' });
-      }
-
       const student = await User.findByPk(req.user.id);
-      if (!student) return res.status(404).json({ status: 'error', message: 'Student not found' });
-
-      const isMatch = await require('bcrypt').compare(currentPassword, student.password);
-      if (!isMatch) return res.status(401).json({ status: 'error', message: 'Incorrect current password' });
-
-      student.password = await require('bcrypt').hash(newPassword, 10);
+      if (!student) {
+        return res.status(404).json({ status: 'error', message: 'Student not found' });
+      }
+      const isMatch = await bcrypt.compare(currentPassword, student.password);
+      if (!isMatch) {
+        return res.status(401).json({ status: 'error', message: 'Incorrect current password' });
+      }
+      student.password = await bcrypt.hash(newPassword, 10);
       await student.save();
-
-      res.status(200).json({ status: 'success', message: 'Password changed successfully' });
+      return res.status(200).json({ status: 'success', message: 'Password changed successfully' });
     } catch (error) {
-      console.error("Password change error:", error);
-      res.status(500).json({ status: 'error', message: error.message });
+      return res.status(500).json({ status: 'error', message: error.message });
     }
-  }
+  },
+
+  // Get the match for the logged-in student.
+  async getMatch(req, res) {
+    try {
+      const studentId = req.user.id;
+      // Look for the most recent match record for this student.
+      const match = await Match.findOne({
+        where: { studentId },
+        order: [['created_at', 'DESC']]
+      });
+      if (!match) {
+        return res.status(404).json({ status: 'error', message: 'No match found' });
+      }
+      
+      // Retrieve tutor info using tutorId.
+      const tutor = await User.findByPk(match.tutorId);
+      if (!tutor) {
+        return res.status(404).json({ status: 'error', message: 'Match found but tutor not found' });
+      }
+      
+      return res.status(200).json({
+        status: 'success',
+        match: {
+          tutorId: tutor.id,
+          username: tutor.username,
+          email: tutor.email,
+          match_score: match.match_score,
+          explanation: match.explanation,
+          learning_style: match.learning_style || 'N/A',
+          accepted: Boolean(match.accepted)
+        }
+      });
+    } catch (error) {
+      return res.status(500).json({ status: 'error', message: error.message });
+    }
+  },
+
+  // NEW: Accept the pending match.
+  async acceptMatch(req, res) {
+    try {
+      const studentId = req.user.id;
+      const match = await Match.findOne({
+        where: { studentId, accepted: false },
+        order: [['created_at', 'DESC']]
+      });
+      if (!match) {
+        return res.status(404).json({ status: 'error', message: 'No pending match found' });
+      }
+      console.log('Before update, accepted:', match.accepted);
+      // Set accepted to true and then save the change.
+      match.accepted = true;
+      await match.save();
+      console.log('After update, accepted:', match.accepted);
+      return res.status(200).json({ status: 'success', message: 'Match accepted', match });
+    } catch (error) {
+      return res.status(500).json({ status: 'error', message: error.message });
+    }
+  },
 };
 
 module.exports = studentController;

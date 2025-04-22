@@ -1,5 +1,6 @@
 'use strict';
-const { User, UserProfile } = require('../entities');
+const { User, UserProfile, Match } = require('../entities');
+const bcrypt = require('bcrypt');
 
 const tutorController = {
   // GET profile with bio + profile pic + subjects + availability + learning style
@@ -45,8 +46,8 @@ const tutorController = {
       }
 
       const tutor = await User.findByPk(req.user.id);
-      if (!tutor) return res.status(404).json({ status: 'error', message: 'Tutor not found' });
-
+      if (!tutor)
+        return res.status(404).json({ status: 'error', message: 'Tutor not found' });
       const emailExists = await User.findOne({ where: { email } });
       if (emailExists && emailExists.id !== tutor.id) {
         return res.status(409).json({ status: 'error', message: 'Email already in use' });
@@ -131,6 +132,60 @@ const tutorController = {
     } catch (error) {
       console.error("Tutor password change error:", error);
       res.status(500).json({ status: 'error', message: error.message });
+    }
+  },
+
+  // NEW: Retrieve the match for the logged-in tutor.
+  async getMatch(req, res) {
+    try {
+      const tutorId = req.user.id;
+      const match = await Match.findOne({
+        where: { tutorId: tutorId },
+        order: [['created_at', 'DESC']]
+      });
+      if (!match) {
+        return res.status(404).json({ status: 'error', message: 'No match found' });
+      }
+      // Get student details.
+      const student = await User.findByPk(match.studentId);
+      if (!student) {
+        return res.status(404).json({ status: 'error', message: 'Match found but student not found' });
+      }
+      return res.status(200).json({
+        status: 'success',
+        match: {
+          studentId: student.id,
+          username: student.username,
+          email: student.email,
+          match_score: match.match_score,
+          explanation: match.explanation,
+          learning_style: match.learning_style || 'N/A',
+          accepted: Boolean(match.accepted)
+        }
+      });
+    } catch (error) {
+      return res.status(500).json({ status: 'error', message: error.message });
+    }
+  },
+
+  // NEW: Accept the pending match for the tutor.
+  async acceptMatch(req, res) {
+    try {
+      const tutorId = req.user.id;
+      const match = await Match.findOne({
+        where: { tutorId: tutorId, accepted: false },
+        order: [['created_at', 'DESC']]
+      });
+      if (!match) {
+        return res.status(404).json({ status: 'error', message: 'No pending match found' });
+      }
+      console.log('Before update, accepted:', match.accepted);
+      match.accepted = true;
+      await match.save();
+      console.log('After update, accepted:', match.accepted);
+      return res.status(200).json({ status: 'success', message: 'Match accepted', match });
+    } catch (error) {
+      return res.status(500).json({ status: 'error', message: error.message });
     }
   }
 };

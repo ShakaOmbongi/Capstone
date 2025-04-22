@@ -1,12 +1,8 @@
-'use strict';
 require('dotenv').config();
 const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io'); // Ensure this is also imported if using Socket.io
+const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-const helmet = require('helmet');
-
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,9 +33,12 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Serve static assets
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-// Import route files
+// Import authentication middleware and routes
+const { authenticateJWT } = require('./src/middleware/authMiddleware');
 const landingRoutes = require('./src/routes/landingRoutes');
 const signupRoutes = require('./src/routes/signupRoutes');
 const loginRoutes = require('./src/routes/loginRoutes');
@@ -49,6 +48,7 @@ const logoutRoutes = require('./src/routes/logoutRoutes');
 const sessionRoutes = require('./src/routes/tutoringSessionRoutes');
 const chatMessageRoutes = require('./src/routes/chatMessageRoutes');
 const studentTestRoutes = require('./src/routes/studentTestRoutes');
+const learningStyleRoutes = require('./src/routes/learningStyleRoutes');
 
 const tutorUserRoutes = require('./src/routes/tutorUserRoutes');
 app.use('/tutoruser', tutorUserRoutes);
@@ -72,12 +72,15 @@ app.use('/tutoruser/join', joinRequestRoutes);
 app.use('/', landingRoutes);
 app.use('/signup', signupRoutes);
 app.use('/login', loginRoutes);
-app.use('/student', studentRoutes);
-app.use('/student/test', studentTestRoutes);
-app.use('/tutor', tutorRoutes);
+app.use('/learning-style', learningStyleRoutes);
+
+// Apply authentication middleware on routes that require a valid token
+app.use('/student', authenticateJWT, studentRoutes);
+app.use('/student/test', authenticateJWT, studentTestRoutes);
+app.use('/tutor', authenticateJWT, tutorRoutes);
 app.use('/', logoutRoutes);
-app.use('/sessions', sessionRoutes);
-app.use('/chat-messages', chatMessageRoutes);
+app.use('/sessions', authenticateJWT, sessionRoutes);
+app.use('/chat-messages', authenticateJWT, chatMessageRoutes);
 app.use('/uploads', express.static('uploads'));
 
 // Catch-all handler for 404 - Not Found

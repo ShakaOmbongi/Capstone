@@ -22,8 +22,13 @@ const loginController = {
         return res.status(401).json({ status: 'error', message: 'Invalid credentials' });
       }
 
-      const token = authService.generateToken(user);
-
+      // Generate a token from user data
+      const token = authService.generateToken({
+        id: user.id,
+        roleId: user.roleId,
+        role: user.role.name.toUpperCase()
+      });
+      // Store token in an httpOnly cookie
       res.cookie('token', token, {
         httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
@@ -31,7 +36,6 @@ const loginController = {
       });
       res.cookie('username', user.username);
 
-      // Instead of returning JSON, perform a server-side redirect to the dashboard.
       return res.redirect('/student/studentdashboard');
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error.message });
@@ -55,7 +59,11 @@ const loginController = {
         return res.status(401).json({ status: 'error', message: 'Invalid credentials' });
       }
 
-      const token = authService.generateToken(user);
+      const token = authService.generateToken({
+        id: user.id,
+        roleId: user.roleId,
+        role: user.role.name.toUpperCase()
+      });
       res.cookie('token', token, {
         httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
@@ -63,8 +71,7 @@ const loginController = {
       });
       res.cookie('username', user.username);
 
-      // Tutor redirection—adjust to your tutor dashboard route.
-      return res.redirect('/tutoruser/tutordashboard');
+      return res.redirect('/tutor/tutordashboard');
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error.message });
     }
