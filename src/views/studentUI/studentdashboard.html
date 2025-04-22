@@ -176,7 +176,7 @@
 
           rooms.forEach(room => {
               const messageItem = document.createElement("a");
-              messageItem.href = `/student/chat?room=${room.conversationId}`; // ✅ Links to correct chatroom
+              messageItem.href = `/student/chat?room=${room.conversationId}`; //  Links to correct chatroom
               messageItem.classList.add("d-flex", "align-items-center", "p-3", "border-bottom", "text-decoration-none", "text-dark");
 
               messageItem.innerHTML = `

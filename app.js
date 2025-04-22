@@ -71,31 +71,36 @@ app.get("/api/get-user", (req, res) => {
 
 // Get Unique Chatrooms
 app.get("/api/chat-rooms", async (req, res) => {
+    const username = req.cookies.username;
+    if (!username) return res.status(401).json({ error: "Not authenticated" });
+  
     try {
-        const { data: rooms, error } = await supabase
-            .from("chat_messages")
-            .select("conversationId, message, createdAt")
-            .order("createdAt", { ascending: false });
-
-        if (error) throw error;
-
-        const uniqueRooms = [];
-        const seenConversations = new Set();
-
-        rooms.forEach(room => {
-            if (!seenConversations.has(room.conversationId)) {
-                seenConversations.add(room.conversationId);
-                uniqueRooms.push(room);
-            }
-        });
-
-        res.json(uniqueRooms);
+      const { data: rooms, error } = await supabase
+        .from("chat_messages")
+        .select("conversationId, message, createdAt, senderId, receiverid")
+        .or(`senderId.eq.${username},receiverid.eq.${username}`)
+        .order("createdAt", { ascending: false });
+  
+      if (error) throw error;
+  
+      // Deduplicate by conversationId
+      const seen = new Set();
+      const uniqueRooms = [];
+  
+      for (let room of rooms) {
+        if (!seen.has(room.conversationId)) {
+          seen.add(room.conversationId);
+          uniqueRooms.push(room);
+        }
+      }
+  
+      res.json(uniqueRooms);
     } catch (err) {
-        console.error(" Error fetching chatrooms:", err);
-        res.status(500).json({ error: err.message });
+      console.error("Error fetching chatrooms:", err);
+      res.status(500).json({ error: err.message });
     }
-});
-
+  });
+  
 //  Get Messages for a Specific Chatroom
 app.get("/api/chat-messages/:roomId", async (req, res) => {
     const { roomId } = req.params;
@@ -116,11 +121,35 @@ app.get("/api/chat-messages/:roomId", async (req, res) => {
     }
 });
 
+// Get chatrooms where current user is involved
+app.get("/api/user-chatrooms", async (req, res) => {
+    const username = req.cookies.username;
+    if (!username) return res.status(401).json({ error: "Not authenticated" });
+  
+    try {
+      const { data, error } = await supabase
+        .from("chat_messages")
+        .select("conversationId")
+        .or(`senderId.eq.${username},receiverid.eq.${username}`)
+        .order("createdAt", { ascending: false });
+  
+      if (error) throw error;
+  
+      // Remove duplicates
+      const uniqueRooms = [...new Set(data.map(d => d.conversationId))];
+      res.json(uniqueRooms);
+    } catch (err) {
+      console.error("❌ Error getting user chatrooms:", err.message);
+      res.status(500).json({ error: err.message });
+    }
+  });
+  
+
 // ========================== SOCKET.IO CHAT HANDLING ==========================
 io.on("connection", (socket) => {
-    console.log("✅ A user connected:", socket.id);
+    console.log(" A user connected:", socket.id);
 
-    // ✅ User Joins a Chat Room
+    //  User Joins a Chat Room
     socket.on("joinRoom", async ({ conversationId, username }) => {
         socket.join(conversationId);
         console.log(`🔹 ${username} joined room: ${conversationId}`);
@@ -162,14 +191,14 @@ io.on("connection", (socket) => {
                     return;
                 }
 
-                // ✅ Broadcast message to all users in the same chatroom
+                //  Broadcast message to all users in the same chatroom
                 io.to(conversationId).emit("chatMessage", data);
             } catch (err) {
                 console.error(" Error processing chat message:", err.message);
             }
         });
 
-    // ✅ Handle Disconnection
+    //  Handle Disconnection
     socket.on("disconnect", () => {
         console.log(" A user disconnected:", socket.id);
     });
@@ -193,5 +222,5 @@ testSupabaseConnection();
 
 // Start the server
 server.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(` Server running on http://localhost:${PORT}`);
 });

@@ -182,3 +182,12 @@ body {
 .chat-input-container button:hover {
   background: #d83636;
 }
+
+.chatroom-list {
+  background: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+.chatroom-list button {
+  width: 100%;
+  text-align: left;
+}
