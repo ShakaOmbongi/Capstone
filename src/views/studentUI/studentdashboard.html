@@ -127,81 +127,53 @@
               </div>
             </div>
             <!-- Messages Section -->
-            <div class="col-md-6" id="messages-section">
-              <h3>Messages</h3>
-              <div class="card shadow-sm">
-                <div class="card-body p-0">
-                  <a href="/chat/jane-cooper" class="d-flex align-items-center p-3 border-bottom text-decoration-none text-dark">
-                    <div class="d-flex flex-column">
-                      <strong>Jane Cooper</strong>
-                      <span class="text-muted small">Did you have any trouble with the assignment?</span>
-                    </div>
-                  </a>
-                </div>
-              </div>
-          </a>
-
-          <!-- Message 4 -->
-          <a href="/chat/brian-tracy" class="d-flex align-items-center p-3 border-bottom text-decoration-none text-dark">
-            <div class="d-flex flex-column">
-                <strong>Computer Science Study Group</strong>
-                <span class="text-muted small">How did you do the problem for #4?</span>
-            </div>
-        </a>
-
-        <!-- Message 5 -->
-        <a href="/chat/brian-tracy" class="d-flex align-items-center p-3 border-bottom text-decoration-none text-dark">
-          <div class="d-flex flex-column">
-              <strong>Brooklyn Simon</strong>
-              <span class="text-muted small">Do you have the notes for the last test?</span>
-          </div>
-      </a>
-      <!-- Message 6 -->
-      <a href="/chat/brian-tracy" class="d-flex align-items-center p-3 border-bottom text-decoration-none text-dark">
-        <div class="d-flex flex-column">
-            <strong>John Doe</strong>
-            <span class="text-muted small">Let me know if you need help.</span>
-        </div>
-    </a>
+<div class="col-md-6">
+  <h3>Messages</h3>
+  <div class="card shadow-sm">
+      <div class="card-body p-0" id="messageList">
+          <!-- Messages will be dynamically loaded here -->
       </div>
   </div>
 </div>
-        </section>
 
-        <!-- Pending Join Requests Section -->
-        <section class="mb-4">
-          <h2>Pending Join Requests</h2>
-          <table class="table table-striped" id="joinRequestsTable">
-            <thead>
-              <tr>
-                <th>Session Subject</th>
-                <th>Requester</th>
-                <th>Requested At</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="joinRequestsTableBody">
-              <!-- Populated dynamically -->
-            </tbody>
-          </table>
-        </section>
+<script>
+  async function fetchRecentMessages() {
+      try {
+          const response = await fetch('/api/chat-rooms');
+          const rooms = await response.json();
+          const messageList = document.getElementById("messageList");
+          messageList.innerHTML = "";
 
-        <!-- Session Requests Made By Me (Optional) -->
-        <section class="mb-4">
-          <h2>My Pending Sessions</h2>
-          <table class="table table-striped" id="pendingSessionsTable">
-            <thead>
-              <tr>
-                <th>Subject</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="pendingSessionsTableBody">
-              <!-- Session rows inserted by JS -->
-            </tbody>
-          </table>
+          if (rooms.length === 0) {
+              messageList.innerHTML = "<p class='p-3 text-muted'>No recent messages.</p>";
+              return;
+          }
+
+          rooms.forEach(room => {
+              const messageItem = document.createElement("a");
+              messageItem.href = `/student/chat?room=${room.conversationId}`; //  Links to correct chatroom
+              messageItem.classList.add("d-flex", "align-items-center", "p-3", "border-bottom", "text-decoration-none", "text-dark");
+
+              messageItem.innerHTML = `
+                  <div class="d-flex flex-column">
+                      <strong>Chatroom ${room.conversationId}</strong>
+                      <span class="text-muted small">${room.message || "No messages yet"}</span>
+                  </div>
+              `;
+
+              messageList.appendChild(messageItem);
+          });
+      } catch (error) {
+          console.error(" Error fetching recent messages:", error);
+      }
+  }
+
+  document.addEventListener("DOMContentLoaded", fetchRecentMessages);
+</script>
+
+          <div id="calendar-container" class="card shadow-sm p-3">
+            <div id="calendar"></div>
+          </div>
         </section>
       </main>
     </div>

@@ -1,61 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Student Chatrooms</title>
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../../../assets/css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../../../assets/css/chat.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 </head>
-<body class="bg-light">
+
+<body>
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
-      <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
-        <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
+      <nav class="col-md-3 col-lg-2 sidebar p-3 shadow">
+        <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" />
         <ul class="nav flex-column">
+          <li class="nav-item"><a class="nav-link" href="/student/profile">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="/studentdashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/tutoringSessions">Create a Session</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/findSessions">Find a Session</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/student/chat">Chatrooms</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+        </ul>
+      </nav>
 
-        <li class="nav-item"><a class="nav-link" href="/student/studentdashboard">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="/student/studentschedule">Calendar</a></li>
-        <li class="nav-item"><a class="nav-link active" href="/student/chat">Messages</a></li>
-        <li class="nav-item"><a class="nav-link" href="/student/studentprofile">Profile</a></li>
-
-        <hr />
-
-        <li class="nav-item"><a class="nav-link" href="/student/bookSessions">Book a Session</a></li>
-        <li class="nav-item"><a class="nav-link" href="/student/tutoringSessions">Create a Session</a></li>
-        <li class="nav-item"><a class="nav-link" href="/student/findSessions">Find a Session</a></li>
-
-        <hr />
-
-        <li class="nav-item"><a class="nav-link" href="/student/About">About Us</a></li>
-        <li class="nav-item"><a class="nav-link" href="/student/faq">FAQs</a></li>
-        <li class="nav-item"><a class="nav-link" href="/student/settings">Settings</a></li>
-        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-      </ul>
-  </nav>
-  
-      
-      <!-- Main Content -->
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <h1 class="mt-4">Student Chatrooms</h1>
-        <p>Welcome to your chat room. Engage with peers here.</p>
-        <!-- Chat Room Placeholder -->
-        <div id="chat-room" class="border p-3 mb-3" style="height:300px; overflow-y:scroll;">
-          <!-- Sample messages -->
-          <div><strong>Alice:</strong> Hi everyone!</div>
-          <div><strong>Bob:</strong> Hello, Alice!</div>
+      <!-- Chat Section -->
+      <main class="main-content">
+        <div class="chat-header">
+          <h2 id="chatroom-title">Messages</h2>
         </div>
-        <!-- Message Input -->
-        <div class="input-group">
-          <input type="text" class="form-control" id="chat-input" placeholder="Type your message...">
-          <button class="btn btn-primary" id="send-button">Send</button>
+
+        <!-- Chat Messages -->
+        <section class="chat-container">
+          <div id="messages" class="message-container"></div>
+        </section>
+
+        <!-- Chat Input -->
+        <div class="chat-input-container">
+          <input type="text" id="receiverInput" placeholder="Enter receiver ID" required />
+          <input type="text" id="messageInput" placeholder="Type your message..." required />
+          <button type="submit" id="sendBtn">Send</button>
         </div>
       </main>
     </div>
   </div>
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const socket = io("http://localhost:3000");
+
+    const messages = document.getElementById("messages");
+    const messageInput = document.getElementById("messageInput");
+    const receiverInput = document.getElementById("receiverInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    let currentConversationId = "";
+    let username = "";
+
+    async function getLoggedInUser() {
+      try {
+        const response = await fetch("/api/get-user");
+        const userData = await response.json();
+        if (userData.username) {
+          username = userData.username;
+          console.log("✅ Logged in as:", username);
+        } else {
+          alert("Error: Unable to retrieve username.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    }
+
+    function getConversationIdFromUrl() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const conversationId = urlParams.get("room");
+
+      if (conversationId) {
+        currentConversationId = conversationId;
+        joinRoom(conversationId);
+      } else {
+        showChatroomList(); //  New behavior if no room is selected
+      }
+    }
+
+
+    function joinRoom(conversationId) {
+      messages.innerHTML = "<p>Loading messages...</p>";
+      socket.emit("joinRoom", { conversationId, username });
+
+      socket.once("previousMessages", (loadedMessages) => {
+        messages.innerHTML = "";
+        loadedMessages.forEach((msg) => {
+          const senderType = msg.senderId === username ? "user" : "receiver";
+          appendMessage(msg.senderId, msg.message, senderType);
+        });
+      });
+
+      console.log(`Joined room ${conversationId}`);
+    }
+
+    function appendMessage(senderId, text, senderType) {
+      const messageElement = document.createElement("div");
+      messageElement.classList.add("message", senderType);
+
+      const bubble = document.createElement("div");
+      bubble.classList.add("bubble");
+      bubble.innerHTML = `<strong>${senderId}:</strong> ${text}`;
+
+      messageElement.appendChild(bubble);
+      messages.appendChild(messageElement);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    async function showChatroomList() {
+      try {
+        const response = await fetch("/api/chat-rooms");
+        const rooms = await response.json();
+        messages.innerHTML = `
+  <div class="mb-3">
+    <h5>Select a Chatroom</h5>
+    <input type="text" id="newChatUser" class="form-control mb-2" placeholder="Enter username to start chat">
+    <button id="startChatBtn" class="btn btn-sm btn-primary">Start New Chat</button>
+  </div>
+`;
+
+
+        if (rooms.length === 0) {
+          messages.innerHTML += "<p class='text-muted'>You have no chatrooms yet.</p>";
+          return;
+        }
+
+        rooms.forEach(room => {
+          const chatBtn = document.createElement("button");
+          chatBtn.className = "btn btn-outline-primary mb-2";
+          chatBtn.textContent = `Room ${room.conversationId}`;
+          chatBtn.addEventListener("click", () => {
+            window.location.href = `/student/chat?room=${room.conversationId}`;
+          });
+          messages.appendChild(chatBtn);
+        });
+      } catch (err) {
+        console.error("Error fetching chatroom list:", err);
+        messages.innerHTML = "<p class='text-danger'>Failed to load chatrooms.</p>";
+      }
+      const startChatBtn = document.getElementById("startChatBtn");
+      startChatBtn.addEventListener("click", () => {
+        const otherUser = document.getElementById("newChatUser").value.trim();
+
+        if (!otherUser || otherUser === username) {
+          alert("Please enter a valid username that isn’t your own.");
+          return;
+        }
+
+        const ids = [username, otherUser].sort(); // Ensure consistent order
+        const newRoomId = `${ids[0]}_${ids[1]}`;
+
+        window.location.href = `/student/chat?room=${newRoomId}`;
+      });
+
+    }
+
+    sendBtn.addEventListener("click", () => {
+      const messageText = messageInput.value.trim();
+      const receiverId = receiverInput.value.trim();
+
+      if (messageText !== "" && currentConversationId !== "" && receiverId !== "") {
+        const messageData = {
+          conversationId: currentConversationId,
+          senderId: username,
+          receiverid: receiverId,
+          message: messageText
+        };
+
+        socket.emit("chatMessage", messageData);
+
+
+        messageInput.value = "";
+      }
+    });
+
+    socket.on("chatMessage", (data) => {
+      const senderType = data.senderId === username ? "user" : "receiver";
+      appendMessage(data.senderId, data.message, senderType);
+    });
+
+    document.addEventListener("DOMContentLoaded", async () => {
+   await getLoggedInUser();         
+  getConversationIdFromUrl();     
+});
+
+  </script>
 </body>
+
 </html>

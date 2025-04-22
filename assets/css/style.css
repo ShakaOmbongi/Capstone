@@ -1,4 +1,4 @@
-/* ************************* LANDING PAGE *********************** */
+************************* LANDING PAGE *********************** */
   
   /* Making peerAid logo Smaller to fit page */
   .logo {
@@ -177,4 +177,20 @@
     align-items: center;
     justify-content: center;
     width: 60%; /* Adjusted width */
+}
+
+/* Messages Section */
+#messageList {
+  max-height: 300px; /* Limits height to avoid overflow */
+  overflow-y: auto;
+}
+
+#messageList .list-group-item {
+  padding: 15px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+#messageList .list-group-item:hover {
+  background: #f8f9fa;
 }
