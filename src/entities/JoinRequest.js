@@ -1,8 +1,24 @@
 // src/entities/JoinRequest.js
+'use strict';
+
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../../db');
 
-class JoinRequest extends Model {}
+class JoinRequest extends Model {
+  static associate(models) {
+    // Each join request belongs to a student (user making the request)
+    JoinRequest.belongsTo(models.User, {
+      foreignKey: 'studentId',
+      as: 'requestingStudent'  // renamed alias (was 'student')
+    });
+
+    // Each join request is for a specific tutoring session
+    JoinRequest.belongsTo(models.TutoringSession, {
+      foreignKey: 'sessionId',
+      as: 'requestedSession'   // renamed alias (was 'session')
+    });
+  }
+}
 
 JoinRequest.init(
   {
@@ -15,7 +31,7 @@ JoinRequest.init(
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    userId: {
+    studentId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },

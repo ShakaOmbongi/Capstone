@@ -1,5 +1,5 @@
+// public/assets/js/tutorUpdateProfile.js
 document.addEventListener("DOMContentLoaded", async function () {
-  // Helper to get a cookie by name
   function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -7,89 +7,153 @@ document.addEventListener("DOMContentLoaded", async function () {
     return null;
   }
 
-  // Get the token from cookies
   const token = getCookie("token");
   if (!token) {
     alert("No token found. Please log in.");
-    window.location.href = "/tutorlogin"; // Redirect to tutor login page
+    window.location.href = "/login";
     return;
   }
 
-  // Fetch and pre-populate the current tutor profile data
+  // Load profile data
   try {
-    const response = await fetch("/tutor/profile/data", {
+    const response = await fetch("/tutoruser/profile/data", {
       method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
+      headers: { "Authorization": `Bearer ${token}` }
     });
-    if (!response.ok) {
-      throw new Error("Failed to fetch profile");
-    }
+
+    if (!response.ok) throw new Error("Failed to fetch profile");
+
     const data = await response.json();
     const profile = data.profile || {};
 
-    // Update profile display elements on the page
-    document.getElementById("tutorName").textContent = profile.username || "Tutor";
-    document.getElementById("profileName").textContent = profile.username || "Tutor";
-    document.getElementById("email").textContent = profile.email || "email@example.edu";
+    // Safely update DOM elements if they exist
+    if (document.getElementById("tutorName"))
+      document.getElementById("tutorName").textContent = profile.username || "Tutor";
 
-    // Pre-populate the update form fields
-    document.getElementById("username").value = profile.username || "";
-    document.getElementById("emailInput").value = profile.email || "";
+    if (document.getElementById("studentName"))
+      document.getElementById("studentName").textContent = profile.username || "Tutor";
+
+    if (document.getElementById("profileName"))
+      document.getElementById("profileName").textContent = profile.username || "Tutor";
+
+    if (document.getElementById("email"))
+      document.getElementById("email").textContent = profile.email || "email@example.edu";
+
+    if (document.getElementById("bio"))
+      document.getElementById("bio").textContent = profile.bio || "No bio available.";
+
+    if (document.getElementById("subjectsList"))
+      document.getElementById("subjectsList").innerHTML = profile.subjects
+        ? profile.subjects.split(',').map(sub => `<li>${sub.trim()}</li>`).join('')
+        : '<li>No subjects listed.</li>';
+
+    if (document.getElementById("availabilityInput"))
+      document.getElementById("availabilityInput").value = profile.availability || "";
+
+    if (document.getElementById("learningStyle"))
+      document.getElementById("learningStyle").textContent = profile.learningstyle || "Learning Style Not Set";
+
+    if (document.getElementById("profilePic"))
+      document.getElementById("profilePic").src = profile.profilePic || "default.jpg";
+
+    // Pre-fill update form fields
+    if (document.getElementById("username"))
+      document.getElementById("username").value = profile.username || "";
+
+    if (document.getElementById("emailInput"))
+      document.getElementById("emailInput").value = profile.email || "";
+
+    if (document.getElementById("bioInput"))
+      document.getElementById("bioInput").value = profile.bio || "";
+
+    if (document.getElementById("subjectsInput"))
+      document.getElementById("subjectsInput").value = profile.subjects || "";
+
   } catch (error) {
-    console.error("Error loading profile:", error);
-    alert("Error loading profile");
+    console.error("Error loading tutor profile:", error);
+    alert("Error loading profile.");
   }
 
-  // Listen for update profile form submission
-  document.getElementById("updateProfileForm").addEventListener("submit", async function (event) {
-    event.preventDefault();
+  // Update profile form submission
+  const updateForm = document.getElementById("updateProfileForm");
+  if (updateForm) {
+    updateForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
 
-    // Re-fetch the token
-    const token = getCookie("token");
-    if (!token) {
-      alert("You must be logged in to update your profile.");
-      return;
-    }
-
-    // Get the updated values from the input fields
-    const usernameInput = document.getElementById("username");
-    const emailInput = document.getElementById("emailInput");
-    if (!usernameInput || !emailInput) {
-      alert("Required input elements are missing.");
-      return;
-    }
-    const newUsername = usernameInput.value;
-    const newEmail = emailInput.value;
-
-    // Send the updated profile data to the server
-    try {
-      const response = await fetch("/tutor/updateProfile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({ username: newUsername, email: newEmail })
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        alert("Profile updated successfully!");
-        // Update the display elements on the page with new data
-        document.getElementById("tutorName").textContent = newUsername;
-        document.getElementById("profileName").textContent = newUsername;
-        document.getElementById("email").textContent = newEmail;
-
-        // Update the username cookie so that the dashboard displays the new name
-        document.cookie = `username=${newUsername}; path=/;`;
-      } else {
-        alert(result.error || "Failed to update profile.");
+      const token = getCookie("token");
+      if (!token) {
+        alert("You must be logged in to update your profile.");
+        return;
       }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      alert("Error updating profile.");
-    }
-  });
+
+      const formData = new FormData(updateForm);
+
+      try {
+        const response = await fetch("/tutoruser/updateProfile", {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          },
+          body: formData
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          alert("Profile updated successfully!");
+
+          if (document.getElementById("profileName"))
+            document.getElementById("profileName").textContent = result.data.username;
+
+          if (document.getElementById("email"))
+            document.getElementById("email").textContent = result.data.email;
+
+          if (document.getElementById("bio"))
+            document.getElementById("bio").textContent = result.data.bio || "No bio available.";
+
+          if (document.getElementById("availabilityInput"))
+            document.getElementById("availabilityInput").value = result.data.availability || "";
+
+          if (document.getElementById("subjectsList"))
+            document.getElementById("subjectsList").innerHTML = result.data.subjects
+              ? result.data.subjects.split(',').map(sub => `<li>${sub.trim()}</li>`).join('')
+              : '<li>No subjects listed.</li>';
+
+          if (document.getElementById("profilePic"))
+            document.getElementById("profilePic").src = result.data.profilePic || "default.jpg";
+
+          document.cookie = `username=${result.data.username}; path=/;`;
+        } else {
+          alert(result.error || "Failed to update profile.");
+        }
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        alert("Error updating profile.");
+      }
+    });
+  }
 });
+
+// Function to add availability blocks
+function addAvailability() {
+  const day = document.getElementById("daySelect").value;
+  const start = document.getElementById("startTimeSelect").value;
+  const end = document.getElementById("endTimeSelect").value;
+
+  if (day === "Day" || start === "Start Time" || end === "End Time") {
+    alert("Please select a valid day, start time, and end time.");
+    return;
+  }
+
+  const availabilityInput = document.getElementById("availabilityInput");
+  const newEntry = `${day} ${start}-${end}`;
+
+  if (availabilityInput.value) {
+    availabilityInput.value += `, ${newEntry}`;
+  } else {
+    availabilityInput.value = newEntry;
+  }
+
+  document.getElementById("daySelect").selectedIndex = 0;
+  document.getElementById("startTimeSelect").selectedIndex = 0;
+  document.getElementById("endTimeSelect").selectedIndex = 0;
+}

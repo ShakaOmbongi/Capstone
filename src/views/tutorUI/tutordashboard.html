@@ -1,19 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>peerAid Tutor Dashboard</title>
-  
-  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- FullCalendar CSS -->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
-  <!-- FullCalendar JS -->
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
-  <!-- Custom Styles -->
   <link rel="stylesheet" href="../../../assets/css/style.css">
 </head>
 <body class="bg-light">
@@ -24,140 +16,88 @@
         <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
         <ul class="nav flex-column">
           <li class="nav-item"><a class="nav-link" href="/tutoruser/profile">Profile</a></li>
-          <li class="nav-item"><a class="nav-link" href="/tutoruser/tutordashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/tutoruser/tutordashboard">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link" href="/tutoruser/tutoringSessions">Create a Session</a></li>
           <li class="nav-item"><a class="nav-link" href="/tutoruser/findSessions">Find a Session</a></li>
-          <li class="nav-item"><a class="nav-link active" href="/tutoruser/chat">Chatrooms</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/chat">Chatrooms</a></li>
           <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
         </ul>
       </nav>
 
       <!-- Main Content -->
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <!-- Header with dynamic greeting -->
-        <div class="py-4" style="color: black;">
+        <div class="py-4 text-black">
           <h1 class="display-5" id="greeting">Hello, Tutor</h1>
-          <p class="text-muted">Manage your sessions and interactions here.</p>
+          <p class="text-muted">This is your dashboard.</p>
         </div>
 
-        <!-- Upcoming Sessions Section -->
+        <!-- Calendar -->
         <section class="mb-4">
-          <h2>Upcoming Tutoring Sessions</h2>
-          <div class="row" id="upcomingSessions">
-            <p>Loading sessions...</p>
+          <h2>Your Tutoring Schedule</h2>
+          <div id="calendar-container" class="card shadow-sm p-3">
+            <div id="calendar"></div>
           </div>
         </section>
 
-        <!-- Calendar & Notifications Section -->
+        <!-- My Pending Sessions -->
         <section class="mb-4">
-          <div class="row">
-            <!-- Calendar Section -->
-            <div class="col-md-6">
-              <h3>Calendar</h3>
-              <div id="calendar-container" class="card shadow-sm p-3">
-                <div id="calendar"></div>
-              </div>
-            </div>
-            <!-- Notifications Section -->
-            <div class="col-md-6">
-              <h3>Notifications</h3>
-              <div class="card shadow-sm">
-                <div class="card-body">
-                  <p><strong>New Request:</strong> A student has booked a session.</p>
-                  <p><strong>Feedback:</strong> Your latest session review is available.</p>
-                  <p><strong>Reminder:</strong> Upcoming session in 1 hour.</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <h2>My Pending Sessions</h2>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="pendingSessionsTableBody">
+              <!-- JS will populate this for sessionActionsTutor.js -->
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Join Requests -->
+        <section class="mb-4">
+          <h2>Pending Join Requests</h2>
+          <table class="table table-striped" id="joinRequestsTable">
+            <thead>
+              <tr>
+                <th>Session Subject</th>
+                <th>Requester</th>
+                <th>Requested At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="joinRequestsTableBody">
+              <!-- JS will inject rows here -->
+            </tbody>
+          </table>
         </section>
       </main>
     </div>
   </div>
 
-  <!-- Script to fetch and update data -->
+  <!-- Scripts -->
   <script>
-    // Function to get cookies
     function getCookie(name) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop().split(';').shift();
     }
 
-    // Fetch tutor data when the page loads
-    document.addEventListener('DOMContentLoaded', async () => {
-      const token = getCookie('token');
-      if (!token) {
-        alert('No token found. Please log in.');
-        window.location.href = '/login';
-        return;
-      }
-
-      try {
-        // Fetch tutor profile data
-        const profileResponse = await fetch('/tutor/profileData', {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (!profileResponse.ok) {
-          throw new Error('Failed to fetch tutor profile');
-        }
-
-        const profileData = await profileResponse.json();
-        document.getElementById('greeting').textContent = `Hello, ${profileData.username}`;
-
-        // Fetch upcoming tutoring sessions
-        const sessionResponse = await fetch('/tutor/upcomingSessions', {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        const sessionData = await sessionResponse.json();
-        const sessionContainer = document.getElementById('upcomingSessions');
-        sessionContainer.innerHTML = '';
-
-        if (sessionData.sessions.length === 0) {
-          sessionContainer.innerHTML = '<p>No upcoming sessions.</p>';
-        } else {
-          sessionData.sessions.forEach(session => {
-            const sessionCard = `
-              <div class="col-md-4">
-                <div class="card shadow-sm">
-                  <div class="card-body">
-                    <h5 class="card-title">${session.subject}</h5>
-                    <p class="card-text">${new Date(session.sessionDate).toLocaleString()}</p>
-                  </div>
-                </div>
-              </div>
-            `;
-            sessionContainer.innerHTML += sessionCard;
-          });
-        }
-
-        // Load sessions into calendar
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-          },
-          events: sessionData.sessions.map(session => ({
-            title: session.subject,
-            start: session.sessionDate
-          }))
-        });
-
-        calendar.render();
-
-      } catch (error) {
-        console.error('Error loading tutor data:', error);
+    document.addEventListener('DOMContentLoaded', function () {
+      const username = getCookie('username');
+      if (username) {
+        document.getElementById('greeting').textContent = `Hello, ${username}`;
       }
     });
   </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+  <script src="../../../assets/js/calender.js"></script>
+  <script src="../../../assets/js/sessionActionsTutor.js"></script>
+  <script src="../../../assets/js/joinRequests.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

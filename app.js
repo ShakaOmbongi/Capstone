@@ -56,8 +56,8 @@ app.use('/student/join', joinRequestRoutes);
 const feedbackRoutes = require('./src/routes/feedbackRoutes');
 app.use('/admin/feedback', feedbackRoutes);
 
-
-
+// Use for tutors
+app.use('/tutoruser/join', joinRequestRoutes);
 // Mount other routes
 app.use('/', landingRoutes);
 app.use('/signup', signupRoutes);

@@ -52,7 +52,7 @@ const studentController = {
         return res.status(409).json({ status: 'error', message: 'Email already in use' });
       }
 
-      // ✅ Upload image to Supabase (if provided)
+      // Upload image to Supabase (if provided)
       if (file) {
         const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
         const filePath = `avatars/${Date.now()}-${file.originalname}`;

@@ -1,74 +1,91 @@
 'use strict';
+
 const express = require('express');
 const path = require('path');
+const multer = require('multer');
 const { authenticateJWT } = require('../middleware/authMiddleware');
-const tutorController = require('../controllers/tutorController'); // Ensure this exists and is adapted for tutors
+const tutorController = require('../controllers/tutorController');
 const tutoringSessionService = require('../services/TutoringSessionService');
-const tutoringSessionController = require('../controllers/tutoringSessionController'); // Likely reused from student version
+const tutoringSessionController = require('../controllers/tutoringSessionController');
 
 const router = express.Router();
 
+const upload = multer({ storage: multer.memoryStorage() });
 
-// Redirect root of tutor user routes to the dashboard
+
+
+// Default route → redirect to dashboard
 router.get('/', authenticateJWT, (req, res) => {
-    res.redirect('/tutoruser/tutordashboard');
-  });
-// Redirect to tutor dashboard
+  res.redirect('/tutoruser/tutordashboard');
+});
+
+// Dashboard Page
 router.get('/tutordashboard', authenticateJWT, (req, res) => {
-    res.sendFile(path.join(__dirname, '../views/tutorUI/tutordashboard.html'));
-  });
-  
+  res.sendFile(path.join(__dirname, '../views/tutorUI/tutordashboard.html'));
+});
 
-// Get tutor profile data (JSON)
-router.get("/profile/data", authenticateJWT, tutorController.getProfile);
+// Profile Page
+router.get('/profile', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorProfile.html'));
+});
 
-// Update tutor profile (JSON)
-router.put("/updateProfile", authenticateJWT, tutorController.updateProfile);
+// Create a Session Page
+router.get('/tutoringSessions', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorTutoringSessions.html'));
+});
 
-// Change tutor password
-router.put("/changePassword", authenticateJWT, tutorController.changePassword);
+// Find Sessions Page
+router.get('/findSessions', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorFindSession.html'));
+});
 
-// Get tutor's tutoring sessions (for calendar) - filtering by tutorId
+// Chatroom Page
+router.get('/chat', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorChatrooms.html'));
+});
+
+
+// Get Profile Data (JSON)
+router.get('/profile/data', authenticateJWT, tutorController.getProfile);
+
+// Update Profile (image + bio, availability, etc.)
+router.put(
+  '/updateProfile',
+  authenticateJWT,
+  upload.single('profileImage'),
+  tutorController.updateProfile
+);
+
+// Change Password
+router.put('/changePassword', authenticateJWT, tutorController.changePassword);
+
+
+// Fetch Sessions for Calendar
 router.get('/sessions', authenticateJWT, async (req, res) => {
   try {
     const tutorId = req.user.id;
     const sessions = await tutoringSessionService.getAllSessions({ tutorId });
-    // Map sessions to calendar event format
+
     const events = sessions.map(session => ({
       title: session.subject,
       start: session.sessionDate
     }));
+
     res.status(200).json({ message: 'Sessions fetched successfully', events });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Serve static tutor HTML pages (protected)
-router.get('/tutordashboard', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/tutorUI/tutordashboard.html'));
-});
-router.get('/profile', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorProfile.html'));
-});
-router.get('/findSessions', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorFindSession.html'));
-});
-router.get('/tutoringSessions', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorTutoringSessions.html'));
-});
-router.get('/chat', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorChatrooms.html'));
-});
-
-// Tutor creates a tutoring session
+// Create New Session
 router.post('/sessions/create', authenticateJWT, tutoringSessionController.createSession);
 
-// Tutor fetches all tutoring sessions (full list view)
+// Fetch All Sessions Created by Tutor
 router.get('/all-sessions', authenticateJWT, async (req, res) => {
   try {
     const tutorId = req.user.id;
     const sessions = await tutoringSessionService.getAllSessions({ tutorId });
+
     res.status(200).json({
       status: 'success',
       message: 'Sessions fetched successfully',
