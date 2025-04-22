@@ -65,7 +65,7 @@
         const userData = await response.json();
         if (userData.username) {
           username = userData.username;
-          console.log("✅ Logged in as:", username);
+          console.log(" Logged in as:", username);
         } else {
           alert("Error: Unable to retrieve username.");
         }
@@ -82,10 +82,9 @@
         currentConversationId = conversationId;
         joinRoom(conversationId);
       } else {
-        showChatroomList(); //  New behavior if no room is selected
+        showChatroomList();
       }
     }
-
 
     function joinRoom(conversationId) {
       messages.innerHTML = "<p>Loading messages...</p>";
@@ -116,52 +115,73 @@
     }
 
     async function showChatroomList() {
-      try {
-        const response = await fetch("/api/chat-rooms");
-        const rooms = await response.json();
-        messages.innerHTML = `
-  <div class="mb-3">
-    <h5>Select a Chatroom</h5>
-    <input type="text" id="newChatUser" class="form-control mb-2" placeholder="Enter username to start chat">
-    <button id="startChatBtn" class="btn btn-sm btn-primary">Start New Chat</button>
-  </div>
-`;
+  try {
+    const response = await fetch("/api/chat-rooms");
+    const rooms = await response.json();
 
+    console.log("👤 Logged in as:", username);
 
-        if (rooms.length === 0) {
-          messages.innerHTML += "<p class='text-muted'>You have no chatrooms yet.</p>";
-          return;
-        }
+    // Step 1: Write HTML
+    messages.innerHTML = `
+      <div class="mb-3">
+        <h5>Select a Chatroom</h5>
+        <input type="text" id="newChatUser" class="form-control mb-2" placeholder="Enter username to start chat">
+        <button id="startChatBtn" class="btn btn-sm btn-primary">Start New Chat</button>
+      </div>
+    `;
 
-        rooms.forEach(room => {
-          const chatBtn = document.createElement("button");
-          chatBtn.className = "btn btn-outline-primary mb-2";
-          chatBtn.textContent = `Room ${room.conversationId}`;
-          chatBtn.addEventListener("click", () => {
-            window.location.href = `/student/chat?room=${room.conversationId}`;
-          });
-          messages.appendChild(chatBtn);
-        });
-      } catch (err) {
-        console.error("Error fetching chatroom list:", err);
-        messages.innerHTML = "<p class='text-danger'>Failed to load chatrooms.</p>";
-      }
+    // Step 2: Delay binding the click handler to ensure DOM is ready
+    setTimeout(() => {
       const startChatBtn = document.getElementById("startChatBtn");
+      const newChatUserInput = document.getElementById("newChatUser");
+
+      if (!startChatBtn || !newChatUserInput) {
+        console.error(" Could not find chat button or input.");
+        return;
+      }
+
       startChatBtn.addEventListener("click", () => {
-        const otherUser = document.getElementById("newChatUser").value.trim();
+        const otherUser = newChatUserInput.value.trim();
+
+        console.log("🚀 Button clicked");
+        console.log("👤 My username:", username);
+        console.log("👥 Target user:", otherUser);
 
         if (!otherUser || otherUser === username) {
           alert("Please enter a valid username that isn’t your own.");
           return;
         }
 
-        const ids = [username, otherUser].sort(); // Ensure consistent order
+        const ids = [username, otherUser].sort();
         const newRoomId = `${ids[0]}_${ids[1]}`;
 
+        console.log("➡️ Redirecting to:", `/student/chat?room=${newRoomId}`);
         window.location.href = `/student/chat?room=${newRoomId}`;
       });
+    }, 0);
 
+    // Step 3: If no rooms, show message
+    if (rooms.length === 0) {
+      messages.innerHTML += "<p class='text-muted'>You have no chatrooms yet.</p>";
+      return;
     }
+
+    // Step 4: Show list of rooms
+    rooms.forEach(room => {
+      const chatBtn = document.createElement("button");
+      chatBtn.className = "btn btn-outline-primary mb-2";
+      chatBtn.textContent = `Room ${room.conversationId}`;
+      chatBtn.addEventListener("click", () => {
+        window.location.href = `/student/chat?room=${room.conversationId}`;
+      });
+      messages.appendChild(chatBtn);
+    });
+  } catch (err) {
+    console.error("Error fetching chatroom list:", err);
+    messages.innerHTML = "<p class='text-danger'>Failed to load chatrooms.</p>";
+  }
+}
+
 
     sendBtn.addEventListener("click", () => {
       const messageText = messageInput.value.trim();
@@ -176,8 +196,6 @@
         };
 
         socket.emit("chatMessage", messageData);
-
-
         messageInput.value = "";
       }
     });
@@ -188,8 +206,17 @@
     });
 
     document.addEventListener("DOMContentLoaded", async () => {
-   await getLoggedInUser();         
-  getConversationIdFromUrl();     
+  await getLoggedInUser(); // Ensure `username` is ready before moving on
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const conversationId = urlParams.get("room");
+
+  if (conversationId) {
+    currentConversationId = conversationId;
+    joinRoom(conversationId);
+  } else {
+    showChatroomList(); // Only run this after username is confirmed
+  }
 });
 
   </script>
