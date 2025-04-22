@@ -1,65 +1,62 @@
-'use strict';
-
 const TutoringSession = require('../entities/TutoringSession');
+const { User, UserProfile } = require('../entities');
+const { Op } = require('sequelize');
 
 class TutoringSessionRepository {
-  // Create session
   async createSession(sessionData) {
     return await TutoringSession.create(sessionData);
   }
 
-  // Get session by ID with tutor and student associations
   async getSessionById(sessionId) {
     return await TutoringSession.findByPk(sessionId, {
       include: [
-        { association: 'tutor' },
-        { association: 'student' }
+        {
+          association: 'tutor',
+          include: [{ model: UserProfile, as: 'profile' }]
+        },
+        {
+          association: 'student',
+          include: [{ model: UserProfile, as: 'profile' }]
+        }
       ]
     });
   }
 
-  // Get all sessions optional filter
   async getAllSessions(filter = {}) {
+    const now = new Date();
     return await TutoringSession.findAll({
-      where: filter,
+      where: {
+        ...filter,
+        sessionDate: { [Op.gt]: now } // Exclude past sessions
+      },
       include: [
-        { association: 'tutor' },
-        { association: 'student' }
+        {
+          association: 'tutor',
+          include: [{ model: UserProfile, as: 'profile' }]
+        },
+        {
+          association: 'student',
+          include: [{ model: UserProfile, as: 'profile' }]
+        }
       ]
     });
   }
 
-  // Update session by ID
   async updateSession(sessionId, updates) {
-    return await TutoringSession.update(updates, { where: { id: sessionId } });
+    await TutoringSession.update(updates, { where: { id: sessionId } });
+    return await this.getSessionById(sessionId);
   }
 
-  // Delete session by ID
   async deleteSession(sessionId) {
     return await TutoringSession.destroy({ where: { id: sessionId } });
   }
 
   async joinSession(sessionId, studentId) {
-    try {
-      console.log(`Joining session: ${sessionId} with student: ${studentId}`);
-      const session = await TutoringSession.findByPk(sessionId);
-      if (!session) {
-        console.error('Session not found');
-        throw new Error('Session not found');
-      }
-      if (session.studentId) {
-        console.error('Session already has a student assigned');
-        throw new Error('Session already has a student assigned');
-      }
-      // Update the session with the student's ID
-      session.studentId = studentId;
-      await session.save();
-      console.log('Session updated successfully');
-      return session;
-    } catch (err) {
-      console.error("Error in joinSession:", err);
-      throw err; // Rethrow to let the controller handle the error
-    }
+    const session = await TutoringSession.findByPk(sessionId);
+    if (!session) throw new Error('Session not found');
+
+    // Allow calendar joining without locking studentId
+    return session;
   }
 }
 

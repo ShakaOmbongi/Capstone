@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flagged Users-PeerAid Admin</title>
+  <link rel="stylesheet" href="/assets/css/admin.css" />
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+      text-align: left;
+    }
+    .btn-sm { padding: .25rem .5rem; font-size: .875rem; }
+    .btn-warning { background: #ffc107; color: #000; }
+    .btn-danger  { background: #dc3545; color: #fff; }
+    .btn-secondary { background: #6c757d; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>PeerAid Admin</h2>
+    <ul>
+      <li><a href="/admin/admin-dashboard">Dashboard</a></li>
+      <li><a href="/admin/admin-users">User Management</a></li>
+      <li><a href="/admin/admin-feedback">Feedback</a></li>
+      <li><a class="active" href="/admin/admin-flagged-users">Flagged Users</a></li>
+      <li><a href="/admin/admin-analytics">Analytics</a></li>
+      <li><a href="/admin-session-management ">Study Sessions</a></li>
+      <li><a href="/logout">Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <h1>Flagged Users</h1>
+    <table id="flaggedUsersTable">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>FlagReason</th>
+          <th>Suspended?</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="flaggedUsersTableBody">
+        
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const token = localStorage.getItem("adminToken");
+      try {
+        const res = await fetch("/admin/flagged-users", {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          console.error("Failed to fetch flagged users:", data.message);
+          return;
+        }
+  
+        const tbody = document.getElementById("flaggedUsersTableBody");
+        tbody.innerHTML = "";
+  
+        data.flaggedUsers.forEach(user => {
+          const isSuspended = user.suspended === true;
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${user.username}</td>
+            <td>${user.email}</td>
+            <td>${user.flagReason || "N/A"}</td>
+            <td>${isSuspended ? "Yes" : "No"}</td>
+            <td>
+              <button class="clear-flag btn btn-sm btn-warning" data-id="${user.id}">
+                Clear Flag
+              </button>
+              <button class="toggle-suspend btn btn-sm btn-secondary" data-id="${user.id}">
+                Reinstate
+              </button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+  
+        // Clear flag
+        document.querySelectorAll(".clear-flag").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const id = btn.dataset.id;
+            if (!confirm("Clear flag for this user?")) return;
+            const resp = await fetch(`/admin/flagged-users/${id}`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+              },
+              body: JSON.stringify({ flagReason: null })
+            });
+            if (resp.ok) location.reload();
+            else alert((await resp.json()).message || "Failed to clear flag");
+          });
+        });
+  
+        // Reinstate (Unsuspend)
+        document.querySelectorAll(".toggle-suspend").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const id = btn.dataset.id;
+            if (!confirm("Are you sure you want to reinstate this account?")) return;
+            const resp = await fetch(`/admin/flagged-users/suspend/${id}`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+              },
+              body: JSON.stringify({ suspend: false })
+            });
+            if (resp.ok) location.reload();
+            else alert((await resp.json()).message || "Failed to reinstate user");
+          });
+        });
+  
+      } catch (err) {
+        console.error("Error fetching flagged users:", err);
+      }
+    });
+  </script>  
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin User Management - PeerAid</title>
+  <link rel="stylesheet" href="/assets/css/admin.css">
+  <style>
+    /* Basic styling for the users table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    table th {
+      background-color: #f2f2f2;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>PeerAid Admin</h2>
+    <ul>
+      <li><a href="/admin/admin-dashboard">Dashboard</a></li>
+      <li><a class="active" href="/admin/admin-users">User Management</a></li>
+      <li><a href="/admin/admin-feedback">Feedback</a></li>
+      <li><a href="/admin/admin-flagged-users">Flagged Users</a></li>
+      <li><a href="/admin/admin-analytics">Analytics</a></li>
+      <li><a href="/admin-session-management ">Study Sessions</a></li>
+      <li><a href="/logout">Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <h1>User Management</h1>
+    <table id="usersTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Flag Reason</th>
+          <th>Suspended</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- User rows will be inserted dynamically -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async function() {
+      // Retrieve the admin token from localStorage (set on admin login)
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        alert("No admin token found. Please log in again.");
+        window.location.href = '/admin-login.html'; // or your admin login page path
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3000/admin/users", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        const data = await response.json();
+        if (response.ok) {
+          const usersTableBody = document.querySelector("#usersTable tbody");
+          usersTableBody.innerHTML = "";
+          data.users.forEach(user => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${user.id}</td>
+              <td>${user.username}</td>
+              <td>${user.email}</td>
+              <td>${user.roleId}</td>
+              <td>${user.flagReason ? user.flagReason : "N/A"}</td>
+              <td>${user.suspended ? "Yes" : "No"}</td>
+            `;
+            usersTableBody.appendChild(row);
+          });
+        } else {
+          console.error("Failed to fetch users:", data.error);
+          alert("Error fetching users: " + data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        alert("An error occurred while fetching users.");
+      }
+    });
+  </script>
+</body>
+</html>

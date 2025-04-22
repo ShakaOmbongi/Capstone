@@ -1,10 +1,10 @@
+'use strict';
+
 const express = require('express');
 const { authenticateJWT } = require('../middleware/authMiddleware');
 const { User, TutoringSession } = require('../entities');
-
 const router = express.Router();
 
-// Fetch Tutor Profile Data
 router.get('/profileData', authenticateJWT, async (req, res) => {
   try {
     const tutor = await User.findByPk(req.user.id, {
@@ -15,14 +15,14 @@ router.get('/profileData', authenticateJWT, async (req, res) => {
       return res.status(404).json({ error: 'Tutor not found' });
     }
 
-    res.json(tutor);
+    res.status(200).json(tutor);
   } catch (error) {
     console.error('Error fetching tutor profile:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-//  Fetch Tutor's Upcoming Sessions
+
 router.get('/sessions', authenticateJWT, async (req, res) => {
   try {
     const sessions = await TutoringSession.findAll({
@@ -30,17 +30,21 @@ router.get('/sessions', authenticateJWT, async (req, res) => {
       attributes: ['id', 'subject', 'sessionDate']
     });
 
-    res.json({ sessions });
+    res.status(200).json({ sessions });
   } catch (error) {
-    console.error('Error fetching upcoming sessions:', error);
+    console.error('Error fetching sessions:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-//  Tutor Can Create a New Session
+
 router.post('/sessions', authenticateJWT, async (req, res) => {
   try {
     const { studentId, subject, sessionDate } = req.body;
+
+    if (!subject || !sessionDate) {
+      return res.status(400).json({ error: 'Subject and sessionDate are required' });
+    }
 
     const session = await TutoringSession.create({
       tutorId: req.user.id,
@@ -56,17 +60,20 @@ router.post('/sessions', authenticateJWT, async (req, res) => {
   }
 });
 
-// Tutor Can Update a Session
 router.put('/sessions/:id', authenticateJWT, async (req, res) => {
   try {
     const { subject, sessionDate } = req.body;
 
     const session = await TutoringSession.findByPk(req.params.id);
+
     if (!session || session.tutorId !== req.user.id) {
       return res.status(404).json({ error: 'Session not found or unauthorized' });
     }
 
-    await session.update({ subject, sessionDate });
+    session.subject = subject || session.subject;
+    session.sessionDate = sessionDate || session.sessionDate;
+
+    await session.save();
 
     res.json({ message: 'Session updated successfully', session });
   } catch (error) {
@@ -75,10 +82,11 @@ router.put('/sessions/:id', authenticateJWT, async (req, res) => {
   }
 });
 
-//  Tutor Can Delete a Session
+
 router.delete('/sessions/:id', authenticateJWT, async (req, res) => {
   try {
     const session = await TutoringSession.findByPk(req.params.id);
+
     if (!session || session.tutorId !== req.user.id) {
       return res.status(404).json({ error: 'Session not found or unauthorized' });
     }

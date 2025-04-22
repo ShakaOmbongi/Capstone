@@ -1,19 +1,19 @@
+'use strict';
+
 const express = require('express');
 const { authenticateJWT } = require('../middleware/authMiddleware');
-const tutoringSessionController = require('../controllers/tutoringSessionController'); // path
+const tutoringSessionController = require('../controllers/tutoringSessionController');
 
 const router = express.Router();
 
-// Join a session endpoint
-router.post('/request/:id', authenticateJWT, tutoringSessionController.joinSession);
-
-// Create a session with '/create'
+// Create a session (default pending)
 router.post('/create', authenticateJWT, tutoringSessionController.createSession);
-
-// Create a session
 router.post('/', authenticateJWT, tutoringSessionController.createSession);
 
-// Get all sessions
+// Join a session
+router.post('/request/:id', authenticateJWT, tutoringSessionController.joinSession);
+
+// Get all sessions (optionally filtered)
 router.get('/', authenticateJWT, tutoringSessionController.getSessions);
 
 // Get a session by ID
@@ -24,5 +24,11 @@ router.put('/:id', authenticateJWT, tutoringSessionController.updateSession);
 
 // Delete a session by ID
 router.delete('/:id', authenticateJWT, tutoringSessionController.deleteSession);
+
+// Accept a session (change status to accepted)
+router.put('/accept/:id', authenticateJWT, tutoringSessionController.acceptSession);
+
+// Reject a session (change status to rejected)
+router.put('/reject/:id', authenticateJWT, tutoringSessionController.rejectSession);
 
 module.exports = router;

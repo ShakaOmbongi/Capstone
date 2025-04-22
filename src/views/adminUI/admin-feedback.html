@@ -1,61 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feedback - PeerAid</title>
-    <link rel="stylesheet" href="/assets/css/admin.css">
-    <script defer src="/assets/js/admin.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback - PeerAid</title>
+  <link rel="stylesheet" href="/assets/css/admin.css" />
+  <style>
+    /* Basic styling for the feedback table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    table th {
+      background-color: #f2f2f2;
+      text-align: left;
+    }
+  </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>PeerAid Admin</h2>
-        <ul>
-            <li><a href="admin-dashboard.html">Dashboard</a></li>
-            <li><a href="admin-users.html">User Management</a></li>
-            <li><a href="admin-feedback.html">Feedback</a></li>
-            <li><a href="../landingUI/welcome.html">Logout</a></li>
-        </ul>
-    </div>
+  <div class="sidebar">
+    <h2>PeerAid Admin</h2>
+  <ul>
+      <li><a class="active" href="/admin/admin-dashboard">Dashboard</a></li>
+      <li><a href="/admin/admin-users">User Management</a></li>
+      <li><a href="/admin/admin-feedback">Feedback</a></li>
+      <li><a href="/admin/admin-flagged-users">Flagged Users</a></li>
+      <li><a href="/admin/admin-analytics">Analytics</a></li>
+      <li><a href="/admin-session-management ">Study Sessions</a></li>
+      <li><a href="/logout">Logout</a></li>
+    </ul>
+  </div>
 
-    <div class="main-content">
-        <h1>User Feedback</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Feedback</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Alli Weavil </td>
-                    <td>The tutoring session was great!</td>
-                    <td><button class="delete-feedback">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>Carissa Boddie</td>
-                    <td>Could use more scheduling options.</td>
-                    <td><button class="delete-feedback">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>Jay Weldon</td>
-                    <td>I HATE PEERAID. MY TUTOR WAS AWFUL!</td>
-                    <td><button class="delete-feedback">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>Alex Wilson </td>
-                    <td>Plsss delete my account. I hate peerAid</td>
-                    <td><button class="delete-feedback">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>Meghan Maynard</td>
-                    <td>PeerAid matched me with a great tutor and study group for my learning style. Thanks PeerAid!</td>
-                    <td><button class="delete-feedback">Delete</button></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  <div class="main-content">
+    <h1>User Feedback</h1>
+    <table id="feedbackTable">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Feedback</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="feedbackTableBody">
+        <!-- Feedback rows will be dynamically inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async function() {
+      try {
+        // Fetch the feedback data from your API endpoint.
+        const response = await fetch("http://localhost:3000/admin/feedback", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+            // If needed, add an Authorization header here.
+          }
+        });
+        const data = await response.json();
+        if (response.ok) {
+          const feedbackTableBody = document.getElementById("feedbackTableBody");
+          feedbackTableBody.innerHTML = ""; // Clear existing content.
+          data.feedback.forEach(item => {
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${item.reviewer?.username || 'N/A'}</td>
+    <td>${item.comment}</td>
+    <td><button class="delete-feedback" data-id="${item.id}">Delete</button></td>
+  `;
+  feedbackTableBody.appendChild(row);
+});
+
+
+          // Attach event listeners for all delete buttons.
+          document.querySelectorAll(".delete-feedback").forEach(button => {
+            button.addEventListener("click", async function() {
+              const feedbackId = this.getAttribute("data-id");
+              if (confirm("Are you sure you want to delete this feedback?")) {
+                const deleteResponse = await fetch(`http://localhost:3000/admin/feedback/${feedbackId}`, {
+                  method: "DELETE",
+                  headers: {
+                    "Content-Type": "application/json"
+                    // Add Authorization header if required.
+                  }
+                });
+                const deleteData = await deleteResponse.json();
+                if (deleteResponse.ok) {
+                  alert("Feedback deleted successfully");
+                  // Reload the feedback list by refetching the data.
+                  location.reload();
+                } else {
+                  alert(deleteData.error || "Failed to delete feedback");
+                }
+              }
+            });
+          });
+        } else {
+          console.error("Failed to fetch feedback:", data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching feedback:", error);
+      }
+    });
+  </script>
 </body>
 </html>

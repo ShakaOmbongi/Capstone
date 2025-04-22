@@ -6,6 +6,9 @@ const { authenticateJWT } = require('../middleware/authMiddleware');
 const progressUpdateService = require('../services/ProgressUpdateService');
 const tutoringSessionService = require('../services/TutoringSessionService');
 
+
+
+
 // Get the current student's login streak
 router.get('/login-streak', authenticateJWT, async (req, res) => {
   try {

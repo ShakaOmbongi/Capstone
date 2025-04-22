@@ -18,25 +18,26 @@ const io = new Server(server, {
   }
 });
 
-// Security middleware (Helmet helps secure HTTP headers)
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
       "default-src": ["'self'"],
-      "script-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+      "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net"],
       "style-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-    },
+      "img-src": [
+        "'self'",
+        "data:",
+        "https://mdnnxwpxypxgwhfkzgok.supabase.co"
+      ]
+    }
   })
 );
-// Middleware for parsing JSON payloads and cookies
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
-
-
-// Import authentication middleware
-const { authenticateJWT } = require('./src/middleware/authMiddleware');
 
 // Import route files
 const landingRoutes = require('./src/routes/landingRoutes');
@@ -49,29 +50,42 @@ const sessionRoutes = require('./src/routes/tutoringSessionRoutes');
 const chatMessageRoutes = require('./src/routes/chatMessageRoutes');
 const studentTestRoutes = require('./src/routes/studentTestRoutes');
 
-// Mount routes
+const tutorUserRoutes = require('./src/routes/tutorUserRoutes');
+app.use('/tutoruser', tutorUserRoutes);
+
+// Admin routes
+const adminAuthRoutes = require('./src/routes/adminRoutesAuth');
+app.use('/admin/auth', adminAuthRoutes);
+
+const adminRoutes = require('./src/routes/adminRoutes');
+app.use('/admin', adminRoutes);
+
+const joinRequestRoutes = require('./src/routes/joinRequestRoutes');
+app.use('/student/join', joinRequestRoutes);
+
+const feedbackRoutes = require('./src/routes/feedbackRoutes');
+app.use('/admin/feedback', feedbackRoutes);
+
+// Use for tutors
+app.use('/tutoruser/join', joinRequestRoutes);
+// Mount other routes
 app.use('/', landingRoutes);
 app.use('/signup', signupRoutes);
 app.use('/login', loginRoutes);
-
-// Apply authentication middleware on routes that require a valid token
-app.use('/student', authenticateJWT, studentRoutes);
-app.use('/student/test', authenticateJWT, studentTestRoutes);
-app.use('/tutor', authenticateJWT, tutorRoutes);
+app.use('/student', studentRoutes);
+app.use('/student/test', studentTestRoutes);
+app.use('/tutor', tutorRoutes);
 app.use('/', logoutRoutes);
-app.use('/sessions', authenticateJWT, sessionRoutes);
-
-app.use('/chat-messages', authenticateJWT, chatMessageRoutes);
+app.use('/sessions', sessionRoutes);
+app.use('/chat-messages', chatMessageRoutes);
+app.use('/uploads', express.static('uploads'));
 
 // Catch-all handler for 404 - Not Found
 app.use((req, res, next) => {
-  res.status(404).json({
-    status: 'error',
-    message: 'Not Found'
-  });
+  res.status(404).json({ status: 'error', message: 'Not Found' });
 });
 
-// Centralized error-handling middleware: catches errors passed with next(err)
+// Centralized error-handling middleware
 app.use((err, req, res, next) => {
   console.error('Internal Server Error:', err);
   res.status(err.status || 500).json({

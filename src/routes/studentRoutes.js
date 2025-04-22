@@ -1,29 +1,27 @@
 'use strict';
 const express = require('express');
 const path = require('path');
+const multer = require('multer');
 const { authenticateJWT } = require('../middleware/authMiddleware');
 const studentController = require('../controllers/studentController');
 const progressUpdateService = require('../services/ProgressUpdateService');
 const tutoringSessionService = require('../services/TutoringSessionService');
-const tutoringSessionController = require('../controllers/tutoringSessionController'); // path
+const tutoringSessionController = require('../controllers/tutoringSessionController');
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
-// Redirect to student dashboard
+// Redirect to dashboard
 router.get('/', authenticateJWT, (req, res) => {
   res.redirect('/student/studentdashboard');
 });
 
-// Get student profile data (JSON)
+// Profile routes
 router.get("/profile/data", authenticateJWT, studentController.getProfile);
-
-// Update student profile (JSON)
-router.put("/updateProfile", authenticateJWT, studentController.updateProfile);
-
-// Change student password
+router.put("/updateProfile", authenticateJWT, upload.single("profileImage"), studentController.updateProfile);
 router.put("/changePassword", authenticateJWT, studentController.changePassword);
 
-// Get student's login streak
+// Login streak
 router.get('/login-streak', authenticateJWT, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -34,23 +32,45 @@ router.get('/login-streak', authenticateJWT, async (req, res) => {
   }
 });
 
-// Get student's tutoring session  (for calendar)
+// Calendar route - fetches sessions as tutor or student
 router.get('/sessions', authenticateJWT, async (req, res) => {
   try {
-    const studentId = req.user.id;
-    const sessions = await tutoringSessionService.getAllSessions({ studentId });
-    // Map sessions to calendar event format
-    const events = sessions.map(session => ({
+    const userId = req.user.id;
+    const allSessions = await tutoringSessionService.getAllSessions();
+
+    const userSessions = allSessions.filter(session =>
+      // Show sessions where user is either the creator OR accepted student
+      session.studentId === userId || session.tutorId === userId
+    ).filter(session =>
+      // Only show if session is accepted OR if user created it
+      session.tutorId === userId || session.status === 'accepted'
+    );
+
+    const events = userSessions.map(session => ({
       title: session.subject,
-      start: session.sessionDate
+      start: session.sessionDate,
+      extendedProps: {
+        description: session.description || '',
+        status: session.status,
+        role: session.tutorId === userId ? 'Creator' : 'Participant'
+      }
     }));
-    res.status(200).json({ message: 'sessions fetched successfully', events });
+
+    res.status(200).json({ events });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Serve static HTML pages
+
+
+// Student creates a tutoring session
+router.post('/sessions/create', authenticateJWT, tutoringSessionController.createSession);
+
+// Student fetches all tutoring sessions (for finding sessions)
+router.get('/find-sessions', authenticateJWT, tutoringSessionController.getSessions);
+
+// Static HTML views
 router.get('/studentdashboard', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/studentdashboard.html'));
 });
