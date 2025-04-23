@@ -44,6 +44,9 @@ router.get('/chat', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/tutorUI/TutorChatrooms.html'));
 });
 
+router.get('/reviews', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorReviews.html'));
+});
 
 // Get Profile Data (JSON)
 router.get('/profile/data', authenticateJWT, tutorController.getProfile);

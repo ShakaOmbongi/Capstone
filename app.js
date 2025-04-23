@@ -39,7 +39,6 @@ const logoutRoutes = require('./src/routes/logoutRoutes');
 const sessionRoutes = require('./src/routes/tutoringSessionRoutes');
 const chatMessageRoutes = require('./src/routes/chatMessageRoutes');
 const studentTestRoutes = require('./src/routes/studentTestRoutes');
-
 const tutorUserRoutes = require('./src/routes/tutorUserRoutes');
 app.use('/tutoruser', tutorUserRoutes);
 
@@ -54,7 +53,9 @@ const joinRequestRoutes = require('./src/routes/joinRequestRoutes');
 app.use('/student/join', joinRequestRoutes);
 
 const feedbackRoutes = require('./src/routes/feedbackRoutes');
-app.use('/admin/feedback', feedbackRoutes);
+app.use('/feedback', feedbackRoutes);
+
+app.use('/', joinRequestRoutes); 
 
 // Use for tutors
 app.use('/tutoruser/join', joinRequestRoutes);

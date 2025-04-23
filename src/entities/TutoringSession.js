@@ -5,7 +5,9 @@ class TutoringSession extends Model {
   static associate(models) {
     TutoringSession.belongsTo(models.User, { foreignKey: 'tutorId', as: 'tutor' });
     TutoringSession.belongsTo(models.User, { foreignKey: 'studentId', as: 'student' });
-
+    TutoringSession.hasMany(models.JoinRequest, { foreignKey: 'sessionId', as: 'joinRequests' });
+    TutoringSession.hasMany(models.FeedbackReview, { foreignKey: 'sessionId', as: 'feedbacks' });
+    
   
     TutoringSession.hasMany(models.FeedbackReview, {
       foreignKey: 'sessionId',

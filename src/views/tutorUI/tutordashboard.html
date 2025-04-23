@@ -39,41 +39,37 @@
           </div>
         </section>
 
-        <!-- My Pending Sessions -->
-        <section class="mb-4">
-          <h2>My Pending Sessions</h2>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Subject</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="pendingSessionsTableBody">
-              <!-- JS will populate this for sessionActionsTutor.js -->
-            </tbody>
-          </table>
-        </section>
+<!-- Pending Join Requests -->
+<section>
+  <h2>Pending Join Requests</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Requester</th>
+        <th>Requested At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="joinRequestsTableBody"></tbody>
+  </table>
+</section>
 
-        <!-- Join Requests -->
-        <section class="mb-4">
-          <h2>Pending Join Requests</h2>
-          <table class="table table-striped" id="joinRequestsTable">
-            <thead>
-              <tr>
-                <th>Session Subject</th>
-                <th>Requester</th>
-                <th>Requested At</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="joinRequestsTableBody">
-              <!-- JS will inject rows here -->
-            </tbody>
-          </table>
-        </section>
+<!-- Accepted Join Requests -->
+<section>
+  <h2>Accepted Join Requests</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Requester</th>
+        <th>Requested At</th>
+      </tr>
+    </thead>
+    <tbody id="acceptedRequestsTableBody"></tbody>
+  </table>
+</section>
+
       </main>
     </div>
   </div>

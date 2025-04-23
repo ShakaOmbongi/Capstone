@@ -7,16 +7,16 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   
     const token = getCookie("token");
-    const tableBody = document.getElementById("pendingSessionsTableBody");
   
-    if (!token || !tableBody) {
-      console.warn("Token or tableBody missing. Skipping sessionActionsTutor.js");
+    const requestsTableBody = document.getElementById("joinRequestsTableBody");
+    if (!token || !requestsTableBody) {
+      console.warn("Token or requestsTableBody missing. Skipping sessionActionsTutor.js");
       return;
     }
   
-    async function loadPendingSessions() {
+    async function loadJoinRequests() {
       try {
-        const response = await fetch("/tutoruser/all-sessions", {
+        const response = await fetch("/tutoruser/join/requests?tutorOnly=true", {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`
@@ -24,53 +24,79 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
   
         const data = await response.json();
+        const { pending, accepted } = data.data || { pending: [], accepted: [] };
   
-        // ✅ FIX: Correct key name
-        const sessions = data.sessions || [];
+        requestsTableBody.innerHTML = "";
   
-        const pendingSessions = sessions.filter(session => session.status === "pending");
+        // Render Pending Requests
+        if (pending.length > 0) {
+          const pendingHeader = document.createElement('tr');
+          pendingHeader.innerHTML = `<td colspan="4" class="fw-bold text-primary">Pending Requests</td>`;
+          requestsTableBody.appendChild(pendingHeader);
   
-        tableBody.innerHTML = "";
+          pending.forEach(request => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${request.requestedSession?.subject || 'Unknown Subject'}</td>
+              <td>${request.requestingStudent?.username || 'Unknown Student'}</td>
+              <td>${new Date(request.createdAt).toLocaleString()}</td>
+              <td>
+                <button class="btn btn-sm btn-success accept-session" data-id="${request.id}">Accept</button>
+                <button class="btn btn-sm btn-danger reject-session" data-id="${request.id}">Reject</button>
+              </td>
+            `;
+            requestsTableBody.appendChild(row);
+          });
+        }
   
-        pendingSessions.forEach(session => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${session.subject}</td>
-            <td>${new Date(session.sessionDate).toLocaleString()}</td>
-            <td>${session.status}</td>
-            <td>
-              <button class="btn btn-sm btn-success accept-session" data-id="${session.id}">Accept</button>
-              <button class="btn btn-sm btn-danger reject-session" data-id="${session.id}">Reject</button>
-            </td>
-          `;
-          tableBody.appendChild(row);
-        });
+        // Render Accepted Requests
+        if (accepted.length > 0) {
+          const acceptedHeader = document.createElement('tr');
+          acceptedHeader.innerHTML = `<td colspan="4" class="fw-bold text-success">Accepted Requests</td>`;
+          requestsTableBody.appendChild(acceptedHeader);
   
-        attachSessionActionListeners();
+          accepted.forEach(request => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${request.requestedSession?.subject || 'Unknown Subject'}</td>
+              <td>${request.requestingStudent?.username || 'Unknown Student'}</td>
+              <td>${new Date(request.createdAt).toLocaleString()}</td>
+              <td><span class="badge bg-success">Accepted</span></td>
+            `;
+            requestsTableBody.appendChild(row);
+          });
+        }
+  
+        if (pending.length === 0 && accepted.length === 0) {
+          requestsTableBody.innerHTML = `<tr><td colspan="4" class="text-muted">No join requests.</td></tr>`;
+        }
+  
+        attachListeners();
       } catch (error) {
-        console.error("Error loading sessions:", error);
+        console.error("Error loading join requests:", error);
+        requestsTableBody.innerHTML = `<tr><td colspan="4" class="text-danger">Error loading join requests.</td></tr>`;
       }
     }
   
-    function attachSessionActionListeners() {
+    function attachListeners() {
       document.querySelectorAll(".accept-session").forEach(button => {
         button.addEventListener("click", async function () {
-          const sessionId = this.getAttribute("data-id");
-          await updateSessionStatus(sessionId, "accepted");
+          const requestId = this.getAttribute("data-id");
+          await updateRequestStatus(requestId, "accept");
         });
       });
   
       document.querySelectorAll(".reject-session").forEach(button => {
         button.addEventListener("click", async function () {
-          const sessionId = this.getAttribute("data-id");
-          await updateSessionStatus(sessionId, "rejected");
+          const requestId = this.getAttribute("data-id");
+          await updateRequestStatus(requestId, "reject");
         });
       });
     }
   
-    async function updateSessionStatus(sessionId, newStatus) {
+    async function updateRequestStatus(requestId, action) {
       try {
-        const endpoint = `/sessions/${newStatus}/${sessionId}`;
+        const endpoint = `/tutoruser/join/requests/${action}/${requestId}`;
         const response = await fetch(endpoint, {
           method: "PUT",
           headers: {
@@ -80,16 +106,16 @@ document.addEventListener("DOMContentLoaded", async function () {
   
         const result = await response.json();
         if (response.ok) {
-          alert(`Session ${newStatus} successfully`);
-          loadPendingSessions();
+          alert(`Request ${action}ed successfully`);
+          loadJoinRequests(); // Refresh
         } else {
-          alert(result.error || `Failed to ${newStatus} session`);
+          alert(result.error || `Failed to ${action} request`);
         }
       } catch (error) {
-        console.error("Error updating session status:", error);
+        console.error(`Error updating request status:`, error);
       }
     }
   
-    loadPendingSessions();
+    loadJoinRequests();
   });
   

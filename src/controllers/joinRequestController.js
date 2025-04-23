@@ -1,6 +1,7 @@
 'use strict';
 
 const joinRequestService = require('../services/joinRequestService');
+const tutoringSessionService = require('../services/TutoringSessionService');  // Add this import
 
 const joinRequestController = {
   // Create a new join request to join a session
@@ -9,28 +10,47 @@ const joinRequestController = {
       const studentId = req.user.id;
       const { sessionId } = req.params;
   
+      console.log("Received join request:", { studentId, sessionId });
+  
+      // Fetch the session details
+      const session = await tutoringSessionService.getSessionById(sessionId);
+      if (!session) {
+        return res.status(404).json({ error: 'Session not found' });
+      }
+  
+      // Prevent the user from joining their own session
+      if (session.studentId === studentId || session.tutorId === studentId) {
+        return res.status(400).json({ error: 'Cannot request to join your own session' });
+      }
+  
+      // Proceed with creating the join request
       const request = await joinRequestService.createJoinRequest(studentId, sessionId);
       res.status(201).json({ message: 'Join request sent!', data: request });
+  
     } catch (error) {
       console.error('Create Join Request Error:', error);
       res.status(500).json({ error: error.message });
     }
   }
+  
+  
   ,
 
   // Get join requests for sessions created by the logged-in user
   async getMyRequests(req, res) {
     try {
       const userId = req.user.id;
-      const tutorOnly = req.query.tutorOnly === 'true'; // interpret query param
-
-      const requests = await joinRequestService.getRequestsForUserSessions(userId, tutorOnly);
-      res.status(200).json({ message: 'Requests retrieved', data: requests });
+      const tutorOnly = req.query.tutorOnly === 'true';
+      const studentOnly = req.query.studentOnly === 'true'; 
+  
+      const { pending, accepted } = await joinRequestService.getRequestsForUserSessions(userId, tutorOnly, studentOnly); // <- Added studentOnly here
+      res.status(200).json({ message: 'Requests retrieved', data: { pending, accepted } });
     } catch (error) {
       console.error('Error fetching join requests:', error);
       res.status(500).json({ error: error.message });
     }
-  },
+  }
+  ,
 
   // Accept a specific join request
   async accept(req, res) {

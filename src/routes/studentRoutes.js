@@ -89,5 +89,8 @@ router.get('/chat', authenticateJWT, (req, res) => {
 router.get('/about', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentAbout.html'));
 });
+router.get('/review', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/studentUI/StudentReviews.html'));
+});
 
 module.exports = router;
