@@ -51,6 +51,49 @@ const joinRequestController = {
     }
   }
   ,
+  // Get sessions for calendar (created + accepted join requests)
+async getStudentSessions(req, res) {
+  try {
+    const studentId = req.user.id;
+
+    // Sessions created by the student
+    const createdSessions = await require('../entities/TutoringSession').findAll({
+      where: { studentId },
+      attributes: ['id', 'subject', 'sessionDate', 'description']
+    });
+
+    // Sessions the student was accepted into via join requests
+    const joinRequests = await require('../entities/JoinRequest').findAll({
+      where: { studentId, status: 'accepted' },
+      include: {
+        model: require('../entities/TutoringSession'),
+        as: 'requestedSession',
+        attributes: ['id', 'subject', 'sessionDate', 'description']
+      }
+    });
+
+    // Combine both sets into events
+    const events = [
+      ...createdSessions.map(session => ({
+        id: session.id,
+        title: session.subject,
+        start: session.sessionDate,
+        description: session.description
+      })),
+      ...joinRequests.map(req => ({
+        id: req.requestedSession.id,
+        title: req.requestedSession.subject,
+        start: req.requestedSession.sessionDate,
+        description: req.requestedSession.description
+      }))
+    ];
+
+    res.status(200).json({ events });
+  } catch (error) {
+    console.error('Error fetching student sessions:', error);
+    res.status(500).json({ error: 'Error fetching student sessions' });
+  }
+},
 
   // Accept a specific join request
   async accept(req, res) {

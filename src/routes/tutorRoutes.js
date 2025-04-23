@@ -2,6 +2,7 @@
 
 const express = require('express');
 const { authenticateJWT } = require('../middleware/authMiddleware');
+
 const { User, TutoringSession } = require('../entities');
 const router = express.Router();
 
