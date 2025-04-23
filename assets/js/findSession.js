@@ -93,6 +93,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       document.querySelectorAll('.join-session').forEach(button => {
         button.addEventListener('click', async function () {
+          console.log('Join button clicked for session:', this.dataset.id);  // Add this debug log!
+      
           const id = this.dataset.id;
           const joinRes = await fetch(`/sessions/request/${id}`, {
             method: 'POST',

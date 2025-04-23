@@ -10,6 +10,8 @@ class User extends Model {
     // Optional if you want reverse access
     User.hasMany(models.TutoringSession, { foreignKey: 'tutorId', as: 'createdSessions' });
     User.hasMany(models.TutoringSession, { foreignKey: 'studentId', as: 'joinedSessions' });
+    User.hasMany(models.JoinRequest, { foreignKey: 'studentId', as: 'joinRequests' });
+
   }
 }
 

@@ -3,6 +3,7 @@
 const express = require('express');
 const path = require('path');
 const { authenticateJWT } = require('../middleware/authMiddleware');
+
 const { User, TutoringSession } = require('../entities');
 const tutorController = require('../controllers/tutorController'); // Import the tutor controller with match endpoints
 

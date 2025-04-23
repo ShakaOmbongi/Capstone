@@ -4,10 +4,10 @@ const { User } = require('../entities');
 const { Op } = require('sequelize');
 
 const flaggedUserController = {
-  // 1️⃣ GET /admin/flagged-users
+  //  GET /admin/flagged-users
   async getFlaggedUsers(req, res) {
     try {
-      console.log("🔥 FLAGGED USERS CONTROLLER HIT");
+      console.log(" FLAGGED USERS CONTROLLER HIT");
 
       const flaggedUsers = await User.findAll({
         where: {
@@ -16,16 +16,16 @@ const flaggedUserController = {
         attributes: ['id', 'username', 'email', 'flagReason', 'suspended']
       });
 
-      console.log("🧪 Users found:", flaggedUsers.map(user => user.toJSON()));
+      console.log(" Users found:", flaggedUsers.map(user => user.toJSON()));
 
       return res.status(200).json({ flaggedUsers });
     } catch (error) {
-      console.error('❌ Error in getFlaggedUsers:', error);
+      console.error(' Error in getFlaggedUsers:', error);
       return res.status(500).json({ error: error.message });
     }
   },
 
-  // 2️⃣ PUT /admin/flagged-users/:id
+  //  PUT /admin/flagged-users/:id
   async clearFlag(req, res) {
     try {
       const userId = req.params.id;
@@ -35,18 +35,18 @@ const flaggedUserController = {
 
       return res.status(200).json({ message: 'Flag cleared successfully' });
     } catch (error) {
-      console.error('❌ Error in clearFlag:', error);
+      console.error('Error in clearFlag:', error);
       return res.status(500).json({ error: error.message });
     }
   },
 
-  // 3️⃣ PATCH /admin/flagged-users/suspend/:id
+  //  PATCH /admin/flagged-users/suspend/:id
   async toggleSuspend(req, res) {
     try {
       const userId = req.params.id;
       const { suspend } = req.body;
 
-      console.log(`⚙️ Toggling suspend for user ID: ${userId}, suspend = ${suspend}`);
+      console.log(` Toggling suspend for user ID: ${userId}, suspend = ${suspend}`);
 
       await User.update({ suspended: suspend }, { where: { id: userId } });
 
@@ -54,7 +54,7 @@ const flaggedUserController = {
         message: `User ${suspend ? 'suspended' : 'unsuspended'} successfully`
       });
     } catch (error) {
-      console.error('❌ Error in toggleSuspend:', error);
+      console.error(' Error in toggleSuspend:', error);
       return res.status(500).json({ error: error.message });
     }
   }

@@ -7,6 +7,8 @@ const studentController = require('../controllers/studentController');
 const progressUpdateService = require('../services/ProgressUpdateService');
 const tutoringSessionService = require('../services/TutoringSessionService');
 const tutoringSessionController = require('../controllers/tutoringSessionController');
+const joinRequestController = require('../controllers/joinRequestController');  
+
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -33,34 +35,7 @@ router.get('/login-streak', authenticateJWT, async (req, res) => {
 });
 
 // Calendar route - fetches sessions as tutor or student
-router.get('/sessions', authenticateJWT, async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const allSessions = await tutoringSessionService.getAllSessions();
-
-    const userSessions = allSessions.filter(session =>
-      // Show sessions where user is either the creator OR accepted student
-      session.studentId === userId || session.tutorId === userId
-    ).filter(session =>
-      // Only show if session is accepted OR if user created it
-      session.tutorId === userId || session.status === 'accepted'
-    );
-
-    const events = userSessions.map(session => ({
-      title: session.subject,
-      start: session.sessionDate,
-      extendedProps: {
-        description: session.description || '',
-        status: session.status,
-        role: session.tutorId === userId ? 'Creator' : 'Participant'
-      }
-    }));
-    res.status(200).json({ message: 'Sessions fetched successfully', events });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
+router.get('/sessions', authenticateJWT, joinRequestController.getStudentSessions);
 
 
 // Student creates a tutoring session
@@ -142,5 +117,8 @@ router.get('/matches', authenticateJWT, studentController.getMatch);
 
 // NEW: Endpoint to accept a pending match.
 router.post('/matches/accept', authenticateJWT, studentController.acceptMatch);
+router.get('/review', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/studentUI/StudentReviews.html'));
+});
 
 module.exports = router;

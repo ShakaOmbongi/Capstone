@@ -7,6 +7,8 @@ const { authenticateJWT } = require('../middleware/authMiddleware');
 const tutorController = require('../controllers/tutorController');
 const tutoringSessionService = require('../services/TutoringSessionService');
 const tutoringSessionController = require('../controllers/tutoringSessionController');
+const joinRequestController = require('../controllers/joinRequestController');  
+
 
 const router = express.Router();
 
@@ -44,6 +46,9 @@ router.get('/chat', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/tutorUI/TutorChatrooms.html'));
 });
 
+router.get('/reviews', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorReviews.html'));
+});
 
 // Get Profile Data (JSON)
 router.get('/profile/data', authenticateJWT, tutorController.getProfile);
@@ -61,21 +66,8 @@ router.put('/changePassword', authenticateJWT, tutorController.changePassword);
 
 
 // Fetch Sessions for Calendar
-router.get('/sessions', authenticateJWT, async (req, res) => {
-  try {
-    const tutorId = req.user.id;
-    const sessions = await tutoringSessionService.getAllSessions({ tutorId });
+router.get('/sessions', authenticateJWT, joinRequestController.getStudentSessions);
 
-    const events = sessions.map(session => ({
-      title: session.subject,
-      start: session.sessionDate
-    }));
-
-    res.status(200).json({ message: 'Sessions fetched successfully', events });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 // Create New Session
 router.post('/sessions/create', authenticateJWT, tutoringSessionController.createSession);

@@ -11,9 +11,10 @@ class JoinRequestService {
   
 
   // Get join requests for sessions created by the user (tutor or student)
-  async getRequestsForUserSessions(userId, tutorOnly = false) {
-    return await joinRequestRepository.getRequestsBySessionCreator(userId, tutorOnly);
+  async getRequestsForUserSessions(userId, tutorOnly = false, studentOnly = false) {
+    return await joinRequestRepository.getRequestsBySessionCreator(userId, tutorOnly, studentOnly);
   }
+  
 
   // Accept a request
   async acceptRequest(requestId) {
