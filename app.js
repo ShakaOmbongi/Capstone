@@ -36,7 +36,7 @@ helmet.contentSecurityPolicy({
       "'unsafe-inline'",
       "'unsafe-eval'",
       "https://cdn.jsdelivr.net",
-      "https://cdnjs.cloudflare.com"  // ✅ Add this
+      "https://cdnjs.cloudflare.com" 
     ],
     "style-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
     "img-src": [
