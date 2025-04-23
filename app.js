@@ -28,24 +28,30 @@ const io = new Server(server, {
 });
 
 app.use(
-helmet.contentSecurityPolicy({
-  directives: {
-    "default-src": ["'self'"],
-    "script-src": [
-      "'self'",
-      "'unsafe-inline'",
-      "'unsafe-eval'",
-      "https://cdn.jsdelivr.net",
-      "https://cdnjs.cloudflare.com" 
-    ],
-    "style-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-    "img-src": [
-      "'self'",
-      "data:",
-      "https://mdnnxwpxypxgwhfkzgok.supabase.co"
-    ]
-  }
-}))
+  helmet.contentSecurityPolicy({
+    directives: {
+      "default-src": ["'self'"],
+      "script-src": [
+        "'self'",
+        "'unsafe-inline'",
+        "'unsafe-eval'",
+        "https://cdn.jsdelivr.net",
+        "https://cdnjs.cloudflare.com"
+      ],
+      "style-src": [
+        "'self'",
+        "'unsafe-inline'",
+        "https://cdn.jsdelivr.net",
+        "https://cdnjs.cloudflare.com"
+      ],
+      "img-src": [
+        "'self'",
+        "data:",
+        "https://mdnnxwpxypxgwhfkzgok.supabase.co"
+      ]
+    }
+  })
+);
 
 
 app.use(express.json());
