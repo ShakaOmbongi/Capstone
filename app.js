@@ -28,19 +28,24 @@ const io = new Server(server, {
 });
 
 app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      "default-src": ["'self'"],
-      "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net"],
-      "style-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-      "img-src": [
-        "'self'",
-        "data:",
-        "https://mdnnxwpxypxgwhfkzgok.supabase.co"
-      ]
-    }
-  })
-);
+helmet.contentSecurityPolicy({
+  directives: {
+    "default-src": ["'self'"],
+    "script-src": [
+      "'self'",
+      "'unsafe-inline'",
+      "'unsafe-eval'",
+      "https://cdn.jsdelivr.net",
+      "https://cdnjs.cloudflare.com"  // ✅ Add this
+    ],
+    "style-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+    "img-src": [
+      "'self'",
+      "data:",
+      "https://mdnnxwpxypxgwhfkzgok.supabase.co"
+    ]
+  }
+}))
 
 
 app.use(express.json());
@@ -241,11 +246,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
       console.log(" A user disconnected:", socket.id);
   });
-});
-
-// Catch-all for 404 errors
-app.use((req, res) => {
-  res.status(404).json({ error: 'Not Found' });
 });
 
 // ========================== TEST SUPABASE CONNECTION ==========================
