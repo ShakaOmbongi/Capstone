@@ -6,14 +6,14 @@ const { authenticateJWT } = require('../middleware/authMiddleware');
 const feedbackController = require('../controllers/feedbackController'); // Student & Tutor
 const feedbackReviewController = require('../controllers/feedbackReviewController'); // Admin
 
-// ===== Student Routes =====
+//  Student Routes 
 router.get('/student/reviews/eligible', authenticateJWT, feedbackController.getSessionsForReviews);
 router.post('/student/reviews', authenticateJWT, feedbackController.submitReview);
 
-// ===== Tutor Routes =====
+//  Tutor Routes 
 router.get('/tutor/reviews', authenticateJWT, feedbackController.getTutorReviews);
 
-// ===== Admin Routes =====
+//  Admin Routes 
 router.get('/admin', authenticateJWT, feedbackReviewController.getAllReviews);
 router.delete('/admin/:id', authenticateJWT, feedbackReviewController.deleteReview);
 
