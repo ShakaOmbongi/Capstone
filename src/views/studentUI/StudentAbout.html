@@ -67,26 +67,26 @@
     .bg-primary {
       background-color: var(--primary-color) !important;
     }
-    .nav-link.active {
-      color: var(--primary-color) !important;
-      font-weight: bold;
-    }
     .text-primary {
       color: var(--primary-color) !important;
     }
   </style>
 </head>
+
 <body class="bg-light">
   <div class="container-fluid">
+    <button class="btn btn-outline-primary d-lg-none m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+      ☰ Menu
+    </button>
     <div class="row">
-      <!-- Sidebar -->
-      <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
-        <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
+      <!-- Sidebar Offcanvas + Grid -->
+      <div id="sidebarMenu" class="sidebar shadow p-3">
+        <!-- Sidebar content -->
+        <img src="../../../assets/images/peerAid-tr.png" class="img-fluid mb-3" alt="peerAid Logo" style="max-width: 260px;" />
         <ul class="nav flex-column">
           <li class="nav-item"><a class="nav-link" href="/student/studentdashboard">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link" href="/student/studentschedule">Calendar</a></li>
           <li class="nav-item"><a class="nav-link" href="/student/chat">Messages</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/feedback">Feedback</a></li>
           <li class="nav-item"><a class="nav-link" href="/student/studentprofile">Profile</a></li>
           <hr />
           <li class="nav-item"><a class="nav-link" href="/student/bookSessions">Book a Session</a></li>
@@ -97,10 +97,11 @@
           <li class="nav-item"><a class="nav-link" href="/student/faq">FAQs</a></li>
           <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
         </ul>
-      </nav>
-      
+      </div>
+  
+
       <!-- Main Content -->
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+      <main class="main-content px-4 mt-3">
         <!-- Hero Section -->
         <div class="row align-items-center mb-5">
           <div class="col-md-6">
@@ -238,7 +239,7 @@
         <div class="card-body">
           <h4>Carissa Boddie</h4>
           <p class="text-muted">Full-Stack Developer</p>
-          <p>Final-year CS student with a passion for scalable systems. Developed peerAid's matching algorithm while completing her distributed systems thesis.</p>
+          <p>Final-year CS student with a passion for web development. Developed peerAid's real time chat functionality.</p>
         </div>
       </div>
     </div>
@@ -256,7 +257,7 @@
         <div class="card-body">
           <h4>Shaka Ombongi</h4>
           <p class="text-muted">Backend Developer</p>
-          <p>Final-semester CS major with expertise in cloud architecture. Built peerAid's infrastructure while completing his cloud security certification.</p>
+          <p>CS major with expertise in database design. Built peerAid's infrastructure while completing his final-semester at UNCG .</p>
         </div>
       </div>
     </div>

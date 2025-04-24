@@ -131,6 +131,11 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
     });
   }
+  const addBtn = document.getElementById("addAvailabilityBtn");
+  if (addBtn) {
+    // This wires the click event so that clicking "Add" calls addAvailability()
+    addBtn.addEventListener("click", addAvailability);
+  }
 });
 
 // Function to add availability blocks

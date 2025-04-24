@@ -62,43 +62,46 @@
 }
 
   
-/* ************************* SIDEBAR *********************** */
+/* Fixed Sidebar with flexible width */
 
-  /* Make Sidebar Full Height & Fixed */
-.sidebar {
-  height: 100vh; 
+#sidebarMenu {
   position: fixed;
   top: 0;
   left: 0;
-  width: 300px; 
+  height: 100vh;
+  min-width: 252px;
+  width: clamp(252px, 20vw, 320px); /* min 252px, max 320px, fluid between */
   background-color: white;
-  overflow-y: auto; /* Enables scrolling if content exceeds viewport */
-}
-
-/* Ensure content doesn't overlap sidebar */
-.main-content {
-  margin-left: 300px; /* Matches the sidebar width */
+  overflow-y: auto;
+  z-index: 1040;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Change Sidebar Text Color */
-.sidebar .nav-link {
-  color: black; 
+.main-content {
+  padding: 20px;
+
+  /* This matches the sidebar's width exactly using the same clamp */
+  margin-left: clamp(252px, 20vw, 320px);
+  width: calc(100% - clamp(252px, 20vw, 320px));
+
+  overflow-x: hidden;
 }
 
-/* Change Sidebar Text Color on Hover */
-.sidebar .nav-link:hover {
+/* Sidebar Nav Styles */
+#sidebarMenu .nav-link {
+  color: black;
+}
+
+#sidebarMenu .nav-link:hover,
+#sidebarMenu .nav-link.active {
   background-color: rgb(233, 94, 94);
 }
 
-/* Change the active link color */
-.sidebar .nav-link.active {
-  background-color: rgb(233, 94, 94);
-}
-
-/* Change Sidebar Header Text Color */
-.sidebar h2 {
-  color: #ecf0f1; /* Light gray for sidebar header */
+/* Optional: Header text in sidebar */
+#sidebarMenu h2 {
+  color: #ecf0f1;
 }
 
 /* ************************* DASHBOARD PAGES *********************** */

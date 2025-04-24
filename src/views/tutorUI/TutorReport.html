@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Report a User</title>
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="../../../assets/css/style.css" />
+</head>
+<body class="bg-light">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Tutor Sidebar -->
+      <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
+        <img
+          src="../../../assets/images/peerAid-tr.png"
+          alt="peerAid Logo"
+          class="img-fluid mb-4"
+          style="max-width: 260px;"
+        />
+        <ul class="nav flex-column">
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/profile">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/tutordashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/tutoringSessions">Create a Session</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/findSessions">Find a Session</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/chat">Chatrooms</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/tutoruser/report">Report User</a></li>
+          <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <h1 class="mt-4">Report a User</h1>
+        <p class="text-muted">Use this form to report any user for inappropriate behavior.</p>
+
+        <form id="reportUserForm" class="mt-4">
+          <!-- Filter by Role -->
+          <div class="mb-3">
+            <label for="roleFilter" class="form-label">Filter by Role</label>
+            <select id="roleFilter" class="form-select">
+              <option value="all" selected>All</option>
+              <option value="student">Students</option>
+              <option value="tutor">Tutors</option>
+            </select>
+          </div>
+
+          <!-- Select User -->
+          <div class="mb-3">
+            <label for="userSelect" class="form-label">Select User</label>
+            <select
+              id="userSelect"
+              name="reportedId"
+              class="form-select"
+              required
+            >
+              <option disabled selected value="">-- Loading users… --</option>
+            </select>
+          </div>
+
+          <!-- Reason -->
+          <div class="mb-3">
+            <label for="reasonInput" class="form-label">Reason</label>
+            <textarea
+              id="reasonInput"
+              name="reason"
+              class="form-control"
+              rows="4"
+              placeholder="Describe why you’re reporting this user..."
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-danger">Submit Report</button>
+        </form>
+      </main>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Shared reporting logic -->
+  <script src="/assets/js/reportUser.js"></script>
+</body>
+</html>

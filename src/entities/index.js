@@ -7,6 +7,7 @@ const TutoringSession = require('./TutoringSession');
 const UserProfile = require('./UserProfile');
 const JoinRequest = require('./JoinRequest');
 const FeedbackReview = require('./FeedbackReview');
+const Report = require('./Report');
 const Match = require('./Match');
 
 const entities = {
@@ -17,6 +18,7 @@ const entities = {
   UserProfile,
   JoinRequest,
   FeedbackReview,
+  Report ,
   Match
 };
 
