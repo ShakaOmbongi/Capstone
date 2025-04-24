@@ -64,12 +64,11 @@
   
 /* ************************* SIDEBAR *********************** */
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   #sidebarMenu {
     position: static !important;
     transform: none !important;
     visibility: visible !important;
-    width: auto !important;
   }
 }
 
