@@ -189,12 +189,25 @@ body {
 }
 
 .chatroom-list {
-  background: #f8f9fa;
+  background: transparent;
   border-bottom: 1px solid #ddd;
 }
+
 .chatroom-list button {
-  width: 80;
+  width: 80%;
   text-align: left;
+  background-color: #e4e4e4;
+  border: none;
+  color: black;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-weight: bold;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.chatroom-list button:hover {
+  background-color: #d6d6d6;
+  color: black;
 }
 
 #startChatBtn {
@@ -211,4 +224,27 @@ body {
 
 #startChatBtn:hover {
   background-color: #5a6268; /* Darker gray on hover */
+}
+
+.start-chat-wrapper {
+  display: flex;
+  gap: 10px;
+  max-width: 400px;
+  margin-bottom: 1rem;
+}
+
+#chatroomCardsContainer .list-group-item {
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  transition: background 0.2s ease-in-out;
+}
+
+#chatroomCardsContainer .list-group-item:hover {
+  background: #f8f9fa;
+}
+
+#newChatUser {
+  flex-grow: 1;
+  max-width: 300px;
 }

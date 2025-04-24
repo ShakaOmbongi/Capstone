@@ -58,23 +58,23 @@
 
   <script>
     const socket = io("http://localhost:3000");
-
+  
     const messages = document.getElementById("messages");
     const messageInput = document.getElementById("messageInput");
     const receiverInput = document.getElementById("receiverInput");
     const sendBtn = document.getElementById("sendBtn");
-
+  
     let currentConversationId = "";
     let username = "";
-    let lastReceiverId = ""; //  Remember the last receiver
-
+    let lastReceiverId = ""; // Remember the last receiver
+  
     async function getLoggedInUser() {
       try {
         const response = await fetch("/api/get-user");
         const userData = await response.json();
         if (userData.username) {
           username = userData.username;
-          console.log(" Logged in as:", username);
+          console.log("Logged in as:", username);
         } else {
           alert("Error: Unable to retrieve username.");
         }
@@ -82,11 +82,11 @@
         console.error("Failed to fetch user data:", error);
       }
     }
-
+  
     function getConversationIdFromUrl() {
       const urlParams = new URLSearchParams(window.location.search);
       const conversationId = urlParams.get("room");
-
+  
       if (conversationId) {
         currentConversationId = conversationId;
         joinRoom(conversationId);
@@ -94,11 +94,11 @@
         showChatroomList();
       }
     }
-
+  
     function joinRoom(conversationId) {
       messages.innerHTML = "<p>Loading messages...</p>";
       socket.emit("joinRoom", { conversationId, username });
-
+  
       socket.once("previousMessages", (loadedMessages) => {
         messages.innerHTML = "";
         loadedMessages.forEach((msg) => {
@@ -106,138 +106,139 @@
           appendMessage(msg.senderId, msg.message, senderType);
         });
       });
-
+  
       console.log(`Joined room ${conversationId}`);
     }
-
+  
     function appendMessage(senderId, text, senderType) {
       const messageElement = document.createElement("div");
       messageElement.classList.add("message", senderType);
-
+  
       const bubble = document.createElement("div");
       bubble.classList.add("bubble");
       bubble.innerHTML = `<strong>${senderId}:</strong> ${text}`;
-
+  
       messageElement.appendChild(bubble);
       messages.appendChild(messageElement);
       messages.scrollTop = messages.scrollHeight;
     }
-
+  
     async function showChatroomList() {
       try {
         const response = await fetch("/api/chat-rooms");
         const rooms = await response.json();
-
-        console.log(" Logged in as:", username);
-
+  
+        console.log("Logged in as:", username);
+  
         messages.innerHTML = `
-  <div class="chatroom-list">
-    <h5>Select a Chatroom</h5>
-    <input type="text" id="newChatUser" class="form-control" placeholder="Enter username to start chat">
-    <button id="startChatBtn">Start New Chat</button>
-  </div>
-`;
-
-
+          <div class="chatroom-list">
+            <h5>Select a Chatroom</h5>
+            <div class="start-chat-wrapper">
+              <input type="text" id="newChatUser" class="form-control" placeholder="Enter username to start chat" size="30">
+              <button id="startChatBtn">Start New Chat</button>
+            </div>
+            <div id="chatroomCardsContainer" class="list-group"></div>
+          </div>
+        `;
+  
         setTimeout(() => {
           const startChatBtn = document.getElementById("startChatBtn");
           const newChatUserInput = document.getElementById("newChatUser");
-
+  
           if (!startChatBtn || !newChatUserInput) {
-            console.error(" Could not find chat button or input.");
+            console.error("Could not find chat button or input.");
             return;
           }
-
+  
           startChatBtn.addEventListener("click", () => {
             const otherUser = newChatUserInput.value.trim();
-
-            console.log(" Button clicked");
-            console.log(" My username:", username);
-            console.log(" Target user:", otherUser);
-
+  
+            console.log("Button clicked");
+            console.log("My username:", username);
+            console.log("Target user:", otherUser);
+  
             if (!otherUser || otherUser === username) {
               alert("Please enter a valid username that isn’t your own.");
               return;
             }
-
+  
             const ids = [username, otherUser].sort();
             const newRoomId = `${ids[0]}_${ids[1]}`;
-
-            console.log(" Redirecting to:", `/student/chat?room=${newRoomId}`);
+  
+            console.log("Redirecting to:", `/student/chat?room=${newRoomId}`);
             window.location.href = `/student/chat?room=${newRoomId}`;
           });
         }, 0);
-
+  
         if (rooms.length === 0) {
-          messages.innerHTML += "<p class='text-muted'>You have no chatrooms yet.</p>";
+          document.getElementById("chatroomCardsContainer").innerHTML =
+            "<p class='p-3 text-muted'>You have no chatrooms yet.</p>";
           return;
         }
-
-        rooms.forEach(room => {
-          const chatBtn = document.createElement("button");
-          chatBtn.className = "btn btn-outline-primary mb-2";
-          chatBtn.textContent = `Room ${room.conversationId}`;
-          chatBtn.addEventListener("click", () => {
-            window.location.href = `/student/chat?room=${room.conversationId}`;
-          });
-          messages.appendChild(chatBtn);
+  
+        rooms.forEach((room) => {
+          const chatCard = document.createElement("a");
+          chatCard.href = `/student/chat?room=${room.conversationId}`;
+          chatCard.className =
+            "list-group-item list-group-item-action p-3 border text-dark text-decoration-none";
+          chatCard.innerHTML = `
+            <strong>Room ${room.conversationId}</strong>
+            <div class="text-muted small">${room.message || "No messages yet"}</div>
+          `;
+          document.getElementById("chatroomCardsContainer").appendChild(chatCard);
         });
       } catch (err) {
         console.error("Error fetching chatroom list:", err);
         messages.innerHTML = "<p class='text-danger'>Failed to load chatrooms.</p>";
       }
     }
-
+  
     sendBtn.addEventListener("click", () => {
       const messageText = messageInput.value.trim();
       let receiverId = receiverInput.value.trim();
-
+  
       if (receiverId) {
         lastReceiverId = receiverId;
       } else {
         receiverId = lastReceiverId;
-        receiverInput.value = lastReceiverId; //  Put it back in the box
+        receiverInput.value = lastReceiverId;
       }
-
-      if (messageText !== "" && currentConversationId !== "" && receiverId !== "") {
+  
+      if (
+        messageText !== "" &&
+        currentConversationId !== "" &&
+        receiverId !== ""
+      ) {
         const messageData = {
           conversationId: currentConversationId,
           senderId: username,
           receiverid: receiverId,
-          message: messageText
+          message: messageText,
         };
-
+  
         socket.emit("chatMessage", messageData);
         messageInput.value = ""; // only clear the message field
       }
     });
+  
     messageInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
-        event.preventDefault(); // Prevents adding a newline
-        sendBtn.click(); // Triggers the send button click handler
+        event.preventDefault();
+        sendBtn.click();
       }
     });
-
+  
     socket.on("chatMessage", (data) => {
       const senderType = data.senderId === username ? "user" : "receiver";
       appendMessage(data.senderId, data.message, senderType);
     });
-
+  
     document.addEventListener("DOMContentLoaded", async () => {
       await getLoggedInUser();
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const conversationId = urlParams.get("room");
-
-      if (conversationId) {
-        currentConversationId = conversationId;
-        joinRoom(conversationId);
-      } else {
-        showChatroomList();
-      }
+      getConversationIdFromUrl();
     });
   </script>
-
+  
 </body>
 
 </html>
