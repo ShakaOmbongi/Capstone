@@ -43,27 +43,33 @@
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
-      <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
-        <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
-        <ul class="nav flex-column">
-          <li class="nav-item"><a class="nav-link active" href="/student/studentdashboard">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/studentschedule">Calendar</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/chat">Messages</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/feedback">Feedback</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/studentprofile">Profile</a></li>
-          <hr />
-          <li class="nav-item"><a class="nav-link" href="/student/bookSessions">Book a Session</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/tutoringSessions">Create a Session</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/findSessions">Find a Session</a></li>
-          <hr />
-          <li class="nav-item"><a class="nav-link" href="/student/About">About Us</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/faq">FAQs</a></li>
-          <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-        </ul>
-      </nav>
+      <!-- Toggle Button for Mobile -->
+<button class="btn btn-outline-primary d-md-none m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+  ☰ Menu
+</button>
+
+<!-- Offcanvas Sidebar -->
+<div class="offcanvas offcanvas-start d-md-flex flex-column flex-shrink-0 p-3 bg-white shadow" tabindex="-1" id="sidebarMenu">
+  <img src="../../../assets/images/peerAid-tr.png" class="img-fluid mb-3" alt="peerAid Logo" style="max-width: 260px;" />
+  <ul class="nav flex-column">
+    <li class="nav-item"><a class="nav-link active" href="/student/studentdashboard">Dashboard</a></li>
+    <li class="nav-item"><a class="nav-link" href="/student/studentschedule">Calendar</a></li>
+    <li class="nav-item"><a class="nav-link" href="/student/chat">Messages</a></li>
+    <li class="nav-item"><a class="nav-link" href="/student/feedback">Feedback</a></li>
+    <li class="nav-item"><a class="nav-link" href="/student/studentprofile">Profile</a></li>
+    <hr />
+    <li class="nav-item"><a class="nav-link" href="/student/bookSessions">Book a Session</a></li>
+    <li class="nav-item"><a class="nav-link" href="/student/tutoringSessions">Create a Session</a></li>
+    <li class="nav-item"><a class="nav-link" href="/student/findSessions">Find a Session</a></li>
+    <hr />
+    <li class="nav-item"><a class="nav-link" href="/student/About">About Us</a></li>
+    <li class="nav-item"><a class="nav-link" href="/student/faq">FAQs</a></li>
+    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+  </ul>
+</div>
 
       <!-- Main Content -->
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-3">
         <!-- Welcome Header -->
         <div class="py-4" style="color: black;">
           <h1 class="display-5" id="greeting">Hello, Student</h1>
@@ -183,7 +189,8 @@
         <!-- Pending Join Requests Section -->
         <section class="mb-4">
           <h2>Incoming Join Requests</h2>
-          <table class="table table-striped">
+          <div class="table-responsive">
+            <table class="table table-striped">
             <thead>
               <tr>
                 <th>Subject</th>
@@ -196,13 +203,15 @@
               <!-- Filled by JS -->
             </tbody>
           </table>
+          </div>
         </section>
 
 
         <!-- Accepted Sessions -->
         <section class="mb-4">
           <h2>My Accepted Sessions</h2>
-          <table class="table table-striped">
+          <div class="table-responsive">
+            <table class="table table-striped">
             <thead>
               <tr>
                 <th>Subject</th>
@@ -215,6 +224,7 @@
               <!-- Filled by JS -->
             </tbody>
           </table>
+          </div>
         </section>
       </main>
     </div>

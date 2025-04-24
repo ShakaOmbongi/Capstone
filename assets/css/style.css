@@ -64,6 +64,15 @@
   
 /* ************************* SIDEBAR *********************** */
 
+@media (min-width: 768px) {
+  #sidebarMenu {
+    position: static !important;
+    transform: none !important;
+    visibility: visible !important;
+    width: auto !important;
+  }
+}
+
   /* Make Sidebar Full Height & Fixed */
 .sidebar {
   height: 100vh; 
