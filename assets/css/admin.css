@@ -1,5 +1,5 @@
 /* ------------------------------
-   Admin Sidebar Refined Styling
+   Admin Sidebar Refined Styling (PeerAid-themed)
 -------------------------------*/
 
 body {
@@ -12,12 +12,12 @@ body {
   }
   
   .sidebar {
-    width: 280px;
-    background: #f3ecec;
+    width: 220px;
+    background: #f0eae7; /* Softer tone */
     height: 100vh;
     padding: 30px 20px;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-    border-right: 2px solid #e5e5e5;
+    border-right: 2px solid #dedede;
     position: fixed;
     top: 0;
     left: 0;
@@ -29,10 +29,10 @@ body {
   .sidebar h2 {
     font-size: 22px;
     margin-bottom: 30px;
-    color: #333;
+    color: #222;
     font-weight: bold;
     text-align: center;
-    border-bottom: 2px solid #f84040;
+    border-bottom: 2px solid #f84040; /* changed from #a89e8e */
     padding-bottom: 10px;
   }
   
@@ -58,19 +58,19 @@ body {
   }
   
   .sidebar ul li a:hover {
-    background-color: #f84040;
+    background-color: #a89e8e;
     color: white;
     transform: translateX(5px);
   }
   
   .sidebar ul li a.active {
-    background-color: #f84040;
+    background-color: #a89e8e;
     color: white;
   }
   
   .main-content {
-    margin-left: 280px;
-    padding: 40px;
+    margin-left: 240px; /* Slightly more than the sidebar width */
+    padding: 40px 50px; /* Adds horizontal breathing space */
     flex-grow: 1;
     background-color: #fff;
   }
@@ -80,7 +80,7 @@ body {
     font-weight: bold;
     margin-bottom: 20px;
     color: #000;
-    border-bottom: 3px solid #f84040;
+    border-bottom: 3px solid #f84040; /* changed from #a89e8e */
     display: inline-block;
     padding-bottom: 5px;
   }
@@ -115,7 +115,7 @@ body {
   .stat-box p {
     font-size: 24px;
     font-weight: bold;
-    color: #f84040;
+    color: #a89e8e;
   }
   
   /* Tables */
@@ -128,14 +128,7 @@ body {
     overflow: hidden;
   }
   
-  table th {
-    background: #333;
-    color: white;
-    padding: 14px;
-    text-align: left;
-    font-size: 16px;
-  }
-  
+ 
   table td {
     padding: 12px;
     border-bottom: 1px solid #ddd;
@@ -149,7 +142,7 @@ body {
   button {
     padding: 10px 14px;
     border: none;
-    background: #f84040;
+    background: #a89e8e;
     color: white;
     cursor: pointer;
     font-size: 15px;
@@ -159,7 +152,7 @@ body {
   }
   
   button:hover {
-    background: #c81d2c;
+    background: #f84040;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   }
   
@@ -168,15 +161,15 @@ body {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
-    border: 2px solid #000;
+    border: 2px solid #ccc;
     border-radius: 6px;
     font-size: 16px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
   }
   
   #search:focus {
     outline: none;
-    border-color: #f84040;
-    box-shadow: 0px 0px 8px rgba(248, 64, 64, 0.5);
+    border-color: #a89e8e;
+    box-shadow: 0px 0px 8px rgba(168, 158, 142, 0.5);
   }
   

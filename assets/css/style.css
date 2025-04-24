@@ -69,12 +69,12 @@
     position: static !important;
     transform: none !important;
     visibility: visible !important;
-    width: 270px !important;
-    flex: 0 0 270px !important; /* Makes it fixed-width inside Bootstrap’s flex row */
+    width: 252px !important;
+    flex: 0 0 252px !important; /* Makes it fixed-width inside Bootstrap’s flex row */
   }
 
   main {
-    margin-left: 260px; /* Pushes content to the right of the fixed sidebar */
+    margin-left: 252px; /* Pushes content to the right of the fixed sidebar */
   }
 }
 
