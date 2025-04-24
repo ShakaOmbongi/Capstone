@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book a Tutoring Session</title>
-    <link rel="stylesheet" href="../../../assets/css/booking.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find a Tutoring Session</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../../../assets/css/style.css" />
 </head>
-<body>
-    <!-- Sidebar -->
-    <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
+<body class="bg-light">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
         <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
         <ul class="nav flex-column">
           <li class="nav-item"><a class="nav-link" href="/student/studentdashboard">Dashboard</a></li>
@@ -28,53 +31,49 @@
         </ul>
       </nav>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <h2>Book a Tutoring Session</h2>
+      <!-- Main Content -->
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <h1 class="mt-4">Available Tutors</h1>
+        <div id="message"></div>
 
-        <form id="bookingForm">
-            <label for="tutor">Select Tutor:</label>
-            <select id="tutor" required>
-                <option value="">-- Select a Tutor --</option>
-                <option value="tutor1">John Doe (Math)</option>
-                <option value="tutor2">Jane Smith (Science)</option>
-                <option value="tutor3">Michael Lee (English)</option>
+        <!-- 🔍 Filter Section -->
+        <div class="row mb-4">
+          <div class="col-md-4 mb-2">
+            <input type="text" class="form-control" id="filterSubject" placeholder="Filter by subject...">
+          </div>
+          <div class="col-md-3 mb-2">
+            <input type="date" class="form-control" id="filterDate">
+          </div>
+          <div class="col-md-3 mb-2">
+            <select class="form-select" id="filterLearningStyle">
+              <option value="">All Learning Styles</option>
+              <option value="Visual">Visual</option>
+              <option value="Auditory">Auditory</option>
+              <option value="Kinesthetic">Kinesthetic</option>
+              <option value="Reading/Writing">Reading/Writing</option>
             </select>
+          </div>
+          <div class="col-md-2 mb-2">
+            <button class="btn btn-primary w-100" id="applyFilters">Apply Filters</button>
+          </div>
+        </div>
 
-            <label for="date">Select Date:</label>
-            <input type="date" id="date" required>
+        <!-- Section for the user's own sessions -->
+        <h2>My Sessions</h2>
+        <div id="mySessionsList" class="list-group mt-3"></div>
 
-            <label for="time">Select Time:</label>
-            <input type="time" id="time" required>
+        <!-- Section for other sessions -->
+        <h2>Other Sessions</h2>
+        <div id="otherSessionsList" class="list-group mt-3"></div>
+      </main>
+    </div>
+  </div>
 
-            <label for="notes">Additional Notes (Optional):</label>
-            <textarea id="notes" placeholder="Any specific topics or questions?"></textarea>
+  
 
-            <button type="submit">Book Session</button>
-        </form>
-
-        <p id="confirmationMessage" style="display: none; color: green;"></p>
-    </main>
-
-    <script>
-        $("#bookingForm").on("submit", function(event) {
-            event.preventDefault();
-
-            const bookingData = {
-                tutor: $("#tutor").val(),
-                date: $("#date").val(),
-                time: $("#time").val(),
-                notes: $("#notes").val()
-            };
-
-            $.post("/book-session", bookingData, function(response) {
-                $("#confirmationMessage").text(response.message).show();
-                $("#bookingForm").trigger("reset");  // Clear the form
-            }).fail(function() {
-                alert("Error booking session. Please try again.");
-            });
-        });
-    </script>
-
+  <!-- Scripts -->
+  <script src="../../../assets/js/findSession.js"></script>
+  <!-- Only include sessionActions.js if the table for pending sessions is on this page -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
