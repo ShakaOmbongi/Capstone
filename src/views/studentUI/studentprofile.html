@@ -17,7 +17,7 @@
           <li class="nav-item"><a class="nav-link" href="/student/studentdashboard">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link" href="/student/studentschedule">Calendar</a></li>
           <li class="nav-item"><a class="nav-link" href="/student/chat">Messages</a></li>
-          <li class="nav-item"><a class="nav-link" href="/student/feedback">Feedback</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/review">Reviews & feedback</a></li>
           <li class="nav-item"><a class="nav-link active" href="/student/studentprofile">Profile</a></li>
           <hr />
           <li class="nav-item"><a class="nav-link" href="/student/bookSessions">Book a Session</a></li>
@@ -79,7 +79,12 @@
             <label for="subjectsInput" class="form-label">Subjects (comma-separated)</label>
             <input type="text" class="form-control" id="subjectsInput" name="subjects" placeholder="e.g. Math, English, History" />
           </div>
-
+          <div class="mb-3">
+            <label class="form-label">Current Availability</label>
+            <ul id="currentAvailability" class="list-unstyled text-secondary mb-3">
+              <!-- populated by updateprofile.js -->
+            </ul>
+          </div>
           <!-- Availability Dropdown -->
           <div class="mb-3">
             <label class="form-label">Set Availability</label>

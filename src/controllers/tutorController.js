@@ -187,6 +187,41 @@ const tutorController = {
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error.message });
     }
+  },
+  async getProfileById(req, res, next) {
+    const tutorId = parseInt(req.query.id, 10);
+    if (!tutorId) {
+      return res.status(400).json({ status: 'error', message: 'Missing tutor ID' });
+    }
+    try {
+      const tutor = await User.findByPk(tutorId, {
+        attributes: ['id','username','email','profilePic'],
+        include: {
+          model: UserProfile,
+          as: 'profile',
+          attributes: ['bio','subjects','availability','learningstyle']
+        }
+      });
+      if (!tutor) {
+        return res.status(404).json({ status: 'error', message: 'Tutor not found' });
+      }
+      return res.status(200).json({
+        status: 'success',
+        profile: {
+          id:            tutor.id,
+          username:      tutor.username,
+          email:         tutor.email,
+          profilePic:    tutor.profilePic,
+          bio:           tutor.profile?.bio      || "",
+          subjects:      tutor.profile?.subjects || "",
+          availability:  tutor.profile?.availability || "",
+          learningstyle: tutor.profile?.learningstyle || ""
+        }
+      });
+    } catch (err) {
+      console.error("Get tutor by ID error:", err);
+      next(err);
+    }
   }
 };
 
