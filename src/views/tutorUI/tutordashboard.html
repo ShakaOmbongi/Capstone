@@ -17,17 +17,17 @@
       <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
         <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
         <ul class="nav flex-column">
-          <li class="nav-item"><a class="nav-link active" href="/tutor/tutordashboard">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link" href="/tutor/tutorschedule">Calendar</a></li>
-          <li class="nav-item"><a class="nav-link" href="/tutor/chat">Messages</a></li>
-          <li class="nav-item"><a class="nav-link" href="/tutor/tutorprofile">Profile</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/tutoruser/tutordashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/tutorschedule">Calendar</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/chat">Messages</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/profile">Profile</a></li>
           <hr />
-          <li class="nav-item"><a class="nav-link" href="/tutor/bookSessions">Book a Session</a></li>
-          <li class="nav-item"><a class="nav-link" href="/tutor/findSessions">Find a Session</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/tutoringSessions">Create a Session</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/findSessions">Find a Session</a></li>
           <hr />
-          <li class="nav-item"><a class="nav-link" href="/tutor/About">About Us</a></li>
-          <li class="nav-item"><a class="nav-link" href="/tutor/faq">FAQs</a></li>
-          <li class="nav-item"><a class="nav-link" href="/tutor/settings">Settings</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/About">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/faq">FAQs</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/settings">Settings</a></li>
           <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
         </ul>
       </nav>
@@ -37,8 +37,6 @@
         <div class="py-4 text-black">
           <h1 class="display-5" id="greeting">Hello, Tutor</h1>
           <p class="text-muted">This is your dashboard.</p>
-          <!-- Display login streak -->
-          <h3 id="streak">Your current login streak: Loading...</h3>
         </div>
         
         <!-- Upcoming Schedule Section -->
@@ -152,24 +150,6 @@
   </script>
 
   <script>
-    async function getLoginStreak() {
-      try {
-        const response = await fetch('/tutor/login-streak', { credentials: 'include' });
-        const data = await response.json();
-        if (data.streak !== undefined) {
-          document.getElementById('streak').textContent = `Your current login streak: ${data.streak}`;
-        } else {
-          document.getElementById('streak').textContent = 'No streak data available';
-        }
-      } catch (error) {
-        console.error('Error fetching login streak:', error);
-        document.getElementById('streak').textContent = 'Error loading streak';
-      }
-    }
-    document.addEventListener('DOMContentLoaded', getLoginStreak);
-  </script>
-
-  <script>
     async function checkQuizTaken() {
       try {
         // Assuming the same endpoint works for both tutors and students.
@@ -249,6 +229,8 @@
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
   <script src="../../../assets/js/calender.js"></script>
   <script src="../../../assets/js/visibility.js"></script>
+  <script src="../../../assets/js/sessionActionsTutor.js"></script>
+  <script src="../../../assets/js/joinRequests.js"></script>
   
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

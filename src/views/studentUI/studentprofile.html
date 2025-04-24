@@ -97,7 +97,12 @@
             <label for="subjectsInput" class="form-label">Subjects (comma-separated)</label>
             <input type="text" class="form-control" id="subjectsInput" name="subjects" placeholder="e.g. Math, English, History" />
           </div>
-
+          <div class="mb-3">
+            <label class="form-label">Current Availability</label>
+            <ul id="currentAvailability" class="list-unstyled text-secondary mb-3">
+              <!-- populated by updateprofile.js -->
+            </ul>
+          </div>
           <!-- Availability Dropdown -->
           <div class="mb-3">
             <label class="form-label">Set Availability</label>

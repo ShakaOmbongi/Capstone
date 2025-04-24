@@ -28,7 +28,7 @@ router.get('/tutordashboard', authenticateJWT, (req, res) => {
 
 // Profile Page
 router.get('/profile', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorProfile.html'));
+  res.sendFile(path.join(__dirname, '../views/tutorUI/tutorprofile.html'));
 });
 
 // Create a Session Page
@@ -54,6 +54,14 @@ router.get('/report', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/tutorUI/TutorReport.html'));
 });
 
+router.get('/tutorschedule', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/tutorUI/tutorschedule.html'));
+});
+
+router.get('/faq', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/tutorUI/tutoringfaq.html'));
+});
+
 // Get Profile Data (JSON)
 router.get('/profile/data', authenticateJWT, tutorController.getProfile);
 
@@ -75,6 +83,11 @@ router.get('/sessions', authenticateJWT, joinRequestController.getStudentSession
 
 // Create New Session
 router.post('/sessions/create', authenticateJWT, tutoringSessionController.createSession);
+router.get(
+  '/profile/by-id',
+  authenticateJWT,
+  tutorController.getProfileById
+);
 
 // Fetch All Sessions Created by Tutor
 router.get('/all-sessions', authenticateJWT, async (req, res) => {
