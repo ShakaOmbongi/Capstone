@@ -30,11 +30,14 @@ const loginController = {
       });
       // Store token in an httpOnly cookie
       res.cookie('token', token, {
-        httpOnly: false,
+        httpOnly: false,                    
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Strict'
+        sameSite: 'Strict',
+        path: '/'                           //makes the cookie valid on ALL paths
       });
-      res.cookie('username', user.username);
+      res.cookie('username', user.username, {
+        path: '/'                           //username cookie is available everywhere
+      });
 
       return res.redirect('/student/studentdashboard');
     } catch (error) {
