@@ -79,7 +79,7 @@ const signUpController = {
       });
       res.cookie('token', token, { httpOnly: true, sameSite: 'Strict' });
       // Redirect to the tutor dashboard
-      return res.redirect('/tutor/tutordashboard');
+      return res.redirect('/tutoruser/tutordashboard');
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error.message });
     }
