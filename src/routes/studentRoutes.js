@@ -66,5 +66,8 @@ router.get('/about', authenticateJWT, (req, res) => {
 router.get('/review', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentReviews.html'));
 });
+router.get('/report', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/studentUI/StudentReport.html'));
+});
 
 module.exports = router;

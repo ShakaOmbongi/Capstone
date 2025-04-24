@@ -55,6 +55,13 @@ app.use('/student/join', joinRequestRoutes);
 const feedbackRoutes = require('./src/routes/feedbackRoutes');
 app.use('/feedback', feedbackRoutes);
 
+const userRoutes  = require('./src/routes/userRoutes'); 
+app.use('/api/users', userRoutes);  
+const reportRoutes= require('./src/routes/reportRoutes');
+app.use('/', reportRoutes);
+
+
+
 app.use('/', joinRequestRoutes); 
 
 // Use for tutors

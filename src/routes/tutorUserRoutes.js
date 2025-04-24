@@ -50,6 +50,10 @@ router.get('/reviews', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/tutorUI/TutorReviews.html'));
 });
 
+router.get('/report', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorReport.html'));
+});
+
 // Get Profile Data (JSON)
 router.get('/profile/data', authenticateJWT, tutorController.getProfile);
 

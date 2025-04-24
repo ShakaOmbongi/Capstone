@@ -7,6 +7,7 @@ const TutoringSession = require('./TutoringSession');
 const UserProfile = require('./UserProfile');
 const JoinRequest = require('./JoinRequest');
 const FeedbackReview = require('./FeedbackReview');
+const Report = require('./Report');
 
 const entities = {
   Role,
@@ -15,7 +16,8 @@ const entities = {
   TutoringSession,
   UserProfile,
   JoinRequest,
-  FeedbackReview
+  FeedbackReview,
+  Report 
 };
 
 // Register all associations (handled in each model)
