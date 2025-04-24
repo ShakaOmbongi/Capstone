@@ -25,6 +25,24 @@ const flaggedUserController = {
     }
   },
 
+async reportUser(req, res) {
+  try {
+    const userId = req.params.userId;
+    const { reason } = req.body;
+
+    if (!reason) {
+      return res.status(400).json({ error: 'Reason is required for reporting.' });
+    }
+
+    await User.update({ flagReason: reason }, { where: { id: userId } });
+
+    return res.status(200).json({ message: 'User reported successfully.' });
+  } catch (error) {
+    console.error('Error reporting user:', error);
+    return res.status(500).json({ error: error.message });
+  }
+}
+,
   //  PUT /admin/flagged-users/:id
   async clearFlag(req, res) {
     try {
@@ -39,6 +57,7 @@ const flaggedUserController = {
       return res.status(500).json({ error: error.message });
     }
   },
+
 
   //  PATCH /admin/flagged-users/suspend/:id
   async toggleSuspend(req, res) {
