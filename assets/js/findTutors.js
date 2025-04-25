@@ -78,10 +78,10 @@ document.addEventListener('DOMContentLoaded', async () => {
               <small>${bio}</small><br/>
               <small><strong>Subjects:</strong> ${subjects}</small>
             </div>
-            <a href="/student/tutorProfile?id=${u.id}" 
-               class="btn btn-outline-primary btn-sm">
-              View Profile
-            </a>
+           <a href="/student/tutorProfile?id=${u.id}" 
+   class="btn btn-outline-danger btn-sm">
+  View Profile
+</a>
           `;
           listContainer.appendChild(item);
         });

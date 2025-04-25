@@ -181,3 +181,34 @@
     justify-content: center;
     width: 60%; /* Adjusted width */
 }
+
+/* Remove underlines and set event text to red */
+.fc-event {
+  color: black !important;           /* Change event text color */
+  text-decoration: none !important; /* Remove underlines */
+  background: transparent !important; /* Optional: remove blue background if present */
+  border: none !important;          /* Optional: remove borders */
+}
+
+/* If events have links (anchors), style those too */
+.fc-event a {
+  color: black !important;
+  text-decoration: none !important;
+}
+
+/* Style the day numbers in the grid */
+.fc-daygrid-day-number {
+  color: red;              /* Change number color */
+  text-decoration: none;   /* Remove underlines */
+}
+
+/* Style the weekday headers */
+.fc-col-header-cell-cushion {
+  color: red;
+  text-decoration: none;
+}
+
+/* Change the event bullet dot color */
+.fc-daygrid-event-dot {
+  background-color: red !important;
+}

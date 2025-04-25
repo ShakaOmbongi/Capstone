@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
+    contentHeight: 'auto', // ✅ Or use height: 'auto' or height: 600
+    expandRows: true, // ✅ Optional but helpful for full height layout
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
