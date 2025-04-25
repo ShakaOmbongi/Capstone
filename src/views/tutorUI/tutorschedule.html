@@ -26,28 +26,30 @@
 
 <body class="bg-light">
   <div class="container-fluid">
+    <button class="btn btn-outline-primary d-lg-none m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+      ☰ Menu
+    </button>
     <div class="row">
-      <!-- Sidebar -->
-      <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 shadow">
+      <!-- Sidebar Offcanvas + Grid -->
+      <div id="sidebarMenu" class="sidebar shadow p-3">
         <img src="../../../assets/images/peerAid-tr.png" alt="peerAid Logo" class="img-fluid" style="max-width: 260px;">
         <ul class="nav flex-column">
-          <li class="nav-item">
-              <a class="nav-link" href="/tutoruser/tutordashboard">Home</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="/tutoruser/tutorprofile">Profile</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link active" href="/tutoruser/tutorschedule">Schedule</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="/logout">Logout</a>
-          </li>
-      </ul>
-      </nav>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/tutordashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/tutoruser/tutorschedule">Calendar</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/chat">Messages</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/profile">Profile</a></li>
+          <hr />
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/tutoringSessions">Create a Session</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/findSessions">Find a Session</a></li>
+          <hr />
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/About">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutoruser/faq">FAQs</a></li>
+          <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+        </ul>
+      </div>
       
       <!-- Main Content -->
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <main class="main-content px-4 mt-3">
         <!-- Header with dynamic greeting -->
         <div class="py-4" style="color: black;">
           <h1 class="display-5" id="greeting">Hello, Tutor</h1> <!-- demo for name -->
