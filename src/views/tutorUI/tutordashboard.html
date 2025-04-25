@@ -45,22 +45,6 @@
           <p class="text-muted">This is your dashboard.</p>
         </div>
 
-        <!-- Upcoming Schedule Section -->
-        <section class="mb-4" id="upcoming-schedule">
-          <h2>Upcoming Schedule</h2>
-          <div class="row">
-            <div class="col-md-4">
-              <div class="card shadow-sm">
-                <div class="card-body">
-                  <h5 class="card-title">Science Tutoring</h5>
-                  <p class="card-text">10 Feb | 2:00 PM</p>
-                </div>
-              </div>
-            </div>
-            <!-- Additional schedule cards as needed -->
-          </div>
-        </section>
-
         <!-- Dynamic Peer/Tutor Matches Section -->
         <section class="mb-4" id="peer-tutor-matches">
           <h2>Peer/Tutor Matches</h2>
@@ -70,10 +54,9 @@
         </section>
 
         <!-- Session Requests Section -->
-        <section class="mb-4" id="session-requests">
+        <!-- <section class="mb-4" id="session-requests">
           <h2>Session Requests</h2>
           <div class="row">
-            <!-- Example session request card -->
             <div class="col-md-4">
               <div class="card shadow-sm">
                 <div class="card-body d-flex">
@@ -89,20 +72,68 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
 
-          </div>
-          <!-- Messages Section -->
-          <div class="col-md-6">
-            <h3>Messages</h3>
-            <div class="card shadow-sm">
-              <div class="card-body p-0" id="messageList">
-                <!-- Messages will be dynamically loaded here -->
+         <!-- Calendar and Messages Section -->
+        <section class="mb-4">
+          <div class="row">
+            <!-- Calendar Section -->
+            <div class="col-md-6" id="calendar-section">
+              <h3>Calendar</h3>
+              <div id="calendar-container" class="card shadow-sm p-3">
+                <div id="calendar"></div>
               </div>
             </div>
-          </div>
+            <!-- Messages Section -->
+            <div class="col-md-6">
+              <h3>Messages</h3>
+              <div class="card shadow-sm">
+                <div class="card-body p-0" id="messageList">
+                  <!-- Messages will be dynamically loaded here -->
+                </div>
+              </div>
+            </div>
+            <script>
+              async function fetchRecentMessages() {
+                try {
+                  const response = await fetch('/api/chat-rooms');
+                  const rooms = await response.json();
+                  const messageList = document.getElementById("messageList");
+                  messageList.innerHTML = "";
 
+
+                  if (rooms.length === 0) {
+                    messageList.innerHTML = "<p class='p-3 text-muted'>No recent messages.</p>";
+                    return;
+                  }
+
+
+                  rooms.forEach(room => {
+                    const messageItem = document.createElement("a");
+                    messageItem.href = `/student/chat?room=${room.conversationId}`; //  Links to correct chatroom
+                    messageItem.classList.add("d-flex", "align-items-center", "p-3", "border-bottom", "text-decoration-none", "text-dark");
+
+
+                    messageItem.innerHTML = `
+                <div class="d-flex flex-column">
+                    <strong>Chatroom ${room.conversationId}</strong>
+                    <span class="text-muted small">${room.message || "No messages yet"}</span>
+                </div>
+            `;
+
+
+                    messageList.appendChild(messageItem);
+                  });
+                } catch (error) {
+                  console.error(" Error fetching recent messages:", error);
+                }
+              }
+
+
+              document.addEventListener("DOMContentLoaded", fetchRecentMessages);
+            </script>
         </section>
+
 
         <!-- Pending Join Requests -->
         <section>
