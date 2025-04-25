@@ -57,7 +57,7 @@ router.get('/profile', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentProfile.html'));
 });
 router.get('/bookSessions', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/studentUI/book-session.html'));
+  res.sendFile(path.join(__dirname, '../views/studentUI/StudentBookSession.html'));
 });
 router.get('/findSessions', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentFindSession.html'));
@@ -119,5 +119,11 @@ router.get('/matches', authenticateJWT, studentController.getMatch);
 
 // NEW: Endpoint to accept a pending match.
 router.post('/matches/accept', authenticateJWT, studentController.acceptMatch);
+router.get('/review', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/studentUI/StudentReviews.html'));
+});
+router.get('/report', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/studentUI/StudentReport.html'));
+});
 
 module.exports = router;

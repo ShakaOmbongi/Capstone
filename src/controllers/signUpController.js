@@ -42,7 +42,7 @@ const signUpController = {
       // Set the token as an httpOnly cookie
       res.cookie('token', token, { httpOnly: true, sameSite: 'Strict' });
       // Redirect to the student dashboard
-      return res.redirect('/student/studentdashboard');
+      return res.redirect('/studentlogin');
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error.message });
     }
@@ -79,7 +79,7 @@ const signUpController = {
       });
       res.cookie('token', token, { httpOnly: true, sameSite: 'Strict' });
       // Redirect to the tutor dashboard
-      return res.redirect('/tutor/tutordashboard');
+      return res.redirect('/tutorlogin/');
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error.message });
     }

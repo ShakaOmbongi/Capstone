@@ -22,9 +22,9 @@
     "database": "postgres",
     "host": "host",
 
-    "password": "0VLOduKfMJizvOMi",
+    "password": "1",
     "database": "postgres",
-    "host": "db.mdnnxwpxypxgwhfkzgok.supabase.co",
+    "host": "db.1.supabase.co",
 
     "port": 5432,
     "dialect": "postgres",

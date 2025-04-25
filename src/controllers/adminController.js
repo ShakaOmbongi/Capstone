@@ -5,7 +5,7 @@ const sequelize = require('../../db');
 const { Op } = require('sequelize');
 
 const adminController = {
-  //  Fetch all users with their roles
+  // Fetch all users with their roles
   async getAllUsers(req, res) {
     try {
       const users = await User.findAll({
@@ -14,7 +14,7 @@ const adminController = {
           {
             model: Role,
             as: 'role',
-            attributes: ['name'] 
+            attributes: ['name']
           }
         ]
       });
@@ -25,8 +25,7 @@ const adminController = {
     }
   },
 
-
-  //  Fetch daily signup metrics
+  // Fetch daily signup metrics
   async getMetrics(req, res) {
     try {
       const metrics = await User.findAll({
@@ -48,7 +47,40 @@ const adminController = {
       console.error("Error fetching metrics:", error);
       return res.status(500).json({ error: error.message });
     }
+  },
+
+ // Count active sessions
+async getActiveSessionCount(req, res) {
+  try {
+    const [results] = await sequelize.query(`
+      SELECT COUNT(*) AS "activeCount"
+      FROM tutoring_sessions
+      WHERE status = 'accepted' AND "sessionDate" > NOW()
+    `);
+    const count = results[0]?.activeCount || 0;
+    return res.status(200).json({ activeSessions: count });
+  } catch (error) {
+    console.error("Error fetching active session count:", error);
+    return res.status(500).json({ error: error.message });
   }
+},
+
+// Count pending feedback
+async getPendingFeedbackCount(req, res) {
+  try {
+    const [results] = await sequelize.query(`
+      SELECT COUNT(*) AS "pendingCount"
+      FROM feedback
+      WHERE rating IS NULL OR comment IS NULL
+    `);
+    const count = results[0]?.pendingCount || 0;
+    return res.status(200).json({ pendingFeedback: count });
+  } catch (error) {
+    console.error("Error fetching pending feedback count:", error);
+    return res.status(500).json({ error: error.message });
+  }
+}
+
 };
 
 module.exports = adminController;

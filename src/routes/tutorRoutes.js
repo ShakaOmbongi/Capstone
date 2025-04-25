@@ -9,18 +9,6 @@ const tutorController = require('../controllers/tutorController'); // Import the
 
 const router = express.Router();
 
-// Serve static HTML pages for the tutor UI
-router.get('/tutordashboard', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/tutorUI/tutordashboard.html'));
-});
-
-router.get('/tutorprofile', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/tutorUI/tutorProfile.html'));
-});
-
-router.get('/tutorschedule', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/tutorUI/tutoringSession.html'));
-});
 
 // API Endpoints
 

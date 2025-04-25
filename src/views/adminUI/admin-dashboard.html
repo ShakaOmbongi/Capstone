@@ -55,21 +55,22 @@
   <div class="main-content">
     <h1>Admin Dashboard</h1>
 
-    <!-- Stats Section -->
-    <div class="stats">
-      <div class="stat-box">
-        <h3>Total Users</h3>
-        <p id="totalUsers">0</p>
-      </div>
-      <div class="stat-box">
-        <h3>Active Sessions</h3>
-        <p id="activeSessions">15</p>
-      </div>
-      <div class="stat-box">
-        <h3>Pending Feedback</h3>
-        <p id="pendingFeedback">5</p>
-      </div>
-    </div>
+   <!-- Stats Section -->
+<div class="stats">
+  <div class="stat-box">
+    <h3>Total Users</h3>
+    <p id="totalUsers">Loading...</p>
+  </div>
+  <div class="stat-box">
+    <h3>Active Sessions</h3>
+    <p id="activeSessions">Loading...</p>
+  </div>
+  <div class="stat-box">
+    <h3>Pending Feedback</h3>
+    <p id="pendingFeedback">Loading...</p>
+  </div>
+</div>
+
 
     <!-- Analytics Section -->
     <div class="metrics-box">
@@ -96,94 +97,90 @@
     </div>
 
 
-  <script>
-    document.addEventListener("DOMContentLoaded", async function () {
-      // --------------------------
-      // Fetch and display All Users
-      // --------------------------
-      try {
-        const usersResponse = await fetch("http://localhost:3000/admin/users", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json"
-            // Add Authorization header if needed.
+    <script>
+      document.addEventListener("DOMContentLoaded", async function () {
+        // Fetch All Users
+        try {
+          const usersResponse = await fetch("http://localhost:3000/admin/users");
+          const usersData = await usersResponse.json();
+          if (usersResponse.ok) {
+            const usersTableBody = document.querySelector("#usersTable tbody");
+            usersTableBody.innerHTML = "";
+            usersData.users.forEach(user => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.username}</td>
+                <td>${user.email}</td>
+                <td>${user.role?.name || 'N/A'}</td>
+              `;
+              usersTableBody.appendChild(row);
+            });
+            document.getElementById("totalUsers").textContent = usersData.users.length;
           }
-        });
-        const usersData = await usersResponse.json();
-        if (usersResponse.ok) {
-          const usersTableBody = document.querySelector("#usersTable tbody");
-          usersTableBody.innerHTML = "";
-          usersData.users.forEach(user => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-    <td>${user.id}</td>
-    <td>${user.username}</td>
-    <td>${user.email}</td>
-    <td>${user.role?.name || 'N/A'}</td>  <!--  SHOWS role name -->
-  `;
-            usersTableBody.appendChild(row);
-          });
-
-          // Update Total Users stat.
-          document.getElementById("totalUsers").textContent = usersData.users.length;
-        } else {
-          console.error("Failed to fetch users:", usersData.error);
+        } catch (error) {
+          console.error("Error fetching users:", error);
         }
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-
-      
-      // --------------------------
-      // Fetch and display Analytics Metrics (Daily New Users)
-      // --------------------------
-      try {
-        const metricsResponse = await fetch("http://localhost:3000/admin/metrics", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" }
-          // Add Authorization header if needed.
-        });
-        const metricsData = await metricsResponse.json();
-        if (metricsResponse.ok) {
-          // Assume metricsData.dailySignups is an array of objects { date: "YYYY-MM-DD", count: number }
-          const labels = metricsData.dailySignups.map(item => item.date);
-          const dataCounts = metricsData.dailySignups.map(item => item.count);
-
-          const ctx = document.getElementById("userJoinChart").getContext("2d");
-          new Chart(ctx, {
-            type: "line",
-            data: {
-              labels: labels,
-              datasets: [{
-                label: "New Users per Day",
-                data: dataCounts,
-                borderColor: "rgba(75, 192, 192, 1)",
-                backgroundColor: "rgba(75, 192, 192, 0.2)",
-                fill: true,
-                tension: 0.3
-              }]
-            },
-            options: {
-              responsive: true,
-              scales: {
-                x: {
-                  title: { display: true, text: "Date" }
-                },
-                y: {
-                  title: { display: true, text: "New Users" },
-                  beginAtZero: true
+    
+        // Fetch Metrics
+        try {
+          const metricsResponse = await fetch("http://localhost:3000/admin/metrics");
+          const metricsData = await metricsResponse.json();
+          if (metricsResponse.ok) {
+            const labels = metricsData.dailySignups.map(item => item.date);
+            const dataCounts = metricsData.dailySignups.map(item => item.count);
+    
+            const ctx = document.getElementById("userJoinChart").getContext("2d");
+            new Chart(ctx, {
+              type: "line",
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: "New Users per Day",
+                  data: dataCounts,
+                  borderColor: "rgba(75, 192, 192, 1)",
+                  backgroundColor: "rgba(75, 192, 192, 0.2)",
+                  fill: true,
+                  tension: 0.3
+                }]
+              },
+              options: {
+                responsive: true,
+                scales: {
+                  x: { title: { display: true, text: "Date" }},
+                  y: { title: { display: true, text: "New Users" }, beginAtZero: true }
                 }
               }
-            }
-          });
-        } else {
-          console.error("Failed to fetch metrics:", metricsData.error);
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching metrics:", error);
         }
-      } catch (error) {
-        console.error("Error fetching metrics:", error);
-      }
-    });
-  </script>
+    
+        // Fetch Active Sessions
+        try {
+          const sessionRes = await fetch("http://localhost:3000/admin/active-sessions");
+          const sessionData = await sessionRes.json();
+          if (sessionRes.ok) {
+            document.getElementById("activeSessions").textContent = sessionData.activeSessions;
+          }
+        } catch (error) {
+          console.error("Error fetching active sessions:", error);
+        }
+    
+        // Fetch Pending Feedback
+        try {
+          const feedbackRes = await fetch("http://localhost:3000/admin/pending-feedback");
+          const feedbackData = await feedbackRes.json();
+          if (feedbackRes.ok) {
+            document.getElementById("pendingFeedback").textContent = feedbackData.pendingFeedback;
+          }
+        } catch (error) {
+          console.error("Error fetching pending feedback:", error);
+        }
+      });
+    </script>
+    
 </body>
 
 </html>
