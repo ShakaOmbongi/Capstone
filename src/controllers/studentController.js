@@ -10,34 +10,41 @@ const studentController = {
     try {
       const student = await User.findByPk(req.user.id, {
         attributes: ['id', 'username', 'email', 'profilePic'],
-        include: [{
+        include: {
           model: UserProfile,
           as: 'profile',
-          attributes: ['bio', 'subjects', 'learningstyle', 'availability']
-        }]
+          attributes: ['bio', 'subjects', 'availability', 'learningstyle']
+        }
       });
 
       if (!student) {
-        return res.status(404).json({ status: 'error', message: 'Student not found' });
+        return res
+          .status(404)
+          .json({ status: 'error', message: 'Student not found' });
       }
 
-      const profileData = {
-        id: student.id,
-        username: student.username,
-        email: student.email,
-        profilePic: student.profilePic,
-        bio: student.profile?.bio || '',
-        subjects: student.profile?.subjects || '',
-        learningStyle: student.profile?.learningstyle || '',
-        availability: student.profile?.availability || ''
-      };
-
-      return res.status(200).json({ status: 'success', message: 'Profile fetched', data: profileData });
+      // ► NOTE: return under `profile` to match tutor endpoint
+      return res.status(200).json({
+        status: 'success',
+        profile: {
+          id:            student.id,
+          username:      student.username,
+          email:         student.email,
+          profilePic:    student.profilePic,
+          bio:           student.profile?.bio           || '',
+          subjects:      student.profile?.subjects      || '',
+          availability:  student.profile?.availability  || '',
+          learningstyle: student.profile?.learningstyle || ''
+        }
+      });
     } catch (error) {
-      console.error("Error fetching profile:", error);
-      return res.status(500).json({ status: 'error', message: error.message });
+      console.error("Get student profile error:", error);
+      return res
+        .status(500)
+        .json({ status: 'error', message: error.message });
     }
   },
+
 
   // Update the student's profile
   async updateProfile(req, res) {

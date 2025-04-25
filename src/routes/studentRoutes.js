@@ -2,14 +2,16 @@
 
 const express = require('express');
 const path = require('path');
-const multer = require('multer'); // ✅ moved to the top
-const upload = multer({ dest: 'uploads/' }); // ✅ defined before use
+const multer = require('multer'); //  moved to the top
+const upload = multer({ dest: 'uploads/' }); // defined before use
 
 const { authenticateJWT } = require('../middleware/authMiddleware');
 const studentController = require('../controllers/studentController');
 const progressUpdateService = require('../services/ProgressUpdateService');
 const tutoringSessionService = require('../services/TutoringSessionService');
 const tutoringSessionController = require('../controllers/tutoringSessionController');
+const feedbackController = require('../controllers/feedbackController');
+const feedbackReviewController = require('../controllers/feedbackReviewController');
 
 const router = express.Router();
 
@@ -21,7 +23,7 @@ router.get('/', authenticateJWT, (req, res) => {
 // Get student profile data (JSON)
 router.get('/profile/data', authenticateJWT, studentController.getProfile);
 
-// ✅ Update student profile with image upload
+//  Update student profile with image upload
 router.put('/updateProfile', authenticateJWT, upload.single('profileImage'), studentController.updateProfile);
 
 // Change student password
@@ -130,5 +132,22 @@ router.get('/review', authenticateJWT, (req, res) => {
 router.get('/report', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentReport.html'));
 });
+// Session-based feedback (for sessions)
+router.get('/reviews/eligible', authenticateJWT, feedbackController.getSessionsForReviews);
+router.post('/reviews',         authenticateJWT, feedbackController.submitReview);
+
+// **Add these two here** so they resolve under /student
+router.get('/reviews/given',    authenticateJWT, feedbackReviewController.getReviewsGiven);
+router.get('/reviews/received', authenticateJWT, feedbackReviewController.getReviewsReceived);
+
+router.get(
+  '/tutorProfile',        
+  authenticateJWT,
+  (req, res) => {
+    res.sendFile(
+      path.join(__dirname, '../views/studentUI/TutorProfile.html')
+    );
+  }
+);
 
 module.exports = router;

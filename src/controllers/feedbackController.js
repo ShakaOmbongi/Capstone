@@ -8,10 +8,10 @@ const feedbackController = {
     try {
       const userId = req.user.id;
       const sessions = await feedbackService.getSessionsForReviews(userId);
-      res.status(200).json({ status: 'success', data: sessions });
+      return res.status(200).json({ sessions });
     } catch (error) {
-      console.error('Error fetching sessions for reviews:', error);
-      res.status(500).json({ status: 'error', message: error.message });
+      console.error(error);
+      return res.status(500).json({ message: error.message });
     }
   },
 

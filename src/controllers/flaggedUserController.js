@@ -1,26 +1,44 @@
 'use strict';
 
-const { User } = require('../entities');
+const { sequelize, User } = require('../entities');
 const { Op } = require('sequelize');
+
 
 const flaggedUserController = {
   //  GET /admin/flagged-users
   async getFlaggedUsers(req, res) {
     try {
-      console.log(" FLAGGED USERS CONTROLLER HIT");
+      console.log("FLAGGED USERS CONTROLLER HIT");
+      const flaggedUsers = await sequelize.query(`
+        SELECT 
+          u.id, 
+          u.username, 
+          u.email, 
+          u.suspended,
+          latest_report."reason" AS "flagReason",
+          report_counts.report_count
+        FROM users u
+        JOIN LATERAL (
+          SELECT "reason"
+          FROM reports
+          WHERE "reportedid" = u.id
+          ORDER BY "createdAt" DESC
+          LIMIT 1
+        ) latest_report ON true
+        JOIN LATERAL (
+          SELECT COUNT(*) AS report_count
+          FROM reports
+          WHERE "reportedid" = u.id
+        ) report_counts ON true
+        WHERE report_counts.report_count >= 1;
+      `, { type: sequelize.QueryTypes.SELECT });
+      
 
-      const flaggedUsers = await User.findAll({
-        where: {
-          flagReason: { [Op.not]: null }
-        },
-        attributes: ['id', 'username', 'email', 'flagReason', 'suspended']
-      });
-
-      console.log(" Users found:", flaggedUsers.map(user => user.toJSON()));
+      console.log("Users found:", flaggedUsers);
 
       return res.status(200).json({ flaggedUsers });
     } catch (error) {
-      console.error(' Error in getFlaggedUsers:', error);
+      console.error('Error in getFlaggedUsers:', error);
       return res.status(500).json({ error: error.message });
     }
   },

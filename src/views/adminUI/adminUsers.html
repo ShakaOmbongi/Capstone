@@ -57,14 +57,14 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", async function() {
-      // Retrieve the admin token from localStorage (set on admin login)
+      // Retrieve the admin token from localStorage
       const token = localStorage.getItem('adminToken');
       if (!token) {
         alert("No admin token found. Please log in again.");
-        window.location.href = '/admin-login.html'; // or your admin login page path
+        window.location.href = '/admin-login.html'; // Adjust if needed
         return;
       }
-
+  
       try {
         const response = await fetch("http://localhost:3000/admin/users", {
           method: "GET",
@@ -73,17 +73,21 @@
             "Authorization": `Bearer ${token}`
           }
         });
+  
         const data = await response.json();
+        console.log("Users data:", data);  // <-- Debug log to check role.name
+  
         if (response.ok) {
           const usersTableBody = document.querySelector("#usersTable tbody");
-          usersTableBody.innerHTML = "";
+          usersTableBody.innerHTML = ""; // Clear existing rows
+          
           data.users.forEach(user => {
             const row = document.createElement("tr");
             row.innerHTML = `
               <td>${user.id}</td>
               <td>${user.username}</td>
               <td>${user.email}</td>
-              <td>${user.roleId}</td>
+              <td>${user.role?.name || "N/A"}</td>  <!-- Use role.name here -->
               <td>${user.flagReason ? user.flagReason : "N/A"}</td>
               <td>${user.suspended ? "Yes" : "No"}</td>
             `;
@@ -99,5 +103,6 @@
       }
     });
   </script>
+  
 </body>
 </html>

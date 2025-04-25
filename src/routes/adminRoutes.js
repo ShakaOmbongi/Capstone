@@ -42,6 +42,7 @@ router.get('/admin-flagged-users', authenticateJWT, authorizeRole(['admin']), (r
 router.get('/admin-session-management', authenticateJWT, authorizeRole(['admin']), (req, res) => {
   res.sendFile(path.join(__dirname, '../views/adminUI/adminSessionManagement.html'));
 });
+router.get('/sessions', adminController.getAllSessions);  // <-- THIS goes here!
 
 // Admin Sessions (view all)
 router.get('/sessions', authenticateJWT, authorizeRole(['admin']), async (req, res) => {

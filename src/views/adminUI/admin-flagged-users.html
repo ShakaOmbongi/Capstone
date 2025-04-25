@@ -47,95 +47,147 @@
           <th>User</th>
           <th>Email</th>
           <th>FlagReason</th>
+          <th>Report Count</th>
           <th>Suspended?</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody id="flaggedUsersTableBody">
-        
-      </tbody>
+      <tbody id="flaggedUsersTableBody"></tbody>
+    </table>
+  
+    <h1>Reported Users (Not Suspended)</h1>
+    <table id="reportedUsersTable">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>FlagReason</th>
+          <th>Report Count</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="reportedUsersTableBody"></tbody>
     </table>
   </div>
+  
 
   <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      const token = localStorage.getItem("adminToken");
-      try {
-        const res = await fetch("/admin/flagged-users", {
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("adminToken");
+
+  try {
+    const res = await fetch("/admin/flagged-users", {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+    const data = await res.json();
+
+    const flaggedBody = document.getElementById("flaggedUsersTableBody");
+    const reportedBody = document.getElementById("reportedUsersTableBody");
+
+    flaggedBody.innerHTML = "";
+    reportedBody.innerHTML = "";
+
+    data.flaggedUsers.forEach(user => {
+      const row = document.createElement("tr");
+
+      // If suspended, add to flagged table
+      if (user.suspended) {
+        row.innerHTML = `
+          <td>${user.username}</td>
+          <td>${user.email}</td>
+          <td>${user.flagReason || "N/A"}</td>
+          <td>${user.report_count}</td>
+          <td>Yes</td>
+          <td>
+            <button class="clear-flag btn btn-sm btn-warning" data-id="${user.id}">
+              Clear Flag
+            </button>
+            <button class="toggle-suspend btn btn-sm btn-secondary" data-id="${user.id}">
+              Reinstate
+            </button>
+          </td>
+        `;
+        flaggedBody.appendChild(row);
+      } 
+      // If NOT suspended, add to reported users table
+      else {
+        row.innerHTML = `
+          <td>${user.username}</td>
+          <td>${user.email}</td>
+          <td>${user.flagReason || "N/A"}</td>
+          <td>${user.report_count}</td>
+          <td>
+            <button class="suspend-user btn btn-sm btn-danger" data-id="${user.id}">
+              Suspend
+            </button>
+          </td>
+        `;
+        reportedBody.appendChild(row);
+      }
+    });
+
+    // Existing listeners...
+    document.querySelectorAll(".clear-flag").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+        if (!confirm("Clear flag for this user?")) return;
+        const resp = await fetch(`/admin/flagged-users/${id}`, {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
-          }
+          },
+          body: JSON.stringify({ flagReason: null })
         });
-        const data = await res.json();
-        if (!res.ok) {
-          console.error("Failed to fetch flagged users:", data.message);
-          return;
-        }
-  
-        const tbody = document.getElementById("flaggedUsersTableBody");
-        tbody.innerHTML = "";
-  
-        data.flaggedUsers.forEach(user => {
-          const isSuspended = user.suspended === true;
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${user.username}</td>
-            <td>${user.email}</td>
-            <td>${user.flagReason || "N/A"}</td>
-            <td>${isSuspended ? "Yes" : "No"}</td>
-            <td>
-              <button class="clear-flag btn btn-sm btn-warning" data-id="${user.id}">
-                Clear Flag
-              </button>
-              <button class="toggle-suspend btn btn-sm btn-secondary" data-id="${user.id}">
-                Reinstate
-              </button>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-  
-        // Clear flag
-        document.querySelectorAll(".clear-flag").forEach(btn => {
-          btn.addEventListener("click", async () => {
-            const id = btn.dataset.id;
-            if (!confirm("Clear flag for this user?")) return;
-            const resp = await fetch(`/admin/flagged-users/${id}`, {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-              },
-              body: JSON.stringify({ flagReason: null })
-            });
-            if (resp.ok) location.reload();
-            else alert((await resp.json()).message || "Failed to clear flag");
-          });
-        });
-  
-        // Reinstate (Unsuspend)
-        document.querySelectorAll(".toggle-suspend").forEach(btn => {
-          btn.addEventListener("click", async () => {
-            const id = btn.dataset.id;
-            if (!confirm("Are you sure you want to reinstate this account?")) return;
-            const resp = await fetch(`/admin/flagged-users/suspend/${id}`, {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-              },
-              body: JSON.stringify({ suspend: false })
-            });
-            if (resp.ok) location.reload();
-            else alert((await resp.json()).message || "Failed to reinstate user");
-          });
-        });
-  
-      } catch (err) {
-        console.error("Error fetching flagged users:", err);
-      }
+        if (resp.ok) location.reload();
+        else alert((await resp.json()).message || "Failed to clear flag");
+      });
     });
+
+    // Reinstate (Unsuspend)
+    document.querySelectorAll(".toggle-suspend").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+        if (!confirm("Are you sure you want to reinstate this account?")) return;
+        const resp = await fetch(`/admin/flagged-users/suspend/${id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ suspend: false })
+        });
+        if (resp.ok) location.reload();
+        else alert((await resp.json()).message || "Failed to reinstate user");
+      });
+    });
+
+    // NEW: Suspend button listener
+    document.querySelectorAll(".suspend-user").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+        if (!confirm("Suspend this user?")) return;
+        const resp = await fetch(`/admin/flagged-users/suspend/${id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ suspend: true })
+        });
+        if (resp.ok) location.reload();
+        else alert((await resp.json()).message || "Failed to suspend user");
+      });
+    });
+
+  } catch (err) {
+    console.error("Error fetching flagged users:", err);
+  }
+});
+
   </script>  
 </body>
 </html>

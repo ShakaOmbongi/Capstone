@@ -1,4 +1,5 @@
 // src/entities/index.js
+const sequelize = require('../../db');  
 
 const Role = require('./Role');
 const User = require('./User');
@@ -11,6 +12,7 @@ const Report = require('./Report');
 const Match = require('./Match');
 
 const entities = {
+  sequelize,
   Role,
   User,
   ChatMessage,

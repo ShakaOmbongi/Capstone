@@ -3,7 +3,7 @@
 const { User, Role } = require('../entities'); // Include Role model
 const sequelize = require('../../db');
 const { Op } = require('sequelize');
-
+const { TutoringSession } = require('../entities'); 
 const adminController = {
   // Fetch all users with their roles
   async getAllUsers(req, res) {
@@ -24,7 +24,44 @@ const adminController = {
       return res.status(500).json({ error: error.message });
     }
   },
-
+  async getAllSessions(req, res) {
+    try {
+      const sessions = await TutoringSession.findAll({
+        include: [
+          {
+            model: User,
+            as: 'tutor',
+            attributes: ['id', 'username'],
+            include: [
+              {
+                model: Role,
+                as: 'role',
+                attributes: ['name'] 
+              }
+            ]
+          },
+          {
+            model: User,
+            as: 'student',
+            attributes: ['id', 'username'],
+            include: [
+              {
+                model: Role,
+                as: 'role',
+                attributes: ['name']
+              }
+            ]
+          }
+        ]
+      });
+      
+      return res.status(200).json({ sessions });
+    } catch (error) {
+      console.error("Error fetching sessions:", error);
+      return res.status(500).json({ error: error.message });
+      
+    }
+  },
   // Fetch daily signup metrics
   async getMetrics(req, res) {
     try {
