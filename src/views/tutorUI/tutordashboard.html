@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,7 +14,8 @@
 
 <body class="bg-light">
   <div class="container-fluid">
-    <button class="btn btn-outline-primary d-lg-none m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+    <button class="btn btn-outline-primary d-lg-none m-3" type="button" data-bs-toggle="offcanvas"
+      data-bs-target="#sidebarMenu">
       ☰ Menu
     </button>
     <div class="row">
@@ -34,7 +36,7 @@
           <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
         </ul>
       </div>
-      
+
       <!-- Main Content -->
       <main class="main-content px-4 mt-3">
         <!-- Welcome Header -->
@@ -42,7 +44,7 @@
           <h1 class="display-5" id="greeting">Hello, Tutor</h1>
           <p class="text-muted">This is your dashboard.</p>
         </div>
-        
+
         <!-- Upcoming Schedule Section -->
         <section class="mb-4" id="upcoming-schedule">
           <h2>Upcoming Schedule</h2>
@@ -75,49 +77,63 @@
             <div class="col-md-4">
               <div class="card shadow-sm">
                 <div class="card-body d-flex">
-                  <img src="../../../assets/images/unsplash-2.jpg" class="rounded-circle" alt="Student Picture" style="width: 80px; height: 80px; object-fit: cover;">
+                  <img src="../../../assets/images/unsplash-2.jpg" class="rounded-circle" alt="Student Picture"
+                    style="width: 80px; height: 80px; object-fit: cover;">
                   <div class="ms-3">
-                    <h5 class="card-title mb-1"><a href="/tutor/tutormatches" style="text-decoration: none; color: inherit;">John Doe</a></h5>
+                    <h5 class="card-title mb-1"><a href="/tutor/tutormatches"
+                        style="text-decoration: none; color: inherit;">John Doe</a></h5>
                     <p class="card-text mb-1 text-muted">Math & Physics</p>
                     <p class="card-text text-secondary">I need help with calculus problems.</p>
-                    <a href="/tutor/details" class="text-dark" style="font-size: 14px; text-decoration: underline;">View Request</a>
+                    <a href="/tutor/details" class="text-dark" style="font-size: 14px; text-decoration: underline;">View
+                      Request</a>
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
+          <!-- Messages Section -->
+          <div class="col-md-6">
+            <h3>Messages</h3>
+            <div class="card shadow-sm">
+              <div class="card-body p-0" id="messageList">
+                <!-- Messages will be dynamically loaded here -->
+              </div>
+            </div>
+          </div>
+
         </section>
 
-<!-- Pending Join Requests -->
-<section>
-  <h2>Pending Join Requests</h2>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Subject</th>
-        <th>Requester</th>
-        <th>Requested At</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="joinRequestsTableBody"></tbody>
-  </table>
-</section>
+        <!-- Pending Join Requests -->
+        <section>
+          <h2>Pending Join Requests</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Requester</th>
+                <th>Requested At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="joinRequestsTableBody"></tbody>
+          </table>
+        </section>
 
-<!-- Accepted Join Requests -->
-<section>
-  <h2>Accepted Join Requests</h2>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Subject</th>
-        <th>Requester</th>
-        <th>Requested At</th>
-      </tr>
-    </thead>
-    <tbody id="acceptedRequestsTableBody"></tbody>
-  </table>
-</section>
+        <!-- Accepted Join Requests -->
+        <section>
+          <h2>Accepted Join Requests</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Requester</th>
+                <th>Requested At</th>
+              </tr>
+            </thead>
+            <tbody id="acceptedRequestsTableBody"></tbody>
+          </table>
+        </section>
 
       </main>
     </div>
@@ -213,6 +229,38 @@
       }
     }
     document.addEventListener('DOMContentLoaded', loadMatch);
+    async function fetchRecentMessages() {
+      try {
+        const response = await fetch('/api/chat-rooms');
+        const rooms = await response.json();
+        const messageList = document.getElementById("messageList");
+        messageList.innerHTML = "";
+
+        if (rooms.length === 0) {
+          messageList.innerHTML = "<p class='p-3 text-muted'>No recent messages.</p>";
+          return;
+        }
+
+        rooms.forEach(room => {
+          const messageItem = document.createElement("a");
+          messageItem.href = `/tutoruser/chat?room=${room.conversationId}`;
+          messageItem.classList.add("d-flex", "align-items-center", "p-3", "border-bottom", "text-decoration-none", "text-dark");
+
+          messageItem.innerHTML = `
+          <div class="d-flex flex-column">
+              <strong>Chatroom ${room.conversationId}</strong>
+              <span class="text-muted small">${room.message || "No messages yet"}</span>
+          </div>
+        `;
+
+          messageList.appendChild(messageItem);
+        });
+      } catch (error) {
+        console.error("Error fetching recent messages:", error);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", fetchRecentMessages);
   </script>
 
   <!-- Parent page listener for quiz modal closure -->
@@ -235,8 +283,9 @@
   <script src="../../../assets/js/visibility.js"></script>
   <script src="../../../assets/js/sessionActionsTutor.js"></script>
   <script src="../../../assets/js/joinRequests.js"></script>
-  
+
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

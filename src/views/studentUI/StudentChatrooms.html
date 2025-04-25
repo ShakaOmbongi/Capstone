@@ -21,6 +21,7 @@
           <li class="nav-item"><a class="nav-link" href="/student/studentdashboard">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link" href="/student/studentschedule">Calendar</a></li>
           <li class="nav-item"><a class="nav-link active" href="/student/chat">Messages</a></li>
+          <li class="nav-item"><a class="nav-link" href="/student/review">Reviews & Feedback</a></li>
           <li class="nav-item"><a class="nav-link" href="/student/studentprofile">Profile</a></li>
           <hr />
           <li class="nav-item"><a class="nav-link" href="/student/bookSessions">Book a Session</a></li>
@@ -57,16 +58,16 @@
 
   <script>
     const socket = io("http://localhost:3000");
-  
+
     const messages = document.getElementById("messages");
     const messageInput = document.getElementById("messageInput");
     const receiverInput = document.getElementById("receiverInput");
     const sendBtn = document.getElementById("sendBtn");
-  
+
     let currentConversationId = "";
     let username = "";
     let lastReceiverId = ""; // Remember the last receiver
-  
+
     async function getLoggedInUser() {
       try {
         const response = await fetch("/api/get-user");
@@ -81,11 +82,11 @@
         console.error("Failed to fetch user data:", error);
       }
     }
-  
+
     function getConversationIdFromUrl() {
       const urlParams = new URLSearchParams(window.location.search);
       const conversationId = urlParams.get("room");
-  
+
       if (conversationId) {
         currentConversationId = conversationId;
         joinRoom(conversationId);
@@ -93,11 +94,11 @@
         showChatroomList();
       }
     }
-  
+
     function joinRoom(conversationId) {
       messages.innerHTML = "<p>Loading messages...</p>";
       socket.emit("joinRoom", { conversationId, username });
-  
+
       socket.once("previousMessages", (loadedMessages) => {
         messages.innerHTML = "";
         loadedMessages.forEach((msg) => {
@@ -105,30 +106,31 @@
           appendMessage(msg.senderId, msg.message, senderType);
         });
       });
-  
+
       console.log(`Joined room ${conversationId}`);
     }
-  
+
     function appendMessage(senderId, text, senderType) {
       const messageElement = document.createElement("div");
-      messageElement.classList.add("message", senderType);
-  
+      messageElement.classList.add("message", senderType); // 'user' or 'receiver'
+
       const bubble = document.createElement("div");
       bubble.classList.add("bubble");
-      bubble.innerHTML = `<strong>${senderId}:</strong> ${text}`;
-  
+      bubble.textContent = `${senderId}: ${text}`;
+
       messageElement.appendChild(bubble);
       messages.appendChild(messageElement);
       messages.scrollTop = messages.scrollHeight;
     }
-  
+
+
     async function showChatroomList() {
       try {
         const response = await fetch("/api/chat-rooms");
         const rooms = await response.json();
-  
+
         console.log("Logged in as:", username);
-  
+
         messages.innerHTML = `
           <div class="chatroom-list">
             <h5>Select a Chatroom</h5>
@@ -139,42 +141,42 @@
             <div id="chatroomCardsContainer" class="list-group"></div>
           </div>
         `;
-  
+
         setTimeout(() => {
           const startChatBtn = document.getElementById("startChatBtn");
           const newChatUserInput = document.getElementById("newChatUser");
-  
+
           if (!startChatBtn || !newChatUserInput) {
             console.error("Could not find chat button or input.");
             return;
           }
-  
+
           startChatBtn.addEventListener("click", () => {
             const otherUser = newChatUserInput.value.trim();
-  
+
             console.log("Button clicked");
             console.log("My username:", username);
             console.log("Target user:", otherUser);
-  
+
             if (!otherUser || otherUser === username) {
               alert("Please enter a valid username that isn’t your own.");
               return;
             }
-  
+
             const ids = [username, otherUser].sort();
             const newRoomId = `${ids[0]}_${ids[1]}`;
-  
+
             console.log("Redirecting to:", `/student/chat?room=${newRoomId}`);
             window.location.href = `/student/chat?room=${newRoomId}`;
           });
         }, 0);
-  
+
         if (rooms.length === 0) {
           document.getElementById("chatroomCardsContainer").innerHTML =
             "<p class='p-3 text-muted'>You have no chatrooms yet.</p>";
           return;
         }
-  
+
         rooms.forEach((room) => {
           const chatCard = document.createElement("a");
           chatCard.href = `/student/chat?room=${room.conversationId}`;
@@ -191,18 +193,18 @@
         messages.innerHTML = "<p class='text-danger'>Failed to load chatrooms.</p>";
       }
     }
-  
+
     sendBtn.addEventListener("click", () => {
       const messageText = messageInput.value.trim();
       let receiverId = receiverInput.value.trim();
-  
+
       if (receiverId) {
         lastReceiverId = receiverId;
       } else {
         receiverId = lastReceiverId;
         receiverInput.value = lastReceiverId;
       }
-  
+
       if (
         messageText !== "" &&
         currentConversationId !== "" &&
@@ -214,30 +216,30 @@
           receiverid: receiverId,
           message: messageText,
         };
-  
+
         socket.emit("chatMessage", messageData);
         messageInput.value = ""; // only clear the message field
       }
     });
-  
+
     messageInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
         sendBtn.click();
       }
     });
-  
+
     socket.on("chatMessage", (data) => {
       const senderType = data.senderId === username ? "user" : "receiver";
       appendMessage(data.senderId, data.message, senderType);
     });
-  
+
     document.addEventListener("DOMContentLoaded", async () => {
       await getLoggedInUser();
       getConversationIdFromUrl();
     });
   </script>
-  
+
 </body>
 
 </html>
