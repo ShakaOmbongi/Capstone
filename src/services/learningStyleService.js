@@ -147,26 +147,85 @@ const learningStyleService = {
 
   // Build the GPT prompt.
   _buildPrompt(userRoleId, userAnswers, candidateRoleId, candidateAnswers) {
-    const roleMap = { 7: 'student', 8: 'tutor' };
-    const userRoleStr = roleMap[userRoleId] || 'user';
-    const candidateRoleStr = roleMap[candidateRoleId] || 'user';
-
-    let prompt = `You are an expert learning styles consultant. Based on the following quiz answers, determine a compatibility score (0-100), provide a detailed explanation, and recommend a learning style (auditory, tactile, or visual).\n\n`;
-    prompt += `First Person (${userRoleStr}) Answers:\n`;
-    userAnswers.forEach((ans, i) => {
-      prompt += `${i + 1}. ${ans}\n`;
+    // 1) Quiz questions
+    const QUESTIONS = [
+      "I follow written directions better than oral directions.",
+      "I can remember more about a subject through listening than reading.",
+      "I bear down extremely hard when writing.",
+      "I like to write things down or take notes for visual review.",
+      "I require explanations of graphs, diagrams, or visual directions.",
+      "I enjoy working with tools.",
+      "I am skillful and enjoy developing and making graphs and charts.",
+      "I can tell if sounds match when presented with pairs of sounds.",
+      "I remember best by writing things down several times.",
+      "I can understand and follow directions on maps."
+    ];
+  
+    // 2) Map roles
+    const roleMap  = { 7: "Student", 8: "Tutor" };
+    const youRole  = roleMap[userRoleId]      || "User";
+    const themRole = roleMap[candidateRoleId] || "User";
+  
+    // 3) Build prompt
+    let prompt = `
+  You are an expert learning-styles consultant. I will give you 10 questions along with the ${youRole}’s answer and the ${themRole}’s answer.
+  
+  **For each question**, do the following, referencing the full question text:
+  1. **Interpretation**: Explain exactly what the question is asking and what each person’s answer means.
+  2. **Strength**: Identify one specific alignment based on these answers (mention the question text and answers).
+  3. **Challenge**: Identify one specific difference (mention the question text and answers) that could create difficulty.
+  4. **Strategy**: Propose one concrete way the pair can leverage the strength or overcome the challenge.
+  
+  After analyzing all ten, provide:
+  
+  Compatibility Score: [0–100]
+  
+  Explanation:
+  - Strengths (at least two bullet points, each referencing question text and answers):
+      ...
+      ...
+  
+  - Challenges:
+      ...
+      
+  Overall Explanation:
+  Provide a concise paragraph summarizing how their combined strengths and challenges influence their overall compatibility and what they should focus on together.
+  
+  Learning Style: [auditory/tactile/visual]
+  
+  ---
+  
+  `;
+  
+    // 4) Append each question with answers
+    QUESTIONS.forEach((qText, i) => {
+      prompt += `Question ${i+1}: ${qText}\n`;
+      prompt += `- ${youRole} answered: ${userAnswers[i]}\n`;
+      prompt += `- ${themRole} answered: ${candidateAnswers[i]}\n\n`;
     });
-    prompt += `\nSecond Person (${candidateRoleStr}) Answers:\n`;
-    candidateAnswers.forEach((ans, i) => {
-      prompt += `${i + 1}. ${ans}\n`;
-    });
-    prompt += `\nReturn in this format:\n`;
-    prompt += `Compatibility Score: [0-100]\n`;
-    prompt += `Explanation: [detailed explanation]\n`;
-    prompt += `Learning Style: [auditory/tactile/visual]\n`;
+  
+    // 5) Return format reminder
+    prompt += `
+  Return in this exact format:
+  Compatibility Score: [0–100]
+  
+  Explanation:
+  - Strengths (at least two bullet points):
+      ...
+      ...
+  
+  - Challenges:
+      ...
+  
+  Overall Explanation:
+  ...
+  
+  Learning Style: [auditory/tactile/visual]
+  `.trim();
+  
     return prompt;
   },
-
+  
   // Parse the GPT output.
   _parseGPTOutput(content) {
     let score = 0;
