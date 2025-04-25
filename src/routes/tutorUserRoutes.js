@@ -61,6 +61,9 @@ router.get('/tutorschedule', authenticateJWT, (req, res) => {
 router.get('/faq', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/tutorUI/tutoringfaq.html'));
 });
+router.get('/about', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/tutorUI/tutoringfaq.html'));
+});
 
 // Get Profile Data (JSON)
 router.get('/profile/data', authenticateJWT, tutorController.getProfile);

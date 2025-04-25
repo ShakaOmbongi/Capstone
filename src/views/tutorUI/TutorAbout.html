@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | peerAid</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../../../assets/css/style.css">
+  <style>
+    :root {
+      --primary-color: #dc3545; /* Red color */
+      --primary-hover: #bb2d3b;
+      --secondary-color: #f8f9fa;
+    }
+    
+    .mission-card {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 15px;
+      border-left: 5px solid var(--primary-color);
+    }
+    .team-member-card {
+      transition: transform 0.3s ease;
+    }
+    .value-icon {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    .timeline {
+      position: relative;
+      padding-left: 50px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--primary-color);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 30px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -38px;
+      top: 5px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      border: 3px solid white;
+    }
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+    .bg-primary {
+      background-color: var(--primary-color) !important;
+    }
+    .text-primary {
+      color: var(--primary-color) !important;
+    }
+  </style>
+</head>
+
+<body class="bg-light">
+  <div class="container-fluid">
+    <button class="btn btn-outline-primary d-lg-none m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+      ☰ Menu
+    </button>
+    <div class="row">
+      <!-- Sidebar Offcanvas + Grid -->
+      <div id="sidebarMenu" class="sidebar shadow p-3">
+        <!-- Sidebar content -->
+        <img src="../../../assets/images/peerAid-tr.png" class="img-fluid mb-3" alt="peerAid Logo" style="max-width: 260px;" />
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link" href="/tutoruser/tutordashboard">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="/tutoruser/tutorschedule">Calendar</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/tutoruser/chat">Messages</a></li>
+            <li class="nav-item"><a class="nav-link" href="/tutoruser/reviews">Reviews & Feedback</a></li>
+            <li class="nav-item"><a class="nav-link" href="/tutoruser/profile">Profile</a></li>
+            <hr />
+            <li class="nav-item"><a class="nav-link" href="/tutoruser/tutoringSessions">Create a Session</a></li>
+            <li class="nav-item"><a class="nav-link" href="/tutoruser/findSessions">Find a Session</a></li>
+            <hr />
+            <li class="nav-item"><a class="nav-link" href="/tutoruser/About">About Us</a></li>
+            <li class="nav-item"><a class="nav-link" href="/tutoruser/faq">FAQs</a></li>
+            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+          </ul>
+      </div>
+  
+
+      <!-- Main Content -->
+      <main class="main-content px-4 mt-3">
+        <!-- Hero Section -->
+        <div class="row align-items-center mb-5">
+          <div class="col-md-6">
+            <h1 class="display-4 fw-bold mb-3">About peerAid</h1>
+            <p class="lead">Transforming the way students learn together through personalized peer tutoring.</p>
+          </div>
+          <div class="col-md-6">
+            <img src="../../../assets/images/undraw-pair.png" 
+                 alt="Students learning together" class="img-fluid rounded shadow">
+          </div>
+        </div>
+
+        <!-- Our Story Section -->
+<section class="mb-5">
+  <h2 class="mb-4">Our Story</h2>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="timeline">
+        <div class="timeline-item">
+          <h5>January: The Spark of Inspiration</h5>
+          <p>As computer science seniors facing our own academic challenges, we recognized the limitations of traditional tutoring systems. 
+            peerAid was born from late-night coding sessions and a shared vision for more personalized learning.</p>
+        </div>
+        <div class="timeline-item">
+          <h5>February: First Prototype Development</h5>
+          <p>We designed and built the initial peerAid prototype, creating wireframes and developing core functionality while balancing 
+            our final semester coursework. The first version featured our revolutionary learning style assessment.</p>
+        </div>
+        <div class="timeline-item">
+          <h5>March: Algorithm Breakthrough</h5>
+          <p>After rigorous testing and iterations, we perfected our matching algorithm that pairs students based on complementary 
+            learning styles - becoming the heart of the peerAid experience.</p>
+        </div>
+        <div class="timeline-item">
+          <h5>April: Product Launch</h5>
+          <p>We proudly unveiled the completed peerAid platform at our university's Computer Science Capstone Fair.</p>
+        </div>
+      </div>
+    </div>
+            <div class="col-lg-6">
+              <div class="p-4 mission-card h-100">
+                <h3 class="mb-3"><i class="fas fa-bullseye me-2 text-danger"></i>Our Mission</h3>
+                <p>At peerAid, we believe that learning is not one-size-fits-all. Every student has a unique way of understanding 
+                  and retaining information, and our mission is to connect them with the right tutor to unlock their full potential.</p>
+                <p>Our platform allows students to tutor their peers within their school or receive guidance from experienced tutors 
+                  outside their institution. Through our personalized matching system, based on a learning style quiz taken during 
+                  registration, we ensure that each student is paired with a tutor who best fits their needs and learning preferences.</p>
+                <p>Whether you're looking to reinforce classroom knowledge, master a challenging subject, or share your expertise to 
+                  help others succeed, peerAid provides a supportive, engaging, and effective learning environment tailored just for you.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="mb-5">
+          <h2 class="mb-4">How peerAid Works</h2>
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                  <div class="value-icon"><i class="fas fa-user-graduate"></i></div>
+                  <h4>1. Take the Quiz</h4>
+                  <p>Complete our learning style assessment during registration to identify how you learn best.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                  <div class="value-icon"><i class="fas fa-people-arrows"></i></div>
+                  <h4>2. Get Matched</h4>
+                  <p>Our algorithm pairs you with compatible tutors based on learning styles, subjects, and availability.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                  <div class="value-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                  <h4>3. Start Learning</h4>
+                  <p>Schedule sessions, connect with study groups, and achieve your academic goals with personalized support.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Our Values Section -->
+        <section class="mb-5">
+          <h2 class="mb-4">Our Core Values</h2>
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                  <h4><i class="fas fa-heart me-2 text-danger"></i>Empathy</h4>
+                  <p>We understand the challenges students face because we've been there too. Our platform is built with compassion at its core.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                  <h4><i class="fas fa-lightbulb me-2 text-warning"></i>Innovation</h4>
+                  <p>We continuously improve our matching algorithms and features to provide the best possible learning experience.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                  <h4><i class="fas fa-users me-2 text-primary"></i>Community</h4>
+                  <p>We foster supportive learning communities where students help each other grow academically and personally.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Meet the Team Section -->
+<section class="mb-5">
+  <h2 class="mb-4">Meet the Team</h2>
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-3">
+      <div class="card team-member-card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <h4>Allison Weavil</h4>
+          <p class="text-muted">Frontend Developer</p>
+          <p>Senior CS major specializing in human-computer interaction. Built peerAid's UI while finishing her capstone on educational technologies.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card team-member-card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <h4>Carissa Boddie</h4>
+          <p class="text-muted">Full-Stack Developer</p>
+          <p>Final-year CS student with a passion for web development. Developed peerAid's real time chat functionality.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card team-member-card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <h4>Nick Brandsma</h4>
+          <p class="text-muted">AI Lead</p>
+          <p>CS senior focusing on machine learning. Developed peerAid's matching algorithm.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card team-member-card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <h4>Shaka Ombongi</h4>
+          <p class="text-muted">Backend Developer</p>
+          <p>CS major with expertise in database design. Built peerAid's infrastructure while completing his final-semester at UNCG .</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+      </main>
+    </div>
+  </div>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Dynamic greeting script can be added here if needed
+  </script>
+</body>
+</html>
