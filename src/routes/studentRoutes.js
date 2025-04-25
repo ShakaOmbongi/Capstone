@@ -1,29 +1,29 @@
 'use strict';
 const express = require('express');
 const path = require('path');
-const multer = require('multer');
 const { authenticateJWT } = require('../middleware/authMiddleware');
 const studentController = require('../controllers/studentController');
 const progressUpdateService = require('../services/ProgressUpdateService');
 const tutoringSessionService = require('../services/TutoringSessionService');
 const tutoringSessionController = require('../controllers/tutoringSessionController');
-const joinRequestController = require('../controllers/joinRequestController');  
-
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
 
-// Redirect to dashboard
+// Redirect to student dashboard
 router.get('/', authenticateJWT, (req, res) => {
   res.redirect('/student/studentdashboard');
 });
 
-// Profile routes
-router.get("/profile/data", authenticateJWT, studentController.getProfile);
-router.put("/updateProfile", authenticateJWT, upload.single("profileImage"), studentController.updateProfile);
-router.put("/changePassword", authenticateJWT, studentController.changePassword);
+// Get student profile data (JSON)
+router.get('/profile/data', authenticateJWT, studentController.getProfile);
 
-// Login streak
+// Update student profile (JSON)
+router.put('/updateProfile', authenticateJWT, studentController.updateProfile);
+
+// Change student password
+router.put('/changePassword', authenticateJWT, studentController.changePassword);
+
+// Get student's login streak
 router.get('/login-streak', authenticateJWT, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -34,17 +34,22 @@ router.get('/login-streak', authenticateJWT, async (req, res) => {
   }
 });
 
-// Calendar route - fetches sessions as tutor or student
-router.get('/sessions', authenticateJWT, joinRequestController.getStudentSessions);
+// Get student's tutoring sessions (for calendar)
+router.get('/sessions', authenticateJWT, async (req, res) => {
+  try {
+    const studentId = req.user.id;
+    const sessions = await tutoringSessionService.getAllSessions({ studentId });
+    const events = sessions.map(session => ({
+      title: session.subject,
+      start: session.sessionDate
+    }));
+    res.status(200).json({ message: 'Sessions fetched successfully', events });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-
-// Student creates a tutoring session
-router.post('/sessions/create', authenticateJWT, tutoringSessionController.createSession);
-
-// Student fetches all tutoring sessions (for finding sessions)
-router.get('/find-sessions', authenticateJWT, tutoringSessionController.getSessions);
-
-// Static HTML views
+// Serve static HTML pages
 router.get('/studentdashboard', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/studentdashboard.html'));
 });
@@ -74,9 +79,6 @@ router.get('/About', authenticateJWT, (req, res) => {
 });
 router.get('/faq', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/faq.html'));
-});
-router.get('/feedback', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/studentUI/StudentFeedback.html'));
 });
 
 // Student creates a tutoring session
@@ -123,13 +125,5 @@ router.get('/review', authenticateJWT, (req, res) => {
 router.get('/report', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentReport.html'));
 });
-router.get(
-  '/tutorProfile',
-  authenticateJWT,
-  (req, res) => {
-    res.sendFile(
-      path.join(__dirname, '../views/studentUI/TutorProfile.html')
-    );
-  }
-);
+
 module.exports = router;

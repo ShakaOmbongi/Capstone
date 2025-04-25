@@ -13,12 +13,12 @@ const PORT = process.env.PORT || 3000;
 const server = http.createServer(app); // Create HTTP server
 
 // ====================== SETUP SUPABASE ======================
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
   console.error(" Missing Supabase credentials in .env file");
   process.exit(1);
 }
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 const io = new Server(server, {
   cors: {
