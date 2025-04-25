@@ -18,4 +18,10 @@ router.put('/requests/accept/:requestId', authenticateJWT, joinRequestController
 // Creator rejects a join request
 router.put('/requests/reject/:requestId', authenticateJWT, joinRequestController.reject);
 
+router.post(
+    '/custom',
+    authenticateJWT,
+    joinRequestController.createCustomRequest
+  );
+
 module.exports = router;

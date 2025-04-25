@@ -52,7 +52,7 @@ router.get('/profile', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentProfile.html'));
 });
 router.get('/bookSessions', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/studentUI/book-session.html'));
+  res.sendFile(path.join(__dirname, '../views/studentUI/StudentBookSession.html'));
 });
 router.get('/findSessions', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentFindSession.html'));
@@ -123,5 +123,13 @@ router.get('/review', authenticateJWT, (req, res) => {
 router.get('/report', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentReport.html'));
 });
-
+router.get(
+  '/tutorProfile',
+  authenticateJWT,
+  (req, res) => {
+    res.sendFile(
+      path.join(__dirname, '../views/studentUI/TutorProfile.html')
+    );
+  }
+);
 module.exports = router;

@@ -1,4 +1,3 @@
-// src/entities/JoinRequest.js
 'use strict';
 
 const { Model, DataTypes } = require('sequelize');
@@ -6,16 +5,20 @@ const sequelize = require('../../db');
 
 class JoinRequest extends Model {
   static associate(models) {
-    // Each join request belongs to a student (user making the request)
+    // who made it
     JoinRequest.belongsTo(models.User, {
       foreignKey: 'studentId',
-      as: 'requestingStudent'  // renamed alias (was 'student')
+      as: 'requestingStudent'
     });
-
-    // Each join request is for a specific tutoring session
+    // if session-based
     JoinRequest.belongsTo(models.TutoringSession, {
       foreignKey: 'sessionId',
-      as: 'requestedSession'   // renamed alias (was 'session')
+      as: 'requestedSession'
+    });
+    // if custom
+    JoinRequest.belongsTo(models.User, {
+      foreignKey: 'tutorid',   // matches your lower-case column
+      as: 'requestedTutor'
     });
   }
 }
@@ -27,16 +30,44 @@ JoinRequest.init(
       primaryKey: true,
       autoIncrement: true
     },
-    sessionId: {
+
+    studentId: {            // maps to DB column “studentId”
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    studentId: {
+
+    sessionId: {            // maps to DB column “sessionId”
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
+
+    tutorId: {              // JS attr “tutorId”
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      field: 'tutorid'       // …stored in lower-case “tutorid”
+    },
+
+    requestedDate: {        // JS attr “requestedDate”
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+      field: 'requested_date' // …stored in snake_case “requested_date”
+    },
+
+    requestedTime: {
+      type: DataTypes.TIME,
+      allowNull: true,
+      field: 'requested_time'
+    },
+
+    note: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      field: 'note'
+    },
+
     status: {
-      type: DataTypes.ENUM('pending', 'accepted', 'rejected'),
+      type: DataTypes.ENUM('pending','accepted','rejected'),
+      allowNull: false,
       defaultValue: 'pending'
     }
   },
@@ -44,7 +75,8 @@ JoinRequest.init(
     sequelize,
     modelName: 'JoinRequest',
     tableName: 'join_requests',
-    timestamps: true
+    timestamps: true,
+    // underscored: true,   ← remove this
   }
 );
 
