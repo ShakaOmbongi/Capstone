@@ -1,6 +1,6 @@
 'use strict';
 
-const { User, Match } = require('../entities');
+const { User, Match, UserProfile } = require('../entities');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
 
@@ -9,13 +9,32 @@ const studentController = {
   async getProfile(req, res) {
     try {
       const student = await User.findByPk(req.user.id, {
-        attributes: ['id', 'username', 'email']
+        attributes: ['id', 'username', 'email', 'profilePic'],
+        include: [{
+          model: UserProfile,
+          as: 'profile',
+          attributes: ['bio', 'subjects', 'learningstyle', 'availability']
+        }]
       });
+
       if (!student) {
         return res.status(404).json({ status: 'error', message: 'Student not found' });
       }
-      return res.status(200).json({ status: 'success', message: 'Profile fetched', data: student });
+
+      const profileData = {
+        id: student.id,
+        username: student.username,
+        email: student.email,
+        profilePic: student.profilePic,
+        bio: student.profile?.bio || '',
+        subjects: student.profile?.subjects || '',
+        learningStyle: student.profile?.learningstyle || '',
+        availability: student.profile?.availability || ''
+      };
+
+      return res.status(200).json({ status: 'success', message: 'Profile fetched', data: profileData });
     } catch (error) {
+      console.error("Error fetching profile:", error);
       return res.status(500).json({ status: 'error', message: error.message });
     }
   },
@@ -23,16 +42,32 @@ const studentController = {
   // Update the student's profile
   async updateProfile(req, res) {
     try {
-      const { username, email } = req.body;
-      const student = await User.findByPk(req.user.id);
+      const { username, email, bio, subjects, availability, learningStyle } = req.body;
+      const student = await User.findByPk(req.user.id, { include: [{ model: UserProfile, as: 'profile' }] });
+
       if (!student) {
         return res.status(404).json({ status: 'error', message: 'Student not found' });
       }
+
       student.username = username;
       student.email = email;
+
+      if (req.file) {
+        student.profilePic = `https://your-supabase-url.com/storage/v1/object/public/profile-pictures/${req.file.filename}`;
+      }
+
       await student.save();
-      return res.status(200).json({ status: 'success', message: 'Profile updated', data: student });
+
+      const profile = student.profile || await UserProfile.create({ userId: student.id });
+      profile.bio = bio || '';
+      profile.subjects = subjects || '';
+      profile.availability = availability || '';
+      profile.learningstyle = learningStyle || '';
+      await profile.save();
+
+      return res.status(200).json({ status: 'success', message: 'Profile updated', data: { student, profile } });
     } catch (error) {
+      console.error("Update error:", error);
       return res.status(500).json({ status: 'error', message: error.message });
     }
   },
@@ -57,25 +92,24 @@ const studentController = {
     }
   },
 
-  // Get the match for the logged-in student.
+  // Get the match for the logged-in student
   async getMatch(req, res) {
     try {
       const studentId = req.user.id;
-      // Look for the most recent match record for this student.
       const match = await Match.findOne({
         where: { studentId },
         order: [['created_at', 'DESC']]
       });
+
       if (!match) {
         return res.status(404).json({ status: 'error', message: 'No match found' });
       }
-      
-      // Retrieve tutor info using tutorId.
+
       const tutor = await User.findByPk(match.tutorId);
       if (!tutor) {
         return res.status(404).json({ status: 'error', message: 'Match found but tutor not found' });
       }
-      
+
       return res.status(200).json({
         status: 'success',
         match: {
@@ -93,7 +127,7 @@ const studentController = {
     }
   },
 
-  // NEW: Accept the pending match.
+  // Accept the pending match
   async acceptMatch(req, res) {
     try {
       const studentId = req.user.id;
@@ -101,19 +135,19 @@ const studentController = {
         where: { studentId, accepted: false },
         order: [['created_at', 'DESC']]
       });
+
       if (!match) {
         return res.status(404).json({ status: 'error', message: 'No pending match found' });
       }
-      console.log('Before update, accepted:', match.accepted);
-      // Set accepted to true and then save the change.
+
       match.accepted = true;
       await match.save();
-      console.log('After update, accepted:', match.accepted);
+
       return res.status(200).json({ status: 'success', message: 'Match accepted', match });
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error.message });
     }
-  },
+  }
 };
 
 module.exports = studentController;

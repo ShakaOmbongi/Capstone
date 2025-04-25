@@ -1,6 +1,10 @@
 'use strict';
+
 const express = require('express');
 const path = require('path');
+const multer = require('multer'); // ✅ moved to the top
+const upload = multer({ dest: 'uploads/' }); // ✅ defined before use
+
 const { authenticateJWT } = require('../middleware/authMiddleware');
 const studentController = require('../controllers/studentController');
 const progressUpdateService = require('../services/ProgressUpdateService');
@@ -17,8 +21,8 @@ router.get('/', authenticateJWT, (req, res) => {
 // Get student profile data (JSON)
 router.get('/profile/data', authenticateJWT, studentController.getProfile);
 
-// Update student profile (JSON)
-router.put('/updateProfile', authenticateJWT, studentController.updateProfile);
+// ✅ Update student profile with image upload
+router.put('/updateProfile', authenticateJWT, upload.single('profileImage'), studentController.updateProfile);
 
 // Change student password
 router.put('/changePassword', authenticateJWT, studentController.changePassword);
@@ -114,11 +118,12 @@ router.get('/studentmatches', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/studentmatches.html'));
 });
 
-// NEW: Endpoint to fetch the student's dynamic match data.
+// NEW: Endpoint to fetch the student's dynamic match data
 router.get('/matches', authenticateJWT, studentController.getMatch);
 
-// NEW: Endpoint to accept a pending match.
+// NEW: Endpoint to accept a pending match
 router.post('/matches/accept', authenticateJWT, studentController.acceptMatch);
+
 router.get('/review', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/studentUI/StudentReviews.html'));
 });
