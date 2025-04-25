@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <small><strong>Subjects:</strong> ${subjects}</small>
           </div>
           <a href="/student/tutorProfile?id=${u.id}" 
-             class="btn btn-outline-primary btn-sm">
+             class="btn btn-outline-danger btn-sm">
             View Profile
           </a>
         `;
