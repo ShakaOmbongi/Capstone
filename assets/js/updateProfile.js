@@ -87,6 +87,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
 
       alert("Profile updated successfully!");
+      window.location.reload(); //  Force refresh to see changes
       // Refresh displayed fields
       document.getElementById("studentName").textContent     = result.data.username;
       document.getElementById("profileName").textContent     = result.data.username;
