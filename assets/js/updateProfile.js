@@ -1,5 +1,3 @@
-// public/assets/js/updateprofile.js
-
 document.addEventListener("DOMContentLoaded", async function () {
   function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -21,107 +19,125 @@ document.addEventListener("DOMContentLoaded", async function () {
       method: "GET",
       headers: { "Authorization": `Bearer ${token}` }
     });
-    if (!response.ok) throw new Error("Failed to fetch profile");
 
-    const data    = await response.json();
-    const profile = data.profile || {};
+    const data = await response.json();
+    console.log('Profile response from backend:', data);  // Debugging
 
-    // Display basic info
-    document.getElementById("studentName").textContent     = profile.username || "Student";
-    document.getElementById("profileName").textContent     = profile.username || "Student";
-    document.getElementById("email").textContent           = profile.email || "email@example.edu";
-    document.getElementById("bio").textContent             = profile.bio   || "No bio available.";
-    document.getElementById("subjectsList").innerHTML      = profile.subjects
-      ? profile.subjects.split(',').map(s => `<li>${s.trim()}</li>`).join('')
-      : '<li>No subjects listed.</li>';
-    document.getElementById("availabilityInput").value     = profile.availability || "";
-
-    document.getElementById("username").value              = profile.username || "";
-    document.getElementById("emailInput").value            = profile.email    || "";
-    document.getElementById("bioInput").value              = profile.bio      || "";
-    document.getElementById("subjectsInput").value         = profile.subjects || "";
-
-    if (document.getElementById("learningStyle")) {
-      document.getElementById("learningStyle").textContent = profile.learningstyle || "Learning Style Not Set";
-    }
-    if (document.getElementById("profilePic")) {
-      document.getElementById("profilePic").src             = profile.profilePic || "default.jpg";
+    if (!data.profile) {
+      console.error("Profile data missing in response.");
+      alert("Failed to load profile data.");
+      return;
     }
 
-    // ─── Populate "Current Availability" list ───────────────────
-    const currentList = document.getElementById("currentAvailability"); // ← ERROR HERE? if this ID is missing, `.getElementById` returns null
-    if (profile.availability) {
+    const profile = data.profile;
+    console.log('Profile object:', profile);
+    console.log('Profile username:', profile.username);
+    console.log('ProfilePic URL:', profile.profilePic);
+
+    // ─── Safely update DOM elements ──────────────────────────────
+    const studentNameEl = document.getElementById("studentName");
+    if (studentNameEl) studentNameEl.textContent = profile.username || "Student";
+
+    const profileNameEl = document.getElementById("profileName");
+    if (profileNameEl) profileNameEl.textContent = profile.username || "Student";
+
+    const emailEl = document.getElementById("email");
+    if (emailEl) emailEl.textContent = profile.email || "email@example.edu";
+
+    const bioEl = document.getElementById("bio");
+    if (bioEl) bioEl.textContent = profile.bio || "No bio available.";
+
+    const subjectsListEl = document.getElementById("subjectsList");
+    if (subjectsListEl) {
+      subjectsListEl.innerHTML = profile.subjects
+        ? profile.subjects.split(',').map(s => `<li>${s.trim()}</li>`).join('')
+        : '<li>No subjects listed.</li>';
+    }
+
+    const availabilityInputEl = document.getElementById("availabilityInput");
+    if (availabilityInputEl) availabilityInputEl.value = profile.availability || "";
+
+    // ─── Input fields for updating ───────────────────────────────
+    const usernameInput = document.getElementById("username");
+    if (usernameInput) usernameInput.value = profile.username || "";
+
+    const emailInput = document.getElementById("emailInput");
+    if (emailInput) emailInput.value = profile.email || "";
+
+    const bioInput = document.getElementById("bioInput");
+    if (bioInput) bioInput.value = profile.bio || "";
+
+    const subjectsInput = document.getElementById("subjectsInput");
+    if (subjectsInput) subjectsInput.value = profile.subjects || "";
+
+    const learningStyleEl = document.getElementById("learningStyle");
+    if (learningStyleEl) learningStyleEl.textContent = profile.learningstyle || "Learning Style Not Set";
+
+    // ─── Profile Picture handling ────────────────────────────────
+    const profilePicEl = document.getElementById("profilePic");
+    if (profilePicEl) {
+      console.log("Setting profilePic src to:", profile.profilePic);  // Debugging
+      profilePicEl.src = profile.profilePic || "default.jpg";
+    }
+
+    // ─── Populate "Current Availability" list ────────────────────
+    const currentList = document.getElementById("currentAvailability");
+    if (currentList) {
       currentList.innerHTML = profile.availability
-        .split(',')
-        .map(slot => `<li>${slot.trim()}</li>`)
-        .join('');
-    } else {
-      currentList.innerHTML = '<li>No availability set.</li>';
+        ? profile.availability.split(',').map(slot => `<li>${slot.trim()}</li>`).join('')
+        : '<li>No availability set.</li>';
     }
 
   } catch (error) {
     console.error("Error loading profile:", error);
-    alert("Error loading profile");
+    alert("Error loading profile.");
   }
 
-  // ─── 2) Update profile form submission ────────────────────────
-  document.getElementById("updateProfileForm").addEventListener("submit", async function (event) {
-    event.preventDefault();
-    const token = getCookie("token");
-    if (!token) {
-      alert("You must be logged in to update your profile.");
-      return;
-    }
-
-    const formData = new FormData(this);
-    try {
-      const response = await fetch("/student/updateProfile", {
-        method: "PUT",
-        headers: { "Authorization": `Bearer ${token}` },
-        body: formData
-      });
-      const result = await response.json();
-      if (!response.ok) {
-        alert(result.error || "Failed to update profile.");
+  // ─── 2) Update profile form submission ─────────────────────────
+  const updateForm = document.getElementById("updateProfileForm");
+  if (updateForm) {
+    updateForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      const token = getCookie("token");
+      if (!token) {
+        alert("You must be logged in to update your profile.");
         return;
       }
 
-      alert("Profile updated successfully!");
-      window.location.reload(); //  Force refresh to see changes
-      // Refresh displayed fields
-      document.getElementById("studentName").textContent     = result.data.username;
-      document.getElementById("profileName").textContent     = result.data.username;
-      document.getElementById("email").textContent           = result.data.email;
-      document.getElementById("bio").textContent             = result.data.bio || "No bio available.";
-      document.getElementById("availabilityInput").value     = result.data.availability || "";
-      document.getElementById("subjectsList").innerHTML      = result.data.subjects
-        ? result.data.subjects.split(',').map(s => `<li>${s.trim()}</li>`).join('')
-        : '<li>No subjects listed.</li>';
-      if (document.getElementById("profilePic")) {
-        document.getElementById("profilePic").src = result.data.profilePic || "default.jpg";
+      const formData = new FormData(this);
+      try {
+        const response = await fetch("/student/updateProfile", {
+          method: "PUT",
+          headers: { "Authorization": `Bearer ${token}` },
+          body: formData
+        });
+
+        const result = await response.json();
+        console.log('Profile update response:', result);  // Debugging
+
+        if (!response.ok) {
+          alert(result.error || "Failed to update profile.");
+          return;
+        }
+
+        alert("Profile updated successfully!");
+        window.location.reload(); // Refresh to see changes
+
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        alert("Error updating profile.");
       }
-      // Re-populate the "Current Availability" list after update
-      const currentList = document.getElementById("currentAvailability");
-      currentList.innerHTML = result.data.availability
-        ? result.data.availability.split(',').map(s => `<li>${s.trim()}</li>`).join('')
-        : '<li>No availability set.</li>';
+    });
+  }
 
-      document.cookie = `username=${result.data.username}; path=/;`;
-
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      alert("Error updating profile.");
-    }
-  });
-
-  // ─── 3) Wire up the “Add Availability” button ───────────────
+  // ─── 3) Wire up the “Add Availability” button ──────────────────
   const addBtn = document.getElementById("addAvailabilityBtn");
   if (addBtn) {
     addBtn.addEventListener("click", addAvailability);
   }
 });
 
-// ─── 4) Add availability block to the textarea ────────────────
+// ─── 4) Add availability block to the textarea ───────────────────
 function addAvailability() {
   const day   = document.getElementById("daySelect").value;
   const start = document.getElementById("startTimeSelect").value;
@@ -132,13 +148,13 @@ function addAvailability() {
   }
 
   const availabilityInput = document.getElementById("availabilityInput");
-  const newEntry          = `${day} ${start}-${end}`;
+  const newEntry = `${day} ${start}-${end}`;
   availabilityInput.value
     ? availabilityInput.value += `, ${newEntry}`
     : availabilityInput.value = newEntry;
 
   // Reset dropdowns
-  document.getElementById("daySelect").selectedIndex       = 0;
+  document.getElementById("daySelect").selectedIndex = 0;
   document.getElementById("startTimeSelect").selectedIndex = 0;
-  document.getElementById("endTimeSelect").selectedIndex   = 0;
+  document.getElementById("endTimeSelect").selectedIndex = 0;
 }

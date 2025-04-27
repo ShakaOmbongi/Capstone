@@ -44,11 +44,13 @@ app.use(
         "https://cdn.jsdelivr.net",
         "https://cdnjs.cloudflare.com"
       ],
-      "img-src": [
-        "'self'",
-        "data:",
-        "https://mdnnxwpxypxgwhfkzgok.supabase.co"
-      ]
+     "img-src": [
+  "'self'",
+  "data:",
+  "https://mdnnxwpxypxgwhfkzgok.supabase.co",
+  "https://mdnnxwpxypxgwhfkzgok.supabase.co/*"
+]
+
     }
   })
 );

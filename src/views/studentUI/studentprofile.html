@@ -191,67 +191,7 @@
   <script src="../../../assets/js/changePassword.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", async function () {
-      // Close button logic
-      const closeButton = document.getElementById("closeReviewForm");
-      const reviewForm = document.getElementById("reviewForm");
-      if (closeButton) {
-        closeButton.addEventListener("click", function () {
-          reviewForm.classList.remove("show");
-        });
-      }
-  
-      // Fetch profile data
-      try {
-        const response = await fetch("/student/profile/data", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" }
-        });
-  
-        const result = await response.json();
-  
-        if (result.status === "success") {
-          const user = result.data;
-  
-          // Fill profile page with fetched data
-          document.getElementById("studentName").textContent = user.username || "Student";
-          document.getElementById("profileName").textContent = user.username || "Student";
-          document.getElementById("email").textContent = user.email || "email@example.edu";
-          document.getElementById("emailInput").value = user.email || "";
-          document.getElementById("username").value = user.username || "";
-  
-          if (user.profilePic) {
-            document.getElementById("profilePic").src = user.profilePic;
-          }
-  
-          if (user.bio) {
-            document.getElementById("bio").textContent = user.bio;
-          }
-  
-          if (user.subjects) {
-            const subjectsList = document.getElementById("subjectsList");
-            subjectsList.innerHTML = "";
-            const subjects = user.subjects.split(",").map(s => s.trim());
-            subjects.forEach(subject => {
-              const li = document.createElement("li");
-              li.textContent = subject;
-              subjectsList.appendChild(li);
-            });
-          }
-  
-          if (user.learningStyle) {
-            document.getElementById("learningStyle").textContent = user.learningStyle;
-          }
-  
-        } else {
-          console.error("Profile fetch failed:", result.message);
-        }
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      }
-    });
-  </script>
+ 
   
 </body>
 </html>
