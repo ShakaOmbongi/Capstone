@@ -63,7 +63,7 @@ router.get('/faq', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/tutorUI/tutoringfaq.html'));
 });
 router.get('/about', authenticateJWT, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/tutorUI/tutoringfaq.html'));
+  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorAbout.html'));
 });
 router.get('/details', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/tutorUI/TutorviewDetails.html'));
