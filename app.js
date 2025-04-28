@@ -44,13 +44,11 @@ app.use(
         "https://cdn.jsdelivr.net",
         "https://cdnjs.cloudflare.com"
       ],
-     "img-src": [
-  "'self'",
-  "data:",
-  "https://mdnnxwpxypxgwhfkzgok.supabase.co",
-  "https://mdnnxwpxypxgwhfkzgok.supabase.co/*"
-]
-
+      "img-src": [
+        "'self'",
+        "data:",
+        "https://mdnnxwpxypxgwhfkzgok.supabase.co"
+      ]
     }
   })
 );
@@ -117,7 +115,6 @@ app.use('/tutor', authenticateJWT, tutorRoutes);
 app.use('/', logoutRoutes);
 app.use('/sessions', authenticateJWT, sessionRoutes);
 app.use('/chat-messages', authenticateJWT, chatMessageRoutes);
-app.use('/uploads', express.static('uploads'));
 
 
 // ========================== API ROUTES ==========================

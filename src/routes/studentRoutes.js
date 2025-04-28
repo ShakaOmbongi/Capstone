@@ -3,7 +3,7 @@
 const express = require('express');
 const path = require('path');
 const multer = require('multer'); //  moved to the top
-const upload = multer({ dest: 'uploads/' }); // defined before use
+const upload = multer({ storage: multer.memoryStorage() });
 
 const { authenticateJWT } = require('../middleware/authMiddleware');
 const studentController = require('../controllers/studentController');

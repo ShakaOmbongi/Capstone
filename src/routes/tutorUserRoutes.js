@@ -3,6 +3,8 @@
 const express = require('express');
 const path = require('path');
 const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
+
 const { authenticateJWT } = require('../middleware/authMiddleware');
 const tutorController = require('../controllers/tutorController');
 const tutoringSessionService = require('../services/TutoringSessionService');
@@ -12,7 +14,6 @@ const joinRequestController = require('../controllers/joinRequestController');
 
 const router = express.Router();
 
-const upload = multer({ storage: multer.memoryStorage() });
 
 
 
@@ -64,6 +65,16 @@ router.get('/faq', authenticateJWT, (req, res) => {
 router.get('/about', authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/tutorUI/tutoringfaq.html'));
 });
+router.get('/details', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/tutorUI/TutorviewDetails.html'));
+});
+
+router.get('/join/request/details', authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/tutorUI/tutorViewDetails.html'));
+});
+// API route for fetching join request details (tutor-side)
+router.get('/join/request/:id/details', authenticateJWT, joinRequestController.getJoinRequestDetails);
+
 
 // Get Profile Data (JSON)
 router.get('/profile/data', authenticateJWT, tutorController.getProfile);

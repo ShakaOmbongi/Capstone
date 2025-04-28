@@ -6,7 +6,6 @@ const tutoringSessionService  = require('../services/TutoringSessionService');
 const { JoinRequest, User }    = require('../entities');
 
 const joinRequestController = {
-  // 1) Standard: Create a new join request for an existing session
   async create(req, res) {
     try {
       const studentId = req.user.id;
@@ -33,7 +32,6 @@ const joinRequestController = {
     }
   },
 
-  // 2) Fetch pending/accepted requests for sessions you created (tutor view)
   async getMyRequests(req, res) {
     try {
       const tutorId   = req.user.id;
@@ -56,7 +54,6 @@ const joinRequestController = {
         })
       ]);
 
-      //  merge them in
       pending .push(...customPending);
       accepted.push(...customAccepted);
 
@@ -70,7 +67,6 @@ const joinRequestController = {
     }
   },
 
-  // 3) Calendar: sessions you created + sessions you’ve been accepted into
   async getStudentSessions(req, res) {
     try {
       const studentId = req.user.id; 
@@ -113,7 +109,6 @@ const joinRequestController = {
     }
   },
 
-  // 4) Accept a join request (tutor)
   async accept(req, res) {
     try {
       const { requestId } = req.params;
@@ -125,7 +120,6 @@ const joinRequestController = {
     }
   },
 
-  // 5) Reject a join request (tutor)
   async reject(req, res) {
     try {
       const { requestId } = req.params;
@@ -137,7 +131,6 @@ const joinRequestController = {
     }
   },
 
-  // 6) Custom: Request a new, one-off session with a tutor (no existing session)
   async createCustomRequest(req, res, next) {
     try {
       const studentId = req.user.id;
@@ -160,7 +153,70 @@ const joinRequestController = {
       console.error('Error creating custom join request:', err);
       return next(err);
     }
+  },
+  async getJoinRequestDetails(req, res) {
+    try {
+      const requestId = req.params.id;
+  
+      const request = await JoinRequest.findByPk(requestId, {
+        include: [
+          { 
+            model: User, 
+            as: 'requestingStudent',
+            attributes: ['id', 'username', 'email', 'profilePic'],
+            include: [{ model: require('../entities/UserProfile'), as: 'profile' }]
+          },
+          { 
+            model: require('../entities/TutoringSession'), 
+            as: 'requestedSession' 
+          }
+        ]
+      });
+  
+      if (!request) {
+        return res.status(404).json({ status: 'error', message: 'Join request not found' });
+      }
+  
+      const student = request.requestingStudent;
+      if (!student) {
+        return res.status(404).json({ status: 'error', message: 'Student not found for this request' });
+      }
+  
+      const profile = student.profile || {};
+      const profilePicUrl = student.profilePic || '/assets/images/white.jpeg';
+      const sessionSubject = request.requestedSession 
+        ? request.requestedSession.subject 
+        : 'Custom Request';
+  
+      // Debug logs for troubleshooting
+      console.log('Join Request:', request);
+      console.log('Student:', student);
+      console.log('Profile:', profile);
+  
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          requestId: request.id,
+          sessionSubject,
+          student: {
+            username: student.username,
+            email: student.email,
+            profilePic: profilePicUrl,
+            bio: profile.bio || '',
+            subjects: profile.subjects || '',
+            availability: profile.availability || '',
+            learningstyle: profile.learningstyle || ''
+          }
+        }
+      });
+  
+    } catch (error) {
+      console.error('Error fetching join request details:', error);
+      return res.status(500).json({ status: 'error', message: error.message });
+    }
   }
+  
+  
 };
 
 module.exports = joinRequestController;
