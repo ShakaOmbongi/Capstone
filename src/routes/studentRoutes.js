@@ -54,6 +54,10 @@ router.get('/sessions', authenticateJWT, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+// In student routes
+router.get('/join/request/:id/details', authenticateJWT, studentController.getJoinRequestDetails);
+router.get('/session-requests', authenticateJWT, studentController.getSessionRequests);
+
 
 // Serve static HTML pages
 router.get('/studentdashboard', authenticateJWT, (req, res) => {

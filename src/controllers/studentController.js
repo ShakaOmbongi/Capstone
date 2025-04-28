@@ -3,6 +3,7 @@
 const { User, Match, UserProfile } = require('../entities');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
+const { JoinRequest, TutoringSession } = require('../entities');
 
 const studentController = {
   // GET Student Profile
@@ -52,7 +53,89 @@ const studentController = {
       res.status(500).json({ status: 'error', message: error.message });
     }
   },
+// studentController.js
+async getJoinRequestDetails(req, res) {
+  try {
+    const requestId = req.params.id;
 
+    const request = await JoinRequest.findByPk(requestId, {
+      include: [
+        { model: User, as: 'requestingStudent', include: [{ model: UserProfile, as: 'profile' }] },
+        { model: TutoringSession, as: 'requestedSession' }
+      ]
+    });
+
+    if (!request) return res.status(404).json({ status: 'error', message: 'Join request not found' });
+
+    const student = request.requestingStudent;
+    const profilePicUrl = student.profilePic || '/assets/images/default.jpg';
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        requestId: request.id,
+        sessionSubject: request.requestedSession.subject,
+        student: {
+          username: student.username,
+          email: student.email,
+          profilePic: profilePicUrl,
+          bio: student.profile?.bio,
+          subjects: student.profile?.subjects,
+          availability: student.profile?.availability,
+          learningstyle: student.profile?.learningstyle
+        }
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: 'error', message: error.message });
+  }
+},
+
+async getSessionRequests(req, res) {
+  try {
+    const studentId = req.user.id;
+
+    const requests = await JoinRequest.findAll({
+      where: { tutorid: studentId, status: 'pending' },
+      include: [
+        {
+          model: User,
+          as: 'requestingStudent',
+          attributes: ['id', 'username', 'profilePic'],
+          include: [{ model: UserProfile, as: 'profile', attributes: ['bio', 'subjects', 'learningstyle'] }]
+        },
+        {
+          model: TutoringSession,
+          as: 'requestedSession',
+          attributes: ['subject', 'description']
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+
+    const formattedRequests = requests.map(req => ({
+      id: req.id,
+      student: {
+        id: req.requestingStudent.id,
+        username: req.requestingStudent.username,
+        profilePic: req.requestingStudent.profilePic || '/assets/images/white.jpeg',
+        bio: req.requestingStudent.profile?.bio || '',
+        subjects: req.requestingStudent.profile?.subjects || '',
+        learningstyle: req.requestingStudent.profile?.learningstyle || ''
+      },
+      session: {
+        subject: req.requestedSession.subject,
+        description: req.requestedSession.description
+      }
+    }));
+
+    res.status(200).json({ status: 'success', requests: formattedRequests });
+  } catch (error) {
+    console.error('Error fetching session requests:', error);
+    res.status(500).json({ status: 'error', message: error.message });
+  }
+},
   // UPDATE Student Profile
   async updateProfile(req, res) {
     try {

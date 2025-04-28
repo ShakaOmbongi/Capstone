@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async function () {
     const token = getCookie("token");
+    
     const incomingTableBody = document.getElementById("incomingRequestsTableBody");
   
     if (!token || !incomingTableBody) {
@@ -11,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       try {
         const response = await fetch("/student/join/requests?studentOnly=true", {
           method: "GET",
-          headers: { "Authorization": `Bearer ${token}` }
+          headers: { "Authorization": `Bearer ${token}` ,"Cache-Control": "no-cache"}
         });
   
         const data = await response.json();
