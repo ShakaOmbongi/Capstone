@@ -6,27 +6,16 @@ How to run code:
 Make sure the following is installed:
 
 npm install
-
 npm install --save-dev nodemon
-
 npm install cookie-parser express dotenv bcrypt jsonwebtoken pg
-
 npm install sequelize pg pg-hstore
-
 npm list sequelize
-
 npm install -g nodemon
-
 npm install dotenv
-
 npm install sequelize pg pg-hstore
-
 npm install helmet
-
 npm install multer
-
 npm install node-fetch
-
 npm install openai
 
 Run “node app.js”
