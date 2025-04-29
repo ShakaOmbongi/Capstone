@@ -4,7 +4,7 @@ A unique final project showcasing the culmination of skills and knowledge acquir
 How to run code:
 
 Make sure the following is installed:
-
+```bash
 npm install
 npm install --save-dev nodemon
 npm install cookie-parser express dotenv bcrypt jsonwebtoken pg
