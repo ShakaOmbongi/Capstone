@@ -5,8 +5,8 @@ Built as a **Senior Capstone Project** at UNC Greensboro, the app promotes colla
 
 ---
 
-##  Demo Video
-[Watch Project Demo](#)  <!-- Replace # with your video link -->
+##  Demo Video  
+[Watch the PeerAid Demo on YouTube](https://youtu.be/VkaP2FdABv0)
 
 ---
 
